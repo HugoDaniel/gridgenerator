@@ -1,0 +1,39 @@
+{
+  "compilerOptions": {
+		"target": "es6",
+		"module": "es6",
+		"moduleResolution": "node",
+    "sourceMap": false,
+		"jsx": "preserve",
+		"allowJs": false,
+    "importHelpers": true,
+    "emitDecoratorMetadata": true,
+    "experimentalDecorators": true,
+		"strictNullChecks": true,
+		"alwaysStrict": true,
+		"allowSyntheticDefaultImports": true,
+		"removeComments": true,
+		"noUnusedLocals": false,
+		"noUnusedParameters": false,
+		"declaration": true,
+		"declarationDir": "./decls",
+		"outDir": "./built",
+    "types": [
+			"inferno",
+			"inferno-shared"
+		],
+		"lib": [
+			"es6",
+			"es7",
+			"dom"
+		]
+  },
+	"exclude": [
+		"node_modules"
+	],
+	"include": [
+		"./src/*.tsx",
+		"./src/data.ts",
+		"./src/engine.ts"
+	]
+}

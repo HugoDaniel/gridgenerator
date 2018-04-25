@@ -1,0 +1,76 @@
+.no-stroke {
+	stroke: transparent;
+}
+.no-fill {
+	fill: transparent;
+}
+.near-black-fill {
+	fill: #111111;
+}
+.dark-gray-fill {
+	fill: #333333;
+}
+.light-gray-fill {
+	fill: #EEEEEE;
+}
+.near-white-fill {
+	fill: #F4F4F4;
+}
+.orange-fill {
+	fill: #FF6300
+}
+.light-red-fill {
+	fill: #FF725C;
+}
+.gold-fill {
+	fill: #FFB700;
+}
+.yellow-fill {
+	fill: #FFD700;
+}
+.dark-blue-fill {
+	fill: #00449E;
+}
+.blue-fill {
+	fill: #357EDD;
+}
+.light-blue-fill {
+	fill: #96CCFF;
+}
+
+/* SVG Stroke */
+.near-black-stroke {
+	stroke: #111111;
+}
+.dark-gray-stroke {
+	stroke: #333333;
+}
+.light-gray-stroke {
+	stroke: #EEEEEE;
+}
+.near-white-stroke {
+	stroke: #F4F4F4;
+}
+.impact-zone:hover + .hover-orange-stroke,
+.hover-orange-stroke:hover,
+.orange-stroke {
+	stroke: #FF6300;
+}
+.light-red-stroke {
+	stroke: #FF725C;
+}
+.gold-stroke {
+	stroke: #FFB700;
+}
+.yellow-stroke {
+	stroke: #FFD700;
+}
+.dark-blue-stroke {
+	stroke: #00449E;
+}
+.blue-stroke {
+	stroke: #357EDD;
+}
+.light-blue-stroke {
+	stroke: #96CCFF;
+}

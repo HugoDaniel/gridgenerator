@@ -1,0 +1,44 @@
+{
+  "name": "gridgenerator",
+  "version": "1.0.0",
+  "description": "A design web app for non-designers",
+  "scripts": {
+    "test": "test"
+  },
+  "keywords": [
+    "art",
+    "paint",
+    "web",
+    "app",
+    "webapp",
+    "grid",
+    "vector",
+    "pattern",
+    "ellipse",
+    "line",
+    "creative",
+    "design",
+    "tool",
+    "svg"
+  ],
+  "author": "Hugo Daniel",
+  "license": "GPL-3.0",
+  "dependencies": {
+    "braintree-web-drop-in": "^1.10.0",
+    "goby": "^1.1.2",
+    "inferno": "^5.0.3"
+  },
+  "devDependencies": {
+    "@types/chai": "^4.1.2",
+    "@types/mocha": "^2.2.48",
+    "chai": "^4.1.2",
+    "fuse-box": "^3.2.1",
+    "fuse-test-runner": "^1.0.16",
+    "mocha": "^4.1.0",
+    "ts-transform-classcat": "^0.0.2",
+    "ts-transform-inferno": "^1.8.2",
+    "tslint": "^5.9.1",
+    "typescript": "^2.8.1",
+    "uglify-es": "^3.3.10"
+  }
+}

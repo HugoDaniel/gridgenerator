@@ -1,0 +1,21 @@
+import { CanvasContext } from '../../../../engine';
+import Canvas from '../../base/canvas';
+
+export interface IColorCanvasProps {
+	onCanvasInit?(context: CanvasContext, actions: object, offscreenId: number): void;
+	onCanvasUnmount?(context: CanvasContext, actions: object): void;
+	size: number;
+	className?: string;
+	style?: object;
+}
+export function ColorCanvas(props: IColorCanvasProps) {
+	return <Canvas
+		onContext={props.onCanvasInit}
+		onUnmount={props.onCanvasUnmount}
+		width={props.size}
+		height={props.size}
+		className={`ColorCanvas ${props.className || ''}`}
+		is3D={false}
+		style={props.style}
+	/>;
+}
