@@ -60,6 +60,7 @@ class Main {
 	}
 	private init() {
 		this.runtime = new Runtime(this.state.current);
+		this.runtime.setInitialState(this.projects.current.initialState);
 		const refresher = new Refresher(
 			this.setRuntime.bind(this),
 			this.setState.bind(this),
@@ -121,11 +122,12 @@ class Main {
 		Runtime.newProject(this.runtime, this.state.current).then((rt) => {
 			this.setProjects(this.projects);
 			this.setRuntime(rt);
+			this.runtime.setInitialState(p.initialState);
 			// update scene
 			this.events.sceneEvents.reset();
 			this.setStateAndDOM(this.state);
 			setTimeout(this.events.meanderEvents.stopLoading, 600);
-			// ^ ahah i hope 600ms is enough to load all the textures in the GPU :P
+			// ^ ahah i hope 600ms is enough to load all the textures onto the GPU :P
 		});
 	}
 	public resizeDOM() {

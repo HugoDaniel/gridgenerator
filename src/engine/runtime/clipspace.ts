@@ -41,7 +41,6 @@ export class ClipSpace {
 		const i = this.gridUnitIndex(x, y, width, view);
 		return i;
 	}
-
 	public deleteAt(sqIndex: number, shapeId: number, shapeFillSetId: number, gpuTextures: TextureShape) {
 		this.textures[sqIndex][0] = 0;
 		this.textures[sqIndex][1] = 0;
@@ -64,7 +63,6 @@ export class ClipSpace {
 		const uvInfo = gpuTextures.getUV(shapeId, shapeFillSetId, unitIndex);
 		this.uv[unitIndex][sqIndex] = uvInfo;
 	}
-
 	private newUVArray(): number {
 		return this.uv.push(new Array(length));
 	}

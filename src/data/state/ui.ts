@@ -214,6 +214,7 @@ export class UI {
 	}
 	public newShape(p: Path): UI {
 		this.at = UIState.ShapeEditor;
+		console.log('newShape', p);
 		this.shapeEditor.fromPath(p, []);
 		return this;
 	}

@@ -246,6 +246,7 @@ export class Grid {
 		return this;
 	}
 	public selectShape(sid: ShapeId, shapeFillId: ShapeFillSetId): Grid {
+		console.log('GRID SELECTING SHAPE', sid);
 		this._selectedShape = sid;
 		const rot = this._possibleShapeRotations[this._shapes.get(sid) || 0];
 		this._curElement = new GridElement(sid, shapeFillId, rot);

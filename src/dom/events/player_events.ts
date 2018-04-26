@@ -7,7 +7,6 @@ export class PlayerEvents {
 	public runtime: Runtime;
 	public state: PlayerState;
 	public refresher: Refresher;
-	private initialStateWorker: Worker;
 	private playerActions: Set<string>;
 	// ^ this worker is used to return a fast full copy of the initial state
 	public onClickAction: (e: Event) => void;
@@ -39,7 +38,8 @@ export class PlayerEvents {
 			if (!this.runtime.playerImg) {
 				this.runtime.playerImg = new Image(ctx.width, ctx.height);
 				this.runtime.playerImg.addEventListener('load', this.onPlayerImgLoad, false);
-				this.runtime.playerImg.addEventListener('error', (e) => console.log('GOT ERROR', e));
+				// tslint:disable-next-line:no-console
+				this.runtime.playerImg.addEventListener('error', (e) => console.warn('PLAYER GOT ERROR', e));
 				// this.runtime.playerImg.onload = this.onPlayerImgLoad;
 			}
 			this.runtime.rects.playerRect();
@@ -173,34 +173,12 @@ export class PlayerEvents {
 			this.refresher.refreshNewProject(newProj);
 			this.exit();
 		};
-		const workerCode = new Blob([`
-		let initialState = null;
-		onmessage = function(e) {
-			if (e.data === 'GET') {
-				self.postMessage({ initialState });
-			} else {
-				// set the initial state
-				initialState = e.data.initialState;
-			}
-		}
-		`], {type: 'text/javascript'});
-		this.initialStateWorker = new Worker(window.URL.createObjectURL(workerCode));
 	}
 	public setInitialState(s: State) {
-		this.initialStateWorker.postMessage({ initialState: s.toJSON() });
+		this.runtime.setInitialState(s);
 	}
 	public getInitialState(): Promise<State> {
-		return new Promise((resolve, reject) => {
-			this.initialStateWorker.onmessage = null;
-			this.initialStateWorker.onmessage = (e) => {
-				if (e.data.initialState) {
-					resolve(State.revive(e.data.initialState));
-				} else {
-					reject('Could not find initialState');
-				}
-			};
-			this.initialStateWorker.postMessage('GET');
-		});
+		return this.runtime.getInitialState();
 	}
 	private stopLoop() {
 		if (this.runtime.playerLoop) {

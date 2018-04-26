@@ -110,6 +110,7 @@ export class UIShapeEditor {
 		return result;
 	}
 	public fromPath(p: Path, fills: string[]) {
+		console.log(p.getVisibleShapes());
 		this.editorMode = UIShapeEditorMode.Shape;
 		this.templatePath = p.template.pathString;
 		this.templateBase = p.template.baseString;

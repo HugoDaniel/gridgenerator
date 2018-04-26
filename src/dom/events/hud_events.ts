@@ -1,4 +1,4 @@
-import { FatState, FillId, RGBColor, ShapeId, ToolsMenuId } from '../../data';
+import { FatActionSets, FatState, FillId, RGBColor, ShapeId, ToolsMenuId } from '../../data';
 import { ColorCanvasPainter, Runtime } from '../../engine';
 import { Refresher } from './refresher';
 
@@ -6,6 +6,7 @@ export class HUDEvents {
 	public runtime: Runtime;
 	public state: FatState;
 	public refresher: Refresher;
+	private actionSets: FatActionSets;
 	private openScene: (onDone: () => void) => void;
 	private closeScene: (onDone?: () => void) => void;
 	private redrawScene: (onDone?: () => void) => void;
@@ -26,6 +27,7 @@ export class HUDEvents {
 		this.runtime = rt;
 		this.state = s;
 		this.refresher = refresher;
+		this.actionSets = new FatActionSets();
 		this.openScene = openScene;
 		this.closeScene = closeScene;
 		this.redrawScene = redrawScene;
@@ -171,8 +173,28 @@ export class HUDEvents {
 		};
 		this.onSelectTool = (toolsId: ToolsMenuId, e: Event) => {
 			e.preventDefault();
-			this.state.hudSelectTool(toolsId);
-			this.refresher.refreshAll(this.runtime, this.state);
+			// If Undo action
+			if (toolsId === ToolsMenuId.Undo) {
+				// Move state backwards
+				this.runtime.getInitialState().then( (initialState) => {
+					this.state.prev(initialState, this.actionSets.undoActions, 1);
+					// repaint clipspace and scene
+					Runtime.resetClipSpace(this.runtime, this.state.current, true).then(
+						(updatedRT) => {
+							this.refresher.refreshAll(updatedRT, this.state);
+							// redraw gl scene
+							this.redrawScene();
+						},
+						// tslint:disable-next-line:no-console
+						(error) => console.warn(`Cannot reset runtime/clipspace to perform Undo action: ${error}`));
+				},
+				// tslint:disable-next-line:no-console
+				(error) => console.warn(`Cannot get initial state to perform Undo action: ${error}`));
+			} else {
+				this.state.hudSelectTool(toolsId);
+				this.refresher.refreshAll(this.runtime, this.state);
+			}
+				// If Zoom action, immediately perform a zoom action
 		};
 		this.onClearAll = () => {
 			this.state.hudClearAll();

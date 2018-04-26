@@ -180,7 +180,7 @@ export class FatState {
 	/**
 	 * Restores the state to be after the next mod present in the set
 	 * It is fast because it does not need a initial state
-	 * And it does not do a checkpoitn
+	 * And it does not do a checkpoint
 	 */
 	public fastRestoreFwd(set: Set<string>) {
 		let mods = this._mods;
@@ -214,7 +214,8 @@ export class FatState {
 		this._relativeVersion = Math.min(curVersion + 1, this.maxVersion);
 	}
 
-	public prev(init: State, s: Set<string>) {
+	public prev(init: State, s: Set<string>, adjust: number = 0) {
+		// console.log('MODS AVAILABLE', this._mods.length, this._mods);
 		let mods = this._mods;
 		const version = this.version;
 		if (this._checkpoint) {
@@ -229,7 +230,7 @@ export class FatState {
 		}
 		// console.log('REVERTING TO', prev);
 		// restore to it
-		this.restoreTo(prev, init);
+		this.restoreTo(prev - adjust, init);
 	}
 	public next(init: State, s: Set<string>) {
 		let mods = this._mods;

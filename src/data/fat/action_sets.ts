@@ -22,7 +22,11 @@ export class FatActionSets {
 			'sceneDelete'
 		]);
 		this.undoActions = new Set([
-
+			'hudEnterNewShape',
+			'hudEnterNewFill',
+			'hudClearAll',
+			'scenePaint',
+			'sceneDelete'
 		]);
 	}
 }

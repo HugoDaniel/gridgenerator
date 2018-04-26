@@ -3,6 +3,7 @@ import { CanvasContext, ColorPickerCanvasCtx, WebGLContext } from './render/cont
 import { ClipSpace } from './runtime/clipspace';
 import { Device } from './runtime/device';
 import { DOMRects } from './runtime/dom_rects';
+import { InitialStateWorker } from './runtime/initialStateWorker';
 import { Loading } from './runtime/loading';
 import { Movement } from './runtime/movement';
 import { Texture, TextureShape } from './runtime/texture_shape';
@@ -28,6 +29,7 @@ export class Runtime {
 	public playerCtx: CanvasRenderingContext2D | null;
 	public playerImg: HTMLImageElement | null;
 	public playerLoop: number | null;
+	public initialStateWorker: InitialStateWorker;
 	constructor(state: Readonly<State>) {
 		this.loading = new Loading();
 		this.colorPickerCtx = null;
@@ -37,6 +39,7 @@ export class Runtime {
 		this.device = new Device();
 		this.rects = new DOMRects();
 		this.movement = null;
+		this.initialStateWorker = new InitialStateWorker();
 		this.textures = null;
 		// ^ initialized when webgl context event happens in Runtime.setWebGLCtx
 		this.clipSpace = new ClipSpace(this.device.width, this.device.height, state.viewport.minSize);
@@ -46,6 +49,12 @@ export class Runtime {
 	}
 	get height() {
 		return this.device.height;
+	}
+	public setInitialState(s: Readonly<State>) {
+		this.initialStateWorker.setInitialState(s);
+	}
+	public getInitialState() {
+		return this.initialStateWorker.getInitialState();
 	}
 	public static newProject(rt: Runtime, state: Readonly<State>) {
 		if (rt.webglCtx) {
