@@ -28,3 +28,4 @@ config/
 dist.tar.gz
 dist.*
 assets
+package-lock.json
