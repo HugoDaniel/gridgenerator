@@ -9,6 +9,7 @@ import { UIFillEditor, UIFillEditorReviver } from './ui/fill_editor';
 import { Menu, MenuEntry, MenuReviver } from './ui/menu';
 import { PublishAt, UIPublishEditor } from './ui/publish';
 import { UIShapeEditor, UIShapeEditorMode, UIShapeEditorReviver } from './ui/shape_editor';
+import { ToolsSubmenus, ToolsSubmenusReviver } from './ui/tools_submenus';
 export interface UIReviver {
 	a: string;
 	t: string;
@@ -20,6 +21,7 @@ export interface UIReviver {
 	ext: boolean;
 	f: UIFillEditorReviver;
 	s: UIShapeEditorReviver;
+	tsm: ToolsSubmenusReviver;
 }
 export const enum UIState { Project = 'Project', ShapeEditor = 'ShapeEditor', FillEditor = 'FillEditor', Export = 'Export', Publish = 'Publish', PublishPreview = 'PublishPreview' }
 
@@ -31,6 +33,7 @@ export class UI {
 	public shapesMenu: Menu<ShapeId>;
 	public fillsMenu: Menu<ShapeFillSetId>;
 	public toolsMenu: Menu<ToolsMenuId>;
+	public toolsSubmenus: ToolsSubmenus;
 	public isEditorOnTop: boolean;
 	public isEnteringEditor: boolean;
 	public isExitingEditor: boolean;
@@ -64,6 +67,7 @@ export class UI {
 		this.shapeEditor = new UIShapeEditor();
 		this.exportEditor = new UIExportEditor(null, '', 0);
 		this.publishEditor = new UIPublishEditor();
+		this.toolsSubmenus = new ToolsSubmenus();
 	}
 	public toJSON(): UIReviver {
 		return {
@@ -76,7 +80,8 @@ export class UI {
 			ent: this.isEnteringEditor,
 			ext: this.isExitingEditor,
 			f: this.fillEditor.toJSON(),
-			s: this.shapeEditor.toJSON()
+			s: this.shapeEditor.toJSON(),
+			tsm: this.toolsSubmenus.toJSON()
 		};
 	}
 	public static revive(o: UIReviver) {
@@ -109,6 +114,7 @@ export class UI {
 		result.isExitingEditor = o.ext;
 		result.fillEditor = UIFillEditor.revive(o.f);
 		result.shapeEditor = UIShapeEditor.revive(o.s);
+		result.toolsSubmenus = ToolsSubmenus.revive(o.tsm);
 		return result;
 	}
 	get currentTool(): ToolsMenuId {

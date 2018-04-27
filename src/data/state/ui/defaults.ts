@@ -53,7 +53,7 @@ export const enum ToolsMenuId {
 export const DefaultToolsMenu: Map<ToolsMenuId, MenuEntry> = new Map([
 	[ ToolsMenuId.Undo,    new MenuEntry('Undo', tools_undo_icon) ],
 // 	[ ToolsMenuId.Artists, new MenuEntry('Artists', tools_artists_icon) ],
-// 	[ ToolsMenuId.Zoom,    new MenuEntry('Zoom', tools_zoom_icon) ],
+  [ ToolsMenuId.Zoom,    new MenuEntry('Zoom', tools_zoom_icon) ],
 	[ ToolsMenuId.Move,    new MenuEntry('Move', tools_move_icon) ],
 	[ ToolsMenuId.Delete,  new MenuEntry('Delete', tools_delete_icon) ],
 	[ ToolsMenuId.Paint,   new MenuEntry('Paint', tools_paint_icon) ]

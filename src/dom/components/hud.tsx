@@ -5,6 +5,7 @@ import { DeleteMenu, IDeleteMenuProps } from './hud/delete_menu';
 import { FeaturesMenu, IFeaturesMenuProps } from './hud/features_menu';
 import { FillsMenu, IFillsMenuProps } from './hud/fills_menu';
 import { IShapesMenuProps, ShapesMenu } from './hud/shapes_menu';
+import { ISubmenuPaintProps, SubmenuPaint } from './hud/submenu_paint';
 import { IToolsMenuProps, ToolsMenu } from './hud/tools_menu';
 import { IZoomMenuProps, ZoomMenu } from './hud/zoom_menu';
 export interface IHUDProps {
@@ -38,7 +39,14 @@ export interface IHUDProps {
 	onSceneTouchCancel: (e: TouchEvent) => void;
 	gotoLogin: () => void;
 }
-
+function currentToolSubmenu(props: IHUDProps) {
+	switch (props.ui.toolsMenu.selected) {
+		case ToolsMenuId.Paint:
+		return <SubmenuPaint />;
+		default:
+			return <div className="NoSubmenu" />;
+	}
+}
 function currentToolMenu(id: ToolsMenuId, fillsProps: IFillsMenuProps, deleteProps: IDeleteMenuProps, zoomProps: IZoomMenuProps) {
 	switch (id) {
 		case ToolsMenuId.Paint:
@@ -134,4 +142,5 @@ export class HUD extends Component<IHUDProps, any> {
 	}
 }
 /*
+{currentToolSubmenu(props)}
 */
