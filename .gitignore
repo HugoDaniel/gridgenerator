@@ -30,3 +30,4 @@ dist.*
 assets
 package-lock.json
 deploy.sh
+prod.sh
