@@ -20,7 +20,7 @@ Sparky.task('config', _ => {
     output: 'dist/$name.js',
     experimentalFeatures: true,
     cache: !isProduction,
-    sourceMaps: !isProduction,
+    sourceMaps: !isProduction || isStaging,
     transformers: {
       before: [ transformInferno({ classwrap: true }) ],
     },
@@ -41,7 +41,7 @@ Sparky.task('config', _ => {
       QuantumPlugin({
         bakeApiIntoBundle: 'app',
         treeshake: true,
-        uglify: true 
+        uglify: false
       }),
     ],
   });
