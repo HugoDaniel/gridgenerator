@@ -1,7 +1,7 @@
 import { MeanderAbout } from './meander/about';
 import { Collective } from './meander/collective';
 import { MeanderLogin } from './meander/login';
-import { MeanderProfile } from './meander/profile';
+import { MeanderProfile, ProfileBillingId } from './meander/profile';
 import { MeanderRecover } from './meander/recover';
 import { MeanderVerify } from './meander/verify';
 import { MeanderView } from './meander/view';
@@ -48,6 +48,9 @@ export class Meander {
 		this.resetMeanders(c);
 		this._course = c;
 		this.updateTitle();
+	}
+	get isPaidAccount() {
+		return this.profile.billing !== ProfileBillingId.Free;
 	}
 	get title() {
 		return this._title;

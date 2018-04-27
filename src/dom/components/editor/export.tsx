@@ -1,4 +1,4 @@
-import { linkEvent } from 'inferno';
+import { LinkedEvent, linkEvent } from 'inferno';
 // @ts-ignore
 import size_icon from '../../../assets/icons/export-size.svg';
 import { ExportEditorFormat, UIExportEditor } from '../../../data';
@@ -8,8 +8,11 @@ export interface IExportProps {
 	className?: string;
 	events: ExportEvents;
 	data: UIExportEditor;
-	height: number;
+	height?: number;
+	isPaidAccount: boolean;
 	onExit: () => void;
+	onPricing: (e: Event) => void;
+	onPublish: LinkedEvent<string, Event> | null;
 }
 export const Export = (props: IExportProps) =>
 <div
@@ -17,6 +20,22 @@ export const Export = (props: IExportProps) =>
 	className={`ExportEditor ${props.className || ''}
 	flex justify-center items-center editormw editor-shadow sans-serif h-100`}
 >
+	{ !props.isPaidAccount
+	?
+	<section className="w-100 flex flex-column items-center justify-center">
+		<h2 className="">
+			Export is only available for paid accounts
+		</h2>
+		<div className="flex flex-column items-center justify-center gray">
+			<p className="black">You can either</p>
+			<nav>
+				<a className="link" href="/pricing" onClick={props.onPricing}>Upgrade your account</a>
+				<p>or</p>
+				<p className="black"><a className="link" href="/publish" onClick={props.onPublish}>Publish your work </a> as <a className="link" href="https://en.wikipedia.org/wiki/Free_content" target="_blank">Free Content </a> and then export it.</p>
+			</nav>
+		</div>
+	</section>
+	:
 	<section className="w-100 flex flex-column items-center justify-center">
 		<h2 className="">
 			Format
@@ -55,6 +74,6 @@ export const Export = (props: IExportProps) =>
 				onAction={props.events.onExport}
 			/>
 		</div>
-
 	</section>
+	}
 </div>;

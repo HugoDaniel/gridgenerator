@@ -5,7 +5,7 @@ import { Movement } from '../../engine/runtime/movement';
 import { IEventHandler } from '../common';
 import { Refresher } from './refresher';
 
-export class PublishEvents {
+export class PublishEvents implements IEventHandler {
 	public runtime: Runtime;
 	public state: FatState;
 	public refresher: Refresher;
@@ -19,6 +19,14 @@ export class PublishEvents {
 	public onLicenseCCND: (e: Event) => void;
 	public enterLicense: (e: Event) => void;
 	public exitLicense: () => void;
+	// event handler:
+	public onMouseDown: (e: MouseEvent) => void;
+	public onMouseMove: (e: MouseEvent) => void;
+	public onMouseUp: (e: MouseEvent) => void;
+	public onTouchStart: (e: TouchEvent) => void;
+	public onTouchMove: (e: TouchEvent) => void;
+	public onTouchEnd: (e: TouchEvent) => void;
+	public onTouchCancel: (e: TouchEvent) => void;
 	constructor(rt: Runtime, s: FatState, net: Net, refresher: Refresher, proj: ProjectMap) {
 		this.runtime = rt;
 		this.state = s;
@@ -139,6 +147,27 @@ export class PublishEvents {
 		this.exitLicense = () => {
 			this.state.publishExitLicense();
 			this.refresher.refreshStateAndDOM(this.state);
+		};
+		this.onMouseDown = (e) => {
+			return;
+		};
+		this.onMouseUp = (e) => {
+			return;
+		};
+		this.onMouseMove = (e) => {
+			return;
+		};
+		this.onTouchStart = (e) => {
+			return;
+		};
+		this.onTouchMove = (e) => {
+			return;
+		};
+		this.onTouchEnd = (e) => {
+			return;
+		};
+		this.onTouchCancel = (e) => {
+			return;
 		};
 	}
 	private getFormValues(): { title: string | null, desc: string | null } {

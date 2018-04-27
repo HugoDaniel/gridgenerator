@@ -1,4 +1,5 @@
-import { Template, UIExportEditor, UIFillEditor, UIPublishEditor, UIShapeEditor, UIShapeEditorMode, UIState, Project } from '../../data';
+import { linkEvent } from 'inferno';
+import { FeaturesMenuId, Project, Template, UIExportEditor, UIFillEditor, UIPublishEditor, UIShapeEditor, UIShapeEditorMode, UIState } from '../../data';
 import { Runtime, RuntimeMediaSize } from '../../engine';
 import { ColorPickerEvents } from '../events/color_picker_events';
 import { ExportEvents } from '../events/export_events';
@@ -18,7 +19,7 @@ export interface IEditorProps {
 	className?: string;
 	actionLabel: string;
 	actionDisabled: boolean;
-	onAction: (() => void) | null;
+	onAction: ((e?: Event) => void) | null;
 	fillEditor: UIFillEditor;
 	colorPickerEvents: ColorPickerEvents;
 	shapeEditor: UIShapeEditor;
@@ -36,11 +37,14 @@ export interface IEditorProps {
 	isEditorOnTop: boolean;
 	isExitingEditor: boolean;
 	isEnteringEditor: boolean;
+	isPaidAccount: boolean;
 	height: number;
 	onPublishSuccess: () => void;
 	onExitFeatures: () => void;
 	onExitShape: () => void;
 	onExitFill: () => void;
+	onFeaturesMenu: (feature: string, e: Event) => void;
+	onPricing: () => void;
 }
 function selectEditor(props: IEditorProps, colorPickerProps: IColorPickerProps, shapeEditorProps: IShapeEditorProps, templateProps: ITemplatePickerProps, exportProps: IExportProps, publishProps: IPublishProps) {
 	switch (props.at) {
@@ -114,13 +118,17 @@ export const Editor = (props: IEditorProps) => {
 		className: '',
 		data: props.exportEditor,
 		events: props.exportEditorEvents,
-		onExit: props.onExitFeatures
+		onExit: props.onExitFeatures,
+		isPaidAccount: props.isPaidAccount,
+		onPublish: linkEvent(FeaturesMenuId.Publish, props.onFeaturesMenu),
+		onPricing: props.onPricing
 	};
 	const publishProps: IPublishProps = {
 		className: '',
 		data: props.publishEditor,
 		events: props.publishEditorEvents,
-		onExit: props.onExitFeatures
+		onExit: props.onExitFeatures,
+		isPaidAccount: props.isPaidAccount
 	};
 	const isFillEditor = props.at === UIState.FillEditor;
 	return (

@@ -158,6 +158,7 @@ export class Events {
 		this.publishEvents.projects = p;
 	}
 	public updateRuntime(rt: Runtime): void {
+		this.runtime = rt;
 		this.colorPickerEvents.runtime = rt;
 		this.shapeEditorEvents.runtime = rt;
 		this.recorderEvents.runtime = rt;
@@ -172,6 +173,7 @@ export class Events {
 		this.meanderEvents.runtime = rt;
 	}
 	public updateState(state: FatState): void {
+		this.state = state;
 		this.colorPickerEvents.state = state;
 		this.shapeEditorEvents.state = state;
 		this.recorderEvents.state = state;
@@ -215,8 +217,11 @@ export class Events {
 			} else if (this.state.current.ui.at === UIState.ShapeEditor) {
 				// console.log('HANDLING WITH SHAPE EDITOR');
 				return this.shapeEditorEvents;
+			} else if (this.state.current.ui.at === UIState.Publish) {
+				return this.publishEvents;
+			} else if (this.state.current.ui.at === UIState.Export) {
+				return this.exportEvents;
 			}
-		// console.log('HANDLING WITH SCENE');
 		return this.sceneEvents;
 	}
 }

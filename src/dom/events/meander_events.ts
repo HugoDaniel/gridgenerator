@@ -59,6 +59,7 @@ export class MeanderEvents {
 	public gotoRoot: () => void;
 	public gotoLogin: () => void;
 	public gotoProjects: () => void;
+	public gotoPricing: (e?: Event) => void;
 	public gotoView: (id: number) => void;
 	public verifyEmail: (searchLink: string) => void;
 	public loginEmail: (e?: Event) => void;
@@ -450,6 +451,16 @@ export class MeanderEvents {
 			} else if (optionId === ProfileMenuId.Billing) {
 				this.onEnterBilling();
 			}
+		};
+		this.gotoPricing = (e?: Event) => {
+			if (e) {
+				e.preventDefault();
+			}
+			const hist: IMeanderHistory = {
+				course: MeanderCourse.Pricing
+			};
+			window.history.pushState(hist, 'Grid Generator', '/pricing');
+			this.fromRoute();
 		};
 		this.gotoProjects = () => {
 			const hist: IMeanderHistory = {
@@ -884,8 +895,10 @@ export class MeanderEvents {
 		return MeanderCourse.Login;
 	}
 	private updateDOM() {
-		this.refresher.refreshMeanderOnly(this.meander);
-		this.refresher.refreshDOMOnly();
+		if (this) {
+			this.refresher.refreshMeanderOnly(this.meander);
+			this.refresher.refreshDOMOnly();
+		}
 	}
 	private unblurProject() {
 		const appElem = this.containerNode;

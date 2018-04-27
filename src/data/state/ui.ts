@@ -114,7 +114,11 @@ export class UI {
 		result.isExitingEditor = o.ext;
 		result.fillEditor = UIFillEditor.revive(o.f);
 		result.shapeEditor = UIShapeEditor.revive(o.s);
-		result.toolsSubmenus = ToolsSubmenus.revive(o.tsm);
+		if (o.tsm) {
+			result.toolsSubmenus = ToolsSubmenus.revive(o.tsm);
+		} else {
+			result.toolsSubmenus = new ToolsSubmenus();
+		}
 		return result;
 	}
 	get currentTool(): ToolsMenuId {
@@ -180,7 +184,8 @@ export class UI {
 		switch (feature) {
 			case FeaturesMenuId.Export: return UIState.Export;
 			case FeaturesMenuId.Publish: return UIState.Publish;
-			default: return UIState.Project;
+			default:
+			return UIState.Project;
 		}
 	}
 	private initExport(dim: IGridDimension, shapeOutline: string, shapeRes: number) {
@@ -220,7 +225,6 @@ export class UI {
 	}
 	public newShape(p: Path): UI {
 		this.at = UIState.ShapeEditor;
-		console.log('newShape', p);
 		this.shapeEditor.fromPath(p, []);
 		return this;
 	}

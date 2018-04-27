@@ -179,6 +179,8 @@ export class GridGeneratorDOM extends Component<IGridGeneratorDOMProps, any> {
 			Math.min(runtime.width, state.ui.shapeEditor.templateRes));
 		let editorProps: IEditorProps = {
 			className: `absolute bottom-0 w-100 h-100 ${editorZ}`,
+			isPaidAccount: this.props.meander.isPaidAccount,
+			onFeaturesMenu: events.hudEvents.onFeaturesMenu,
 			project,
 			fillEditor: state.ui.fillEditor,
 			shapeEditor: state.ui.shapeEditor,
@@ -203,7 +205,13 @@ export class GridGeneratorDOM extends Component<IGridGeneratorDOMProps, any> {
 			onPublishSuccess: () => events.hudEvents.onExitFeatures(events.meanderEvents.gotoProjects),
 			onExitFeatures: events.hudEvents.onExitFeatures,
 			onExitShape: events.hudEvents.onDiscardShape,
-			onExitFill: events.hudEvents.onDiscardFill
+			onExitFill: events.hudEvents.onDiscardFill,
+			onPricing: (e) => {
+				if (e) {
+					e.preventDefault();
+				}
+				events.hudEvents.onExitFeatures(events.meanderEvents.gotoPricing);
+			}
 		};
 		editorProps = configEditorBtn(this.props, editorProps);
 		const sceneProps: ISceneProps = {

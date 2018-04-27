@@ -20,16 +20,17 @@ export interface IPublishProps {
 	className?: string;
 	events: PublishEvents;
 	data: UIPublishEditor;
-	height: number;
+	height?: number;
 	onExit: () => void;
+	isPaidAccount: boolean;
 }
-function renderLicenseBadge(cx: string, logo: string, title: string, onAction: (e: Event) => void, isSelected: boolean, desc?: string) {
+function renderLicenseBadge(isAvailable: boolean, cx: string, logo: string, title: string, onAction: (e: Event) => void, isSelected: boolean, desc?: string) {
 	return (
 		<a
-			className={`link pointer dim flex items-center lh-copy pa3 ph0-l bb b--black-10 ${cx}`}
-			onClick={onAction}
+			className={`link pointer ${isAvailable ? 'dim' : 'o-20'} flex items-center lh-copy pa3 ph0-l bb b--black-10 ${cx}`}
+			onClick={isAvailable ? onAction : null}
 		>
-      <img className={`w2 h2 w3-ns h3-ns br-100 transition-o ${isSelected ? 'o-100' : 'o-20'}`} src={logo} />
+			<img className={`w2 h2 w3-ns h3-ns br-100 transition-o ${isSelected ? 'o-100' : 'o-40'}`} src={logo} />
       <div className="pl3 flex-auto">
         <span className="f6 db black-70">{title}</span>
         <span className="f7 db black-70">{desc ? desc : ''}</span>
@@ -47,12 +48,12 @@ function renderLicense(props: IPublishProps) {
 			{ props.data.title ? `License for ${props.data.title}` : `Change license` }
 		</h2>
 		<ul class="list pl0 mt0 measure center">
-			{renderLicenseBadge('', cc0, 'Public Domain', props.events.onLicenseCC0, license.has('CC0'))}
-			{renderLicenseBadge('', cc, 'Creative Commons', props.events.onLicenseCCBY, license.has('BY'))}
-			{renderLicenseBadge('ml4', ccby, 'Attribution', props.events.onLicenseCCBY, license.has('BY'), 'Others must give appropriate credit, provide a link to the license, and indicate if changes were made.')}
-			{renderLicenseBadge('ml4', ccsa, 'Share Alike', props.events.onLicenseCCSA, license.has('SA'), ' If someone remixes, transforms, or builds upon this material, they must distribute their contributions under the same license as the original.')}
-			{renderLicenseBadge('ml4', ccnc, 'Non Commercial', props.events.onLicenseCCNC, license.has('NC'), 'Others may not use the material for commercial purposes.')}
-			{renderLicenseBadge('ml4', ccnd, 'No Derivatives', props.events.onLicenseCCND, license.has('ND'), 'If others remix, transform, or build upon this material, they may not distribute the modified material.')}
+			{renderLicenseBadge(true, '', cc0, 'Public Domain', props.events.onLicenseCC0, license.has('CC0'))}
+			{renderLicenseBadge(true, '', cc, 'Creative Commons', props.events.onLicenseCCBY, license.has('BY'))}
+			{renderLicenseBadge(true, 'ml4', ccby, 'Attribution', props.events.onLicenseCCBY, license.has('BY'), 'Others must give appropriate credit, provide a link to the license, and indicate if changes were made.')}
+			{renderLicenseBadge(true, 'ml4', ccsa, 'Share Alike', props.events.onLicenseCCSA, license.has('SA'), ' If someone remixes, transforms, or builds upon this material, they must distribute their contributions under the same license as the original.')}
+			{renderLicenseBadge(props.isPaidAccount, 'ml4', ccnc, 'Non Commercial', props.events.onLicenseCCNC, license.has('NC'), 'Others may not use the material for commercial purposes.')}
+			{renderLicenseBadge(props.isPaidAccount, 'ml4', ccnd, 'No Derivatives', props.events.onLicenseCCND, license.has('ND'), 'If others remix, transform, or build upon this material, they may not distribute the modified material.')}
 		</ul>
 		<div className="mt4 w5 flex items-center justify-center">
 		<Button

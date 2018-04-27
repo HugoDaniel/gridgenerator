@@ -1,4 +1,4 @@
-import { Component, linkEvent } from 'inferno';
+import { Component, InfernoChildren, linkEvent } from 'inferno';
 import { Vector2D, VectorSet } from '../../../../data';
 import { UIShapeEditor } from '../../../../data/state/ui/shape_editor';
 import { IShapePointAttribs, ShapePoint } from './point';
@@ -14,7 +14,7 @@ export interface IShapeGridProps {
 const ShapeGridColor0 = '#333333';
 const ShapeGridColor2 = '#EEEEEE';
 
-function renderPts(pts: Vector2D[], clickablePts: VectorSet, selectedPts: VectorSet, action: ((e: IShapePointAttribs) => void) | null): any[] {
+function renderPts(pts: Vector2D[], clickablePts: VectorSet, selectedPts: VectorSet, action: ((e: IShapePointAttribs) => void) | null): InfernoChildren {
 	const result: any = [];
 	for (let i = 0; i < pts.length; i++) {
 		result.push(
