@@ -58,7 +58,7 @@ export const FiguresMenu = (props: IFiguresMenuProps) => {
 	} else {
 		return (
 			<nav
-			className={`${cx} flex justify-start h2 items-center bg-near-white overflow-y-auto flex-wrap mb0-ns mt2-ns ml0-ns h3-ns items-end-ns justify-center-ns`}
+			className={`${cx} flex justify-center h2 items-center bg-near-white overflow-y-auto flex-wrap mb0-ns mt2-ns ml0-ns h3-ns items-end-ns justify-center-ns w-100`}
 			style={props.isNotSmall && props.size ? { width: `${props.size}px`} : {}}
 			>
 			{renderMenu(props)}

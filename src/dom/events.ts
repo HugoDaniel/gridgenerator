@@ -53,7 +53,7 @@ export class Events {
 				|| this.state.current.ui.at === UIState.Publish || this.state.current.ui.at === UIState.Export) {
 				return;
 			}
-			e.preventDefault();
+			// e.preventDefault();
 			if (!this.runtime.device.isUsingMouse) {
 				this.runtime.device.isUsingMouse = true;
 				this.refresher.refreshRuntimeOnly(this.runtime);
@@ -66,7 +66,7 @@ export class Events {
 				|| this.state.current.ui.at === UIState.Publish || this.state.current.ui.at === UIState.Export) {
 				return;
 			}
-			e.preventDefault();
+			// e.preventDefault();
 			this.getEventHandler().onMouseMove(e);
 		};
 		this.onMouseUp = (e) => {
@@ -74,7 +74,7 @@ export class Events {
 				|| this.state.current.ui.at === UIState.Publish || this.state.current.ui.at === UIState.Export) {
 				return;
 			}
-			e.preventDefault();
+			// e.preventDefault();
 			this.getEventHandler().onMouseUp(e);
 		};
 		this.onTouchStart = (e: TouchEvent) => {
@@ -95,7 +95,7 @@ export class Events {
 				|| this.state.current.ui.at === UIState.Publish || this.state.current.ui.at === UIState.Export) {
 				return;
 			}
-			e.preventDefault();
+			// e.preventDefault();
 			this.getEventHandler().onTouchMove(e);
 		};
 		this.onTouchEnd = (e: TouchEvent) => {
@@ -103,7 +103,7 @@ export class Events {
 				|| this.state.current.ui.at === UIState.Publish || this.state.current.ui.at === UIState.Export) {
 				return;
 			}
-			e.preventDefault();
+			// e.preventDefault();
 			this.getEventHandler().onTouchEnd(e);
 		};
 		this.onTouchCancel = (e: TouchEvent) => {
@@ -111,7 +111,7 @@ export class Events {
 				|| this.state.current.ui.at === UIState.Publish || this.state.current.ui.at === UIState.Export) {
 				return;
 			}
-			e.preventDefault();
+			// e.preventDefault();
 			this.getEventHandler().onTouchCancel(e);
 		};
 		this.onWebGLInit = async (ctx) => {

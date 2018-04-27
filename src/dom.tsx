@@ -234,7 +234,8 @@ export class GridGeneratorDOM extends Component<IGridGeneratorDOMProps, any> {
 			projects: this.props.projects.list(),
 			currentProject: this.props.projects.current,
 			playerState: this.props.player,
-			playerEvents: this.props.events.playerEvents
+			playerEvents: this.props.events.playerEvents,
+			isGobyAvailable: this.props.runtime.isGobyAvailable
 		};
 		const cursor = this.selectCursor(this.props, inProj);
 		/*

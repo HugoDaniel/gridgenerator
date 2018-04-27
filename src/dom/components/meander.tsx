@@ -16,6 +16,7 @@ export interface IMeanderProps {
 	className?: string;
 	projects: StoredProject[];
 	currentProject: Project;
+	isGobyAvailable: boolean;
 	meander: Meander;
 	menu: Menu<MainMenuId>;
 	isMenuHidden: boolean;
@@ -67,6 +68,7 @@ function selectCourse(props: IMeanderProps) {
 					onProjectView={props.events.onProjectView}
 					onProjectNew={props.events.onProjectNew}
 					title={props.meander.profile.name || 'Profile'}
+					isGobyAvailable={props.isGobyAvailble}
 				/>
 			);
 		}

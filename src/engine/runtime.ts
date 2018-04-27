@@ -30,6 +30,7 @@ export class Runtime {
 	public playerImg: HTMLImageElement | null;
 	public playerLoop: number | null;
 	public initialStateWorker: InitialStateWorker;
+	public isGobyAvailable: boolean;
 	constructor(state: Readonly<State>) {
 		this.loading = new Loading();
 		this.colorPickerCtx = null;
@@ -38,6 +39,7 @@ export class Runtime {
 		this.rnd = new RandomArray();
 		this.device = new Device();
 		this.rects = new DOMRects();
+		this.isGobyAvailable = false;
 		this.movement = null;
 		this.initialStateWorker = new InitialStateWorker();
 		this.textures = null;

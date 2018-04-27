@@ -92,6 +92,7 @@ export const ColorPicker = (props: IColorPickerProps) => {
 		}
 	};
 	// <Button {...btnProps} />
+	// <SystemPickerBtn {...systemPickerProps} />
 	return (
 		<div
 			className={`ColorPicker ${className || ''} flex justify-center items-start editormw editor-shadow h-100-ns pr5-ns`}
@@ -99,7 +100,6 @@ export const ColorPicker = (props: IColorPickerProps) => {
 		>
 			<div className={'flex flex-column justify-center items-center'}>
 				<ColorCanvas {...colorCanvasProps} />
-				<SystemPickerBtn {...systemPickerProps} />
 				<ModeMenu {...modeMenuProps} />
 				<div
 					className="center mt4-ns"

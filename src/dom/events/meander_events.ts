@@ -92,10 +92,17 @@ export class MeanderEvents {
 		this.appContainer = document.getElementById('app');
 		if (goby) {
 			this.goby = goby.init();
+			if (this.goby) {
+				this.runtime.isGobyAvailable = true;
+			} else {
+				this.runtime.isGobyAvailable = false;
+			}
 		} else {
 			// tslint:disable-next-line:no-console
 			console.warn('GOBY not found', goby);
+			this.runtime.isGobyAvailable = false;
 		}
+		this.refresher.refreshRuntimeOnly(this.runtime);
 		this.startLoading = () => {
 			this.loading.startFullscreen().then((l) => this.loading = l);
 		};

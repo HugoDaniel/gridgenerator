@@ -1,8 +1,9 @@
-import { FatState, FillId, RGBColor, Vector2D } from '../../data';
+import { FatState, FillId, RGBColor, UIShapeEditorMode, Vector2D } from '../../data';
 import { Movement, Runtime } from '../../engine';
 import { getEventX, getEventY, IEventHandler } from '../common';
 import { IShapePointAttribs } from '../components/editor/shape/point';
 import { Refresher } from './refresher';
+import { ExportEditorMode } from '../../data/state/ui/export';
 
 export class ShapeEditorEvents implements IEventHandler {
 	public runtime: Runtime;
@@ -46,15 +47,25 @@ export class ShapeEditorEvents implements IEventHandler {
 			// this.onMovement(getEventX(e), getEventY(e));
 		};
 		this.onTouchStart = (e) => {
-			const x = getEventX(e);
-			const y = getEventY(e);
-			// check if zoom
-			if (!this.runtime.movement) {
-				this.runtime.movement = new Movement(x, y, true);
+			console.log('AHNDLING START TOUCH', e);
+			const curMode = this.state.current.ui.shapeEditor.editorMode;
+			if (curMode === UIShapeEditorMode.Shape) {
+				const touch = e.touches.item(0);
+				if (touch) {
+					const x = touch.clientX;
+					const y = touch.clientY;
+					// check if zoom
+					if (!this.runtime.movement) {
+						this.runtime.movement = new Movement(x, y, true);
+					} else {
+						this.runtime.movement.start(x, y);
+					}
+					this.refresher.refreshRuntimeOnly(this.runtime);
+				}
 			} else {
-				this.runtime.movement.start(x, y);
+				this.runtime.movement = null;
+				this.refresher.refreshRuntimeOnly(this.runtime);
 			}
-			// this.onStartMovement(getEventX(e), getEventY(e));
 		};
 		this.onTouchMove = (e) => {
 			// this.onMovement(getEventX(e), getEventY(e));
@@ -68,8 +79,8 @@ export class ShapeEditorEvents implements IEventHandler {
 				const x = this.runtime.movement.startX;
 				const y = this.runtime.movement.startY;
 				// check if the touch was outside the shape editor rectangle
-				if (!this.runtime.rects.isInside(x, y, rect)) {
-					return;
+				if (!this.runtime.rects.isInside(x, y, rect) && e.touches.length <= 1) {
+					return true;
 				}
 				// adjust to template resolution
 				const xparam = (x - rect.left) / rect.width;
@@ -87,8 +98,11 @@ export class ShapeEditorEvents implements IEventHandler {
 					});
 				}
 				this.runtime.movement.end();
+				this.refresher.refreshRuntimeOnly(this.runtime);
+				return true;
+			} else {
+				return true;
 			}
-
 		};
 		this.onTouchCancel = (e) => {
 			// this.onStopMovement();

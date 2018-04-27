@@ -21,6 +21,7 @@ export interface IProfileMeProps {
 	badges: string[];
 	onUpdate: (e: Event) => void;
 	onSuperHero: (e: Event) => void;
+	isGobyAvailable: boolean;
 }
 const inputcx = 'input-reset f6 ba b--black-20 br1 pa2 mb2 ml2 db w5';
 const labelcx = 'f6 b pa2 db tl';
@@ -58,7 +59,10 @@ export const ProfileMe = (props: IProfileMeProps) =>
 				Others know me as:
 			</label>
 			<Input className={inputcx} type="text" placeholder={props.profileName} name="profile-name" id="profile-name" required disabled={props.isLoading} value={props.profileForm ? props.profileForm.name : props.profileName} />
-			<a className="link f7 gray pa0 pl2 pb3 tl pointer underline ma0" onClick={props.isLoading ? null : props.onSuperHero}>Generate a super-hero name</a>
+			{ props.isGobyAvailable ?
+				<a className="link f7 gray pa0 pl2 pb3 tl pointer underline ma0" onClick={props.isLoading ? null : props.onSuperHero}>Generate a super-hero name</a>
+			: <div />
+			}
 			<label className={labelcx}>
 				Bio:
 			</label>

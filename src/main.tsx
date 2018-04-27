@@ -83,9 +83,13 @@ class Main {
 	}
 	public setRuntime(rt: Runtime): void {
 		this.runtime = rt;
-		this.events.updateRuntime(this.runtime);
-		this.debug.runtime = rt;
-		this.debug.events = this.events;
+		if (this.events) {
+			this.events.updateRuntime(this.runtime);
+		}
+		if (this.debug) {
+			 this.debug.runtime = rt;
+			 this.debug.events = this.events;
+		}
 	}
 	public setState(s: FatState): void {
 		this.state = s;

@@ -35,6 +35,7 @@ export interface IProfileSectionProps extends IMeanderWrapperProps {
 	badges: string[];
 	currentProject: Project;
 	isLoading: boolean;
+	isGobyAvailable: boolean;
 }
 export function ProfileSection(props: IProfileSectionProps) {
 	const mainCx = '';
@@ -61,6 +62,7 @@ export function ProfileSection(props: IProfileSectionProps) {
 						onSuperHero={props.onProfileHeroName}
 						hasError={props.profileHasError}
 						loadingMsg={props.profileLoadingMsg}
+						isGobyAvailable={props.isGobyAvailable}
 					/>
 					: props.menu.selected === ProfileMenuId.Projects ?
 					<ProfileProjects

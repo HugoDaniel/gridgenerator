@@ -86,7 +86,7 @@ export const ShapeEditor = (props: IShapeEditorProps) => {
 			style={props.style || {}}
 			className={`ShapeEditor ${props.className || ''}
 			flex flex-column justify-start items-center h-100-ns editormw editor-shadow pr4-ns`}
-			>
+		>
 			<FiguresMenu {...figuresMenuProps} />
 			<ShapeGrid className="mt2" {...props} />
 			<div
