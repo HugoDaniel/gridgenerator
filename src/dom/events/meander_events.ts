@@ -61,10 +61,10 @@ export class MeanderEvents {
 	public gotoProjects: () => void;
 	public gotoView: (id: number) => void;
 	public verifyEmail: (searchLink: string) => void;
-	public loginEmail: (id: string, e: Event) => void;
+	public loginEmail: (e?: Event) => void;
 	public recover: (e: Event) => void;
-	public resetPassword: (id: string, e: Event) => void;
-	public registerEmail: (id: string, e: Event) => void;
+	public resetPassword: (e: Event) => void;
+	public registerEmail: (e?: Event) => void;
 	public clearToken: () => void;
 	public sessionExpired: () => void;
 	private goby: any;
@@ -92,7 +92,8 @@ export class MeanderEvents {
 		if (goby) {
 			this.goby = goby.init();
 		} else {
-			console.log('GOBY not found', goby);
+			// tslint:disable-next-line:no-console
+			console.warn('GOBY not found', goby);
 		}
 		this.startLoading = () => {
 			this.loading.startFullscreen().then((l) => this.loading = l);
@@ -599,7 +600,6 @@ export class MeanderEvents {
 										}
 									}
 								}, (paymentNetError) => {
-									console.log('GOT NET ERROR', paymentNetError);
 									this.meander.profile.loadingStatus = ProfileStatus.Nothing;
 									this.meander.profile.billingError = paymentNetError;
 									this.updateDOM();
@@ -616,7 +616,7 @@ export class MeanderEvents {
 			this.net.login.verifyEmail(searchLink).then((res) => {
 				if (res.result && res.token) {
 					this.meander.verify.state = VerifyingState.Success;
-					this.meander.verify.user = 'Test User';
+					this.meander.verify.user = 'Welcome to Grid Generator!';
 					this.initFromToken(res.token);
 				} else if (res.reason === 'User already verified') {
 					this.meander.verify.state = VerifyingState.AlreadyVerified;
@@ -632,8 +632,10 @@ export class MeanderEvents {
 				this.updateDOM();
 			});
 		};
-		this.loginEmail = (id: string, e: Event) => {
-			e.preventDefault();
+		this.loginEmail = (e?: Event) => {
+			if (e) {
+				e.preventDefault();
+			}
 			this.getLoginData().then(
 				(loginData) => {
 					this.meander.login.isLoading = true;
@@ -682,21 +684,21 @@ export class MeanderEvents {
 						this.updateDOM();
 						return;
 					}, (error) => {
-						console.log('Login ERROR', error);
 						this.meander.login.isLoading = false;
 						this.meander.login.error = error;
 						this.updateDOM();
 					});
 				}, (inputError) => {
-					console.log('ERROR: login-u NOT FOUND', inputError);
 					this.meander.login.isLoading = false;
 					this.meander.login.error = inputError;
 					this.updateDOM();
 				}
 			);
 		};
-		this.resetPassword = (id: string, e: Event) => {
-			e.preventDefault();
+		this.resetPassword = (e: Event) => {
+			if (e) {
+				e.preventDefault();
+			}
 			this.getInputValue('recover-p').then(
 				(newPass) => {
 					this.meander.recover.state = RecoverState.Recovering;
@@ -723,9 +725,10 @@ export class MeanderEvents {
 				}
 			);
 		};
-		this.registerEmail = (id: string, e: Event) => {
-			console.log('REGISTERING EMAIL', id, e);
-			// e.preventDefault();
+		this.registerEmail = (e?: Event) => {
+			if (e) {
+				e.preventDefault();
+			}
 			this.getLoginData().then(
 				(loginData) => {
 					this.meander.login.isLoading = true;

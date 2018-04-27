@@ -1,4 +1,5 @@
 import { MeanderAbout } from './meander/about';
+import { Collective } from './meander/collective';
 import { MeanderLogin } from './meander/login';
 import { MeanderProfile } from './meander/profile';
 import { MeanderRecover } from './meander/recover';
@@ -14,6 +15,7 @@ export class Meander {
 	public verify: MeanderVerify;
 	public about: MeanderAbout;
 	public view: MeanderView;
+	public collective: Collective;
 	constructor() {
 		this.about = new MeanderAbout();
 		this.login = new MeanderLogin();
@@ -21,6 +23,7 @@ export class Meander {
 		this.verify = new MeanderVerify();
 		this.recover = new MeanderRecover();
 		this.view = new MeanderView();
+		this.collective = new Collective();
 		this._course = MeanderCourse.None;
 		this.updateTitle();
 	}

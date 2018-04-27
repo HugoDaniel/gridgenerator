@@ -4,6 +4,7 @@ import { IMainMenuProps, MainMenu } from '../components/hud/main_menu';
 import { MeanderEvents } from '../events/meander_events';
 import { PlayerEvents } from '../events/player_events';
 import { MeanderAbout } from './meander/about';
+import { MeanderCollective } from './meander/collective';
 import { MeanderLogin } from './meander/login';
 import { MeanderPricing } from './meander/pricing';
 import { ProfileSection } from './meander/profile';
@@ -72,6 +73,8 @@ function selectCourse(props: IMeanderProps) {
 		break;
 		case MeanderCourse.Pricing:
 		return ( <MeanderPricing {...defaultProps} onBuyAction={props.events.onEnterBilling} /> );
+		case MeanderCourse.Collective:
+		return ( <MeanderCollective {...defaultProps} collective={props.meander.collective} /> );
 		case MeanderCourse.About:
 		return (
 			<MeanderAbout {...defaultProps}
