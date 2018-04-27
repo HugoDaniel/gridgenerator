@@ -2,7 +2,7 @@ import { Button } from '../base/buttons';
 import { IMeanderWrapperProps, MeanderWrapper } from './wrapper';
 
 export interface IMeanderRecoverProps extends IMeanderWrapperProps {
-	onRecover: (id: string, e: Event) => void;
+	onRecover: (e: Event) => void;
 	isLoading: boolean;
 	errorMsg: string | null;
 }
@@ -13,11 +13,11 @@ export function MeanderRecover(props: IMeanderRecoverProps) {
 		<MeanderWrapper className="MeanderRecover" title="Forgot ?" onExit={props.onExit}>
 			<div className="w-100 h-100 flex items-center justify-center">
 				<div className="w5 h5 pa3 ba br2 b--gray bg-white">
-					<form novalidate={true} id="recover-form" className="w-100">
+					<form noValidate={true} id="recover-form" className="w-100">
 						<fieldset className="bn pa0">
-						<label for="recover-p">
+						<label htmlFor="recover-p">
 						</label>
-						<input className={inputcx} minlength="8" type="password" placeholder="new password" name="recover-p" id="recover-p" required disabled={props.isLoading} />
+						<input className={inputcx} minLength={8} type="password" placeholder="new password" name="recover-p" id="recover-p" required disabled={props.isLoading} />
 						<div className="flex justify-between">
 							<Button disabled={props.isLoading} label="recover" onAction={props.onRecover} />
 						</div>

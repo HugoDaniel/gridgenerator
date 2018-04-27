@@ -34,6 +34,7 @@ export class Net {
 				}, reject));
 		};
 		this.postData = (url, data, token) => {
+			console.log('POST DATA', url, data, token);
 			return this.httpData(url, data, 'POST', token);
 		};
 		this.getData = (url, token) => {
@@ -62,10 +63,11 @@ export class Net {
 	}
 	private httpData(url: string, data: any, method: string, token?: Token) {
 		const headers = new Headers();
-		headers.append('content-type', 'application/json');
+		headers.append('Content-type', 'application/json');
 		if (token) {
 			headers.append('Authorization', `Bearer ${token.jwt}`);
 		}
+		console.log('PERFORMING HTTP', url, data);
 		// Default options are marked with *
 		return fetch(url, {
 			body: method !== 'GET' ? JSON.stringify(data) : undefined, // must match 'Content-Type' header

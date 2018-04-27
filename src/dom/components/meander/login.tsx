@@ -4,19 +4,19 @@ import { Button } from '../base/buttons';
 import { IMeanderWrapperProps, MeanderWrapper } from './wrapper';
 
 export interface IMeanderLoginProps extends IMeanderWrapperProps {
-	onLogin: () => void;
-	onRegister: (id?: string, e?: Event) => void;
+	onLogin: (e?: Event) => void;
+	onRegister: (e?: Event) => void;
 	isLoading: boolean;
-	errorMsg?: string;
-	successMsg?: string;
-	successTitle: string;
-	successEmail?: string;
+	errorMsg: string | null;
+	successMsg: string | null;
+	successTitle: string | null;
+	successEmail: string | null;
 	showRecoverPw: boolean;
 	onRecover: (e: Event) => void;
 }
 export function MeanderLogin(props: IMeanderLoginProps) {
 	const inputcx = 'input-reset f6 ba b--black-20 br1 pa2 mb2 db w-100';
-	const scx = 'f7 h1 lh-copy db';
+	const scx = 'f7 mv2 lh-copy db';
 	return (
 		<MeanderWrapper className="MeanderLogin" title="Login" onExit={props.onExit}>
 			<div className="w-100 h-100 flex items-center justify-center"  onClick={(e: Event) => e.stopImmediatePropagation()}>
@@ -28,21 +28,21 @@ export function MeanderLogin(props: IMeanderLoginProps) {
 						</div>
 					:
 					<div className="w5 h5 pa3 ba br2 b--gray bg-white">
-						<form novalidate={true} id="login-form" className="w-100">
+						<form noValidate={true} id="login-form" className="w-100">
 							<fieldset className="bn pa0">
 							<input className={inputcx} type="email" placeholder="e-mail" name="login-u" id="login-u" required disabled={props.isLoading} />
-							<input className={inputcx} minlength="8" type="password" placeholder="password" name="login-p" id="login-p" required disabled={props.isLoading} />
+							<input className={inputcx} minLength={8} type="password" placeholder="password" name="login-p" id="login-p" required disabled={props.isLoading} />
 							<div className="flex justify-between">
 								<Button disabled={props.isLoading} bg="dark-blue" label="login" onAction={props.onLogin}/>
 								<Button disabled={props.isLoading} label="register" onAction={props.onRegister} />
 							</div>
 							{ props.isLoading
-							? <small id="login-loading" className={`gray mb2 ${scx}`}>Loading</small>
+							? <small id="login-loading" className={`gray ${scx}`}>Loading</small>
 							: props.errorMsg
-							? <small id="password-desc" className={`red mb2 ${scx}`}>
+							? <small id="password-desc" className={`red ${scx}`}>
 									{ props.errorMsg ? props.errorMsg : ' ' }
 								</small>
-							: <small id="password-desc" className={`green mb2 ${scx}`}>
+							: <small id="password-desc" className={`green ${scx}`}>
 									{ props.successMsg ? props.successMsg : ' ' }
 								</small>
 							}

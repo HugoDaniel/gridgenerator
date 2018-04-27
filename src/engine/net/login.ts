@@ -33,7 +33,9 @@ export class NetLogin {
 			c: p
 		};
 		return this.postData(this.hostname + '/auth/email/create', d)
-		.then((response) => response.json());
+		.then((response) => response.json(),
+		// tslint:disable-next-line:no-console
+		(error) => console.log('Network Error: ', error));
 	}
 	public async emailLogin(uname: string, p: string) {
 		const d: EmailAuth = {
