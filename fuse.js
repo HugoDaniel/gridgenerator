@@ -41,7 +41,7 @@ Sparky.task('config', _ => {
       QuantumPlugin({
         bakeApiIntoBundle: 'app',
         treeshake: true,
-        uglify: false
+        uglify: false 
       }),
     ],
   });
