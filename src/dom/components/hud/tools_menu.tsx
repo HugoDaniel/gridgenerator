@@ -2,6 +2,7 @@ import { linkEvent } from 'inferno';
 import { Menu, ToolsMenuId } from '../../../data';
 import { justClick } from '../../common';
 import { Button } from '../base/buttons';
+import { ISubmenuGridProps, SubmenuGrid } from './submenu_grid';
 import { ISubmenuZoomProps, SubmenuZoom } from './submenu_zoom';
 
 const noPropagation = justClick;
@@ -15,6 +16,11 @@ export interface IToolsMenuProps {
 	onAction: (id: ToolsMenuId, e: Event) => void;
 	onZoomIn: (e: Event) => void;
 	onZoomOut: (e: Event) => void;
+	onToggleGrid: (e: Event) => void;
+	onTogglePattern: (e: Event) => void;
+	onExitGrid: (e: Event) => void;
+	isGridVisible: boolean;
+	isPatternOn: boolean;
 }
 
 export const ToolsMenu = (props: IToolsMenuProps) =>
@@ -27,6 +33,17 @@ export const ToolsMenu = (props: IToolsMenuProps) =>
 						key={`zoom-submenu`}
 						onZoomIn={props.onZoomIn}
 						onZoomOut={props.onZoomOut}
+					/>
+				);
+			} else if (id === ToolsMenuId.Grid && isSelected) {
+				return (
+					<SubmenuGrid
+						key={`grid-submenu`}
+						onView={props.onToggleGrid}
+						onPattern={props.onTogglePattern}
+						onExit={props.onExitGrid}
+						isGridVisible={props.isGridVisible}
+						isPatternOn={props.isPatternOn}
 					/>
 				);
 			} else {

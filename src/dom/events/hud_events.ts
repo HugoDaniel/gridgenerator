@@ -23,6 +23,9 @@ export class HUDEvents {
 	public onSelectFill: (fillId: ShapeId) => void;
 	public onSelectTool: (toolId: ToolsMenuId, e: Event) => void;
 	public onClearAll: () => void;
+	public onGridToggle: (e: Event) => void;
+	public onGridPattern: (e: Event) => void;
+	public onGridExit: (e: Event) => void;
 	constructor(rt: Runtime, s: FatState, refresher: Refresher, openScene: (onDone: () => void) => void, closeScene: (onDone: () => void) => void, redrawScene: (onDone: () => void) => void) {
 		this.runtime = rt;
 		this.state = s;
@@ -204,6 +207,21 @@ export class HUDEvents {
 				// redraw gl scene
 				this.redrawScene();
 			});
+		};
+		this.onGridToggle = (e) => {
+			e.preventDefault();
+			this.state.hudToggleGrid();
+			this.refresher.refreshStateAndDOM(this.state);
+		};
+		this.onGridPattern = (e) => {
+			e.preventDefault();
+			this.state.hudTogglePattern();
+			this.refresher.refreshStateAndDOM(this.state);
+		};
+		this.onGridExit = (e) => {
+			e.preventDefault();
+			this.state.hudSelectTool(ToolsMenuId.Paint);
+			this.refresher.refreshStateAndDOM(this.state);
 		};
  	}
 }

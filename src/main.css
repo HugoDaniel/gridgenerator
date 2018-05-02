@@ -122,6 +122,9 @@ button:focus {
 .bottom-4 {
 	bottom: 3rem;
 }
+.grayscale {
+	filter: grayscale(90%);
+}
 .hover-color {
 	filter: grayscale(80%);
 	transition: filter .15s ease-in;

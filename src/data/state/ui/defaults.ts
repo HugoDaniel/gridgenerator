@@ -1,6 +1,4 @@
 // @ts-ignore
-import paint_pattern_icon from '../../../assets/icons/paint-pattern.svg';
-// @ts-ignore
 import picker_hering_icon from '../../../assets/icons/picker-hering.svg';
 // @ts-ignore
 import picker_lightness_icon from '../../../assets/icons/picker-lightness.svg';
@@ -10,6 +8,8 @@ import picker_saturation_icon from '../../../assets/icons/picker-saturation.svg'
 import tools_artists_icon from '../../../assets/icons/tools-artists.svg';
 // @ts-ignore
 import tools_delete_icon from '../../../assets/icons/tools-eraser.svg';
+// @ts-ignore
+import tools_grid_icon from '../../../assets/icons/tools-grid.svg';
 // @ts-ignore
 import tools_move_icon from '../../../assets/icons/tools-move.svg';
 // @ts-ignore
@@ -51,14 +51,14 @@ export const enum ToolsMenuId {
 	Move,
 	Delete,
 	Paint,
-	Pattern
+	Grid
 }
 export const DefaultToolsMenu: Map<ToolsMenuId, MenuEntry> = new Map([
 	[ ToolsMenuId.Undo,    new MenuEntry('Undo', tools_undo_icon) ],
 // 	[ ToolsMenuId.Artists, new MenuEntry('Artists', tools_artists_icon) ],
   [ ToolsMenuId.Zoom,    new MenuEntry('Zoom', tools_zoom_icon) ],
 	[ ToolsMenuId.Move,    new MenuEntry('Move', tools_move_icon) ],
-	[ ToolsMenuId.Pattern, new MenuEntry('Pattern', paint_pattern_icon) ],
+	[ ToolsMenuId.Grid,    new MenuEntry('Grid', tools_grid_icon) ],
 	[ ToolsMenuId.Delete,  new MenuEntry('Delete', tools_delete_icon) ],
 	[ ToolsMenuId.Paint,   new MenuEntry('Paint', tools_paint_icon) ]
 ]);

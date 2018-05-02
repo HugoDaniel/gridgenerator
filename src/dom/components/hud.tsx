@@ -30,6 +30,9 @@ export interface IHUDProps {
 	onSaveFill: () => void;
 	onSaveShape: () => void;
 	onFillDone: () => void;
+	onToggleGrid: (e: Event) => void;
+	onTogglePattern: (e: Event) => void;
+	onExitGrid: (e: Event) => void;
 	onSceneMouseMove: (e: MouseEvent) => void;
 	onSceneMouseDown: (e: MouseEvent) => void;
 	onSceneMouseUp: (e: MouseEvent) => void;
@@ -72,6 +75,11 @@ export class HUD extends Component<IHUDProps, any> {
 			onAction: props.onSelectTool,
 			onZoomIn: props.onSceneZoomIn,
 			onZoomOut: props.onSceneZoomOut,
+			onToggleGrid: props.onToggleGrid,
+			onTogglePattern: props.onTogglePattern,
+			onExitGrid: props.onExitGrid,
+			isGridVisible: props.ui.toolsSubmenus.isGridVisible,
+			isPatternOn: props.ui.toolsSubmenus.isGridPatternOn,
 			// isVisible: !(props.ui.at !== UIState.Project && props.isShort)
 			isVisible: props.ui.at === UIState.Project
 			// isSingleAction: props.ui.isEnteringEditor || props.ui.at !== UIState.Project,

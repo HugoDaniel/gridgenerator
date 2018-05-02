@@ -1,24 +1,24 @@
 export interface ToolsSubmenusReviver {
 	p: boolean;
-	pv: boolean;
+	v: boolean;
 }
 export class ToolsSubmenus {
-	public isPatternToggled: boolean;
-	public isPatternVisible: boolean;
+	public isGridPatternOn: boolean;
+	public isGridVisible: boolean;
 	constructor() {
-		this.isPatternToggled = false;
-		this.isPatternVisible = false;
+		this.isGridPatternOn = false;
+		this.isGridVisible = true;
 	}
 	public toJSON(): ToolsSubmenusReviver {
 		return {
-			p: this.isPatternToggled,
-			pv: this.isPatternVisible
+			p: this.isGridPatternOn,
+			v: this.isGridVisible
 		};
 	}
 	public static revive(o: ToolsSubmenusReviver) {
 		const result = new ToolsSubmenus();
-		result.isPatternToggled = o.p;
-		result.isPatternVisible = o.pv;
+		result.isGridPatternOn = o.p;
+		result.isGridVisible = o.v;
 		return result;
 	}
 }
