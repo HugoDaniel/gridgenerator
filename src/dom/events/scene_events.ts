@@ -10,7 +10,7 @@ export class SceneEvents implements IEventHandler {
 	private startMove: Vector2D | null;
 	private startZoom: Vector2D | null;
 	private pointZoom: Vector2D | null;
-	private centerZoom: Vector2D | null;
+	private viewportZoom: Vector2D | null;
 	private t1Start: Touch | null;
 	private t2Start: Touch | null;
 	private scene: ScenePainter | null;
@@ -29,6 +29,8 @@ export class SceneEvents implements IEventHandler {
 	public onTouchMove: (e: TouchEvent) => void;
 	public onTouchEnd: (e: TouchEvent) => void;
 	public onTouchCancel: (e: TouchEvent) => void;
+	public onZoomIn: (e: Event) => void;
+	public onZoomOut: (e: Event) => void;
 	public openCols: (onDone: () => void) => void;
 	public closeCols: (onDone: () => void) => void;
 	public onRedraw: (onDone: () => void) => void;
@@ -219,6 +221,14 @@ export class SceneEvents implements IEventHandler {
 				// console.log('NOTHING');
 			}
 		};
+		this.onZoomIn = (e) => {
+			e.preventDefault();
+			this.clickZoom(1);
+		};
+		this.onZoomOut = (e) => {
+			e.preventDefault();
+			this.clickZoom(-1);
+		};
 		this.onCursorMove = (absX: number, absY: number) => {
 			if (!this.scene) {
 				return;
@@ -313,6 +323,30 @@ export class SceneEvents implements IEventHandler {
 			this.redraw();
 		});
 	}
+	private clickZoom(mult: number) {
+		// zoom into the middle of the screen
+		const midX = this.runtime.device.width / 2;
+		const midY = this.runtime.device.height / 2;
+		// initialize the zoom metadata
+		const v = this._state.current.viewport;
+		// the zoom ammount in pixels
+		let inc = 8;
+		if (v.unitSize > 64) {
+			inc = inc * (v.unitSize / 64);
+		}
+		let zoomAmmount = (inc - (64 - v.unitSize));
+		if (mult < 0) {
+			// zooming out
+			zoomAmmount -= inc * 2;
+		}
+		// console.log('FROM ', v.unitSize, 'AMMOUNT,', zoomAmmount);
+		if (!this.startZoom) {
+			this.startZoom = new Vector2D(midX, midY);
+			this.pointZoom = new Vector2D(v.x + midX, v.y + midY);
+			this.viewportZoom = new Vector2D(v.x, v.y);
+		}
+		this.zoom(midX - zoomAmmount, midY - zoomAmmount);
+	}
 	private zoom(x: number, y: number, mult: number = 1) {
 		const v = this._state.current.viewport;
 		const l = this._state.current.currentLayer;
@@ -321,19 +355,24 @@ export class SceneEvents implements IEventHandler {
 		if (!this.startZoom) {
 			this.startZoom = new Vector2D(x, y);
 			this.pointZoom = new Vector2D(v.x + x, v.y + y);
-			this.centerZoom = new Vector2D(v.x, v.y);
+			this.viewportZoom = new Vector2D(v.x, v.y);
 			return;
 		}
-		if (!this.centerZoom || !this.startZoom || !this.pointZoom) {
+		if (!this.viewportZoom || !this.startZoom || !this.pointZoom) {
 			return;
 		}
 		const ammount = mult * (y - this.startZoom.y);
+		if (ammount > 0 && (v.unitSize - ammount) < v.minSize) {
+			return;
+		} else if (ammount < 0 && (v.unitSize + Math.abs(ammount)) > v.maxSize) {
+			return;
+		}
 		const px = this.pointZoom.x;
 		const py = this.pointZoom.y;
 		const cx = v.x + w / 2;
 		const cy = v.y + h / 2;
-		const ovx = this.centerZoom.x;
-		const ovy = this.centerZoom.y;
+		const ovx = this.viewportZoom.x;
+		const ovy = this.viewportZoom.y;
 		this._state.sceneZoom(px, py, -ammount, cx, cy, ovx, ovy);
 		this.refresher.refreshStateOnly(this._state);
 		this.startZoom = new Vector2D(x, y);

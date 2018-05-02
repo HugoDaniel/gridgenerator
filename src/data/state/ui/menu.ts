@@ -34,29 +34,34 @@ export class MenuEntry {
 export interface MenuReviver {
 	e: Array<[any, MenuEntryReviver]>;
 	s: any;
+	t: any[];
 }
 export class Menu<T> {
 	public readonly entries: Map<T, MenuEntry>;
 	public selected: T;
+	public toggled: T[];
 	constructor(entries: Map<T, MenuEntry>) {
 		this.entries = entries;
+		this.toggled = [];
 	}
 	public toJSON(): MenuReviver {
 		return {
 			e: [...this.entries.entries()].map((e) => [e[0], e[1].toJSON()] as [any, MenuEntryReviver]),
-			s: this.selected
+			s: this.selected,
+			t: this.toggled
 		};
 	}
 	public static revive(o: MenuReviver) {
 		const result = new Menu(new Map(o.e.map((e) =>
 			[e[0], MenuEntry.revive(e[1])] as [any, MenuEntry])));
 		result.selected = o.s;
+		result.toggled = o.t;
 		return result;
 	}
 	public iter() {
 		return this.entries.entries();
 	}
-	public map(f: (key: T, entry: MenuEntry, isSelected: boolean) => any, filter?: (key: T, entry: MenuEntry, isSelected: boolean) => boolean): any[] {
+	public map(f: (key: T, entry: MenuEntry, isSelected: boolean, isToggled?: boolean) => any, filter?: (key: T, entry: MenuEntry, isSelected: boolean) => boolean): any[] {
 		const result: any[] = [];
 		if (filter) {
 			for (const [k, e] of this.entries.entries()) {
@@ -66,7 +71,7 @@ export class Menu<T> {
 			}
 		} else {
 			for (const [k, e] of this.entries.entries()) {
-				result.push(f(k, e, k === this.selected));
+				result.push(f(k, e, k === this.selected, this.toggled.indexOf(k) > -1));
 			}
 		}
 		return result;

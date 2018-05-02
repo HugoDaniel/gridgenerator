@@ -5,7 +5,7 @@ import { DeleteMenu, IDeleteMenuProps } from './hud/delete_menu';
 import { FeaturesMenu, IFeaturesMenuProps } from './hud/features_menu';
 import { FillsMenu, IFillsMenuProps } from './hud/fills_menu';
 import { IShapesMenuProps, ShapesMenu } from './hud/shapes_menu';
-import { ISubmenuPaintProps, SubmenuPaint } from './hud/submenu_paint';
+import { ISubmenuZoomProps, SubmenuZoom } from './hud/submenu_zoom';
 import { IToolsMenuProps, ToolsMenu } from './hud/tools_menu';
 import { IZoomMenuProps, ZoomMenu } from './hud/zoom_menu';
 export interface IHUDProps {
@@ -37,12 +37,14 @@ export interface IHUDProps {
 	onSceneTouchStart: (e: TouchEvent) => void;
 	onSceneTouchEnd: (e: TouchEvent) => void;
 	onSceneTouchCancel: (e: TouchEvent) => void;
+	onSceneZoomIn: (e: Event) => void;
+	onSceneZoomOut: (e: Event) => void;
 	gotoLogin: () => void;
 }
 function currentToolSubmenu(props: IHUDProps) {
 	switch (props.ui.toolsMenu.selected) {
-		case ToolsMenuId.Paint:
-		return <SubmenuPaint />;
+		case ToolsMenuId.Zoom:
+		return <SubmenuZoom onZoomIn={props.onSceneZoomIn} onZoomOut={props.onSceneZoomOut} />;
 		default:
 			return <div className="NoSubmenu" />;
 	}
@@ -68,6 +70,8 @@ export class HUD extends Component<IHUDProps, any> {
 			// ^ show move and zoom icons ?
 			menu: props.ui.toolsMenu,
 			onAction: props.onSelectTool,
+			onZoomIn: props.onSceneZoomIn,
+			onZoomOut: props.onSceneZoomOut,
 			// isVisible: !(props.ui.at !== UIState.Project && props.isShort)
 			isVisible: props.ui.at === UIState.Project
 			// isSingleAction: props.ui.isEnteringEditor || props.ui.at !== UIState.Project,
@@ -124,6 +128,7 @@ export class HUD extends Component<IHUDProps, any> {
 			gotoLogin: props.gotoLogin
 		};
 		// console.log(props.ui.at, props.ui.isEnteringEditor, props.ui.isExitingEditor);
+		// {currentToolSubmenu(props)}
 		return (
 			<section
 				className={`HUD ${props.className || ''}`}
@@ -141,6 +146,3 @@ export class HUD extends Component<IHUDProps, any> {
 		);
 	}
 }
-/*
-{currentToolSubmenu(props)}
-*/

@@ -164,6 +164,8 @@ export class GridGeneratorDOM extends Component<IGridGeneratorDOMProps, any> {
 			onSceneTouchStart: events.sceneEvents.onTouchStart,
 			onSceneTouchEnd: events.sceneEvents.onTouchEnd,
 			onSceneTouchCancel: events.sceneEvents.onTouchCancel,
+			onSceneZoomIn: events.sceneEvents.onZoomIn,
+			onSceneZoomOut: events.sceneEvents.onZoomOut,
 			btnVisible: false
 		};
 		if (canCloseEditor) {

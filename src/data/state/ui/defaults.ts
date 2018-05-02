@@ -1,4 +1,6 @@
 // @ts-ignore
+import paint_pattern_icon from '../../../assets/icons/paint-pattern.svg';
+// @ts-ignore
 import picker_hering_icon from '../../../assets/icons/picker-hering.svg';
 // @ts-ignore
 import picker_lightness_icon from '../../../assets/icons/picker-lightness.svg';
@@ -48,13 +50,15 @@ export const enum ToolsMenuId {
 	Zoom,
 	Move,
 	Delete,
-	Paint
+	Paint,
+	Pattern
 }
 export const DefaultToolsMenu: Map<ToolsMenuId, MenuEntry> = new Map([
 	[ ToolsMenuId.Undo,    new MenuEntry('Undo', tools_undo_icon) ],
 // 	[ ToolsMenuId.Artists, new MenuEntry('Artists', tools_artists_icon) ],
-//  [ ToolsMenuId.Zoom,    new MenuEntry('Zoom', tools_zoom_icon) ],
+  [ ToolsMenuId.Zoom,    new MenuEntry('Zoom', tools_zoom_icon) ],
 	[ ToolsMenuId.Move,    new MenuEntry('Move', tools_move_icon) ],
+	[ ToolsMenuId.Pattern, new MenuEntry('Pattern', paint_pattern_icon) ],
 	[ ToolsMenuId.Delete,  new MenuEntry('Delete', tools_delete_icon) ],
 	[ ToolsMenuId.Paint,   new MenuEntry('Paint', tools_paint_icon) ]
 ]);
