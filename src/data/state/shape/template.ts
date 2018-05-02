@@ -6,6 +6,14 @@ import { Vector2D } from '../math/vector';
 
 export const enum ElementType { Line = 0, HLine, VLine, Ellipse }
 
+function elemTypeFromNum(n: number): ElementType {
+	switch (n) {
+		case 1: return ElementType.HLine;
+		case 2: return ElementType.VLine;
+		case 3: return ElementType.Ellipse;
+		default: return ElementType.Line;
+	}
+}
 export interface TemplateElementReviver {
 	args: number[];
 	type: number;
@@ -24,7 +32,7 @@ export class TemplateElement {
 		};
 	}
 	public static revive(obj: { args: number[], type: ElementType}) {
-		return new TemplateElement(obj.args, obj.type);
+		return new TemplateElement(obj.args, elemTypeFromNum(obj.type));
 	}
 	public isEqual(e: TemplateElement): boolean {
 		if (this.type === e.type) {

@@ -25,7 +25,7 @@ class PathAction {
 		};
 	}
 	public static revive(o: PathActionReviver) {
-		return new PathAction(o.at, o.a, o.e ? TemplateElement.revive(o.e) : null);
+		return new PathAction(o.at, o.a, o.e !== null ? TemplateElement.revive(o.e) : null);
 	}
 	public isEqual(a: PathAction): boolean {
 		if (this.actionType === a.actionType) {
@@ -299,12 +299,19 @@ class PathShapeInstance {
 	public static revive(o: PathShapeInstanceReviver, t: Template) {
 		const ce = o.ce ? Vector2D.revive(o.ce) : null;
 		const oe = o.oe ? Vector2D.revive(o.oe) : null;
-		return new PathShapeInstance(
-			t,
-			o.a.map(PathAction.revive),
-			VectorSet.revive(o.r, () => null),
-			ce, oe, o.pts.map(Vector2D.revive)
-		);
+		const actions = o.a.map(PathAction.revive).filter( (a) => a.element !== null);
+		try {
+			const result = new PathShapeInstance(
+				t,
+				actions,
+				VectorSet.revive(o.r, () => null),
+				ce, oe, o.pts.map(Vector2D.revive)
+			);
+			return result;
+		} catch (e) {
+			// tslint:disable-next-line:no-console
+			console.error('Error trying to revive PathShapeInstace with Object:', o, 'AND TEMPLATE', t);
+		}
 	}
 	public static empty(t: Template): PathShapeInstance {
 		return new PathShapeInstance(t, [], t.points, null, null, []);
