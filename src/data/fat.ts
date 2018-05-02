@@ -496,12 +496,6 @@ export class FatState {
 		this.mod('hudClearAll', null);
 		return this;
 	}
-	public hudToggleGrid(): FatState {
-		this._state.ui.toolsSubmenus.isGridVisible =
-			!this._state.ui.toolsSubmenus.isGridVisible;
-		this.mod('hudToggleGrid', null);
-		return this;
-	}
 	public hudTogglePattern(): FatState {
 		this._state.ui.toolsSubmenus.isGridPatternOn =
 		!this._state.ui.toolsSubmenus.isGridPatternOn;
@@ -628,6 +622,12 @@ export class FatState {
 	public sceneStopZoom(): FatState {
 		this._state.viewport.setLastSize();
 		this.mod('sceneZoom', null);
+		return this;
+	}
+	public sceneToggleGrid(): FatState {
+		this._state.ui.toolsSubmenus.isGridVisible =
+			!this._state.ui.toolsSubmenus.isGridVisible;
+		this.mod('sceneToggleGrid', null);
 		return this;
 	}
 	//#endregion

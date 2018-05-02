@@ -34,6 +34,7 @@ export class SceneEvents implements IEventHandler {
 	public openCols: (onDone: () => void) => void;
 	public closeCols: (onDone: () => void) => void;
 	public onRedraw: (onDone: () => void) => void;
+	public onGridToggle: (e: Event) => void;
 	public reset: () => void;
 	private _sqrsPerLine: number;
 	constructor(rt: Runtime, s: FatState, refresher: Refresher) {
@@ -250,6 +251,14 @@ export class SceneEvents implements IEventHandler {
 			} else {
 				this.paintersInit();
 			}
+		};
+		this.onGridToggle = (e) => {
+			e.preventDefault();
+			this.state.sceneToggleGrid();
+			if (this.scene) {
+				this.scene.gridLines(this.state.current.ui.toolsSubmenus.isGridVisible);
+			}
+			this.refresher.refreshStateAndDOM(this.state);
 		};
 	}
 	get state() {

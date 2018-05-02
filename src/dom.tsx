@@ -158,7 +158,7 @@ export class GridGeneratorDOM extends Component<IGridGeneratorDOMProps, any> {
 			onSaveFill: events.hudEvents.onSaveFill,
 			onSaveShape: events.hudEvents.onSaveShape,
 			onFillDone: events.shapeEditorEvents.onFigureFillDone,
-			onToggleGrid: events.hudEvents.onGridToggle,
+			onToggleGrid: events.sceneEvents.onGridToggle,
 			onTogglePattern: events.hudEvents.onGridPattern,
 			onExitGrid: events.hudEvents.onGridExit,
 			onSceneMouseMove: events.sceneEvents.onMouseMove,

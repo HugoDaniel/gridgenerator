@@ -43,6 +43,10 @@ export class ScenePainter {
 	public cursorMove(sqId: number) {
 		this.fullscreenShader.cursorMove(sqId);
 	}
+	public gridLines(visible: boolean) {
+		this.fullscreenShader.layers.sqgrid.isGridVisible = visible;
+		this.fullscreenShader.draw(0);
+	}
 	public redraw(textures: TextureShape, clipspace: ClipSpace, state: Readonly<State>) {
 		this.fullscreenShader.layers.sqgrid.textureIdsChanged = true;
 		this.fullscreenShader.layers.sqgrid.shapeTextures = textures;

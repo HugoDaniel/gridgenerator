@@ -11,6 +11,7 @@ export class SqGridShader {
 	public context: WebGLContext;
 	public width: number;
 	public height: number;
+	public isGridVisible: boolean;
 	public ratio: number;
 	public cursorAt: number; // square index of cursor position
 	public cursorColor: number[]; // gl rgb color array
@@ -44,6 +45,7 @@ export class SqGridShader {
 		this.gl = canvas.ctx;
 		this.offset = new Array(2) as [number, number];
 		this.emptyUV = new Float32Array([0, 0, 0, -1]); // unit is -1: no texture
+		this.isGridVisible = true;
 		this.draw = () => {
 			// draw() gets initialized in init()
 			throw new Error('Trying to draw() before initialization in SqGridShader');
@@ -170,7 +172,9 @@ export class SqGridShader {
 			this.shader.loc.set1Uniform(this.gl, 'iRenderingLines', 1);
 			this.shader.loc.set1Uniform(this.gl, 'iCursorAt', this.cursorAt);
 			this.gl.bindBuffer(this.gl.ELEMENT_ARRAY_BUFFER, this.buffers[5].buffer);
-			this.gl.drawElements(this.gl.LINES, this.buffers[5].numItems, this.gl.UNSIGNED_SHORT, 0);
+			if (this.isGridVisible) {
+				this.gl.drawElements(this.gl.LINES, this.buffers[5].numItems, this.gl.UNSIGNED_SHORT, 0);
+			}
 			if (this.cursorAt >= 0) {
 				this.shader.loc.set1Uniform(this.gl, 'iRenderingLines', 0);
 				this.shader.loc.set1Uniform(this.gl, 'iRenderingCursor', 1);

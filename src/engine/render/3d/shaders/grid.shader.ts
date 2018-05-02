@@ -43,8 +43,8 @@ export class GridShader {
 			this.gl.activeTexture(this.gl.TEXTURE0);
 			this.gl.bindTexture(this.gl.TEXTURE_2D, this.texture);
 			this.gl.uniform1i(this.shader.loc.uSampler, 0);
-			this.gl.bindBuffer(this.gl.ELEMENT_ARRAY_BUFFER, this.buffers[1].buffer);
-			this.gl.drawElements(this.gl.TRIANGLES, this.buffers[1].numItems, this.gl.UNSIGNED_SHORT, 0);
+			// this.gl.bindBuffer(this.gl.ELEMENT_ARRAY_BUFFER, this.buffers[1].buffer);
+			// this.gl.drawElements(this.gl.TRIANGLES, this.buffers[1].numItems, this.gl.UNSIGNED_SHORT, 0);
 		};
 	}
 	public static vShader = `
