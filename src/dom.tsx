@@ -22,6 +22,7 @@ import cursor_move from './assets/icons/cursor-move.svg';
 import cursor_paint from './assets/icons/cursor-pencil.svg';
 // @ts-ignore
 import cursor_zoom from './assets/icons/cursor-zoom.svg';
+import { IPatternProps, Pattern } from './dom/components/pattern';
 
 export interface IGridGeneratorDOMProps {
 	state: Readonly<State>;
@@ -222,8 +223,8 @@ export class GridGeneratorDOM extends Component<IGridGeneratorDOMProps, any> {
 		const sceneProps: ISceneProps = {
 			className: `absolute top-0 left-0 ${sceneZ}`,
 			onContext: events.onWebGLInit,
-			height: window.innerHeight,
-			width: window.innerWidth
+			height: runtime.height,
+			width: runtime.width
 		};
 		const inProj = this.props.meander.course === MeanderCourse.Project
 		            || this.props.meander.course === MeanderCourse.None;
@@ -255,9 +256,15 @@ export class GridGeneratorDOM extends Component<IGridGeneratorDOMProps, any> {
 			this.props.meander.profile.created &&
 			this.props.runtime.token);
 		// console.log('IS LOGGED IN', isLoggedIn);
+		const patternProps: IPatternProps = {
+			className: 'absolute absolute top-0 left-0 z-1',
+			w: runtime.width,
+			h: runtime.height
+		};
 		return (
 		<div style={{ cursor } }>
 			<Scene {...sceneProps} />
+			<Pattern {...patternProps} />
 			<HUD {...hudProps} />
 			<Editor {...editorProps} />
 			<MeanderFull {...meanderProps} />
