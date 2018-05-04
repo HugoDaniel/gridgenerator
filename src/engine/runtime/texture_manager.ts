@@ -11,7 +11,7 @@ export class Texture {
 	/** The WebGL texture unit number for this texture atlas */
 	private readonly unitIndex: number;
 	/** Each texture in the atlas has an id, which is a pair of two numbers: (shapeId, shapeFillSetId) */
-	public readonly ids: number[][];
+	public readonly ids: Array<[number, number]>;
 	/** Each texture id is then mapped on the atlas through an index (2D coords -> 1D index).
 	 * A VectorMap of (shapeId, shapeFillSetId) -> Atlas index
 	 */
@@ -23,7 +23,9 @@ export class Texture {
 	public readonly svgs: Uint8Array[];
 	public readonly svgSize: number;
 	public readonly texturesPerLine: number;
+	// ^ number of textures in each atlas line
 	public readonly maxTextures: number;
+	// ^ the maximum number of textures that this atlas can hold
 	public readonly lineSize: number;
 	public readonly glTextureSize: number;
 	/** The WebGL texture atlas */
@@ -37,7 +39,7 @@ export class Texture {
 		console.log(`Texture size ${svgSize}px (max ${glTextureSize}), texturesPerLine ${this.texturesPerLine}, maxTextures: ${this.maxTextures}`);
 		this.ids = new Array(this.maxTextures);
 		for (let i = 0; i < this.maxTextures; i++) {
-			this.ids[i] = new Array(2);
+			this.ids[i] = new Array(2) as [number, number];
 		}
 		this.svgs = new Array(this.maxTextures);
 		this.at = 0;
@@ -76,6 +78,7 @@ export class Texture {
 			img.src = `data:image/svg+xml,${svg}`;
 			img.onload = () => {
 				// render the texture to canvas
+				// which is the only way to get an ImageData
 				if (ctx) {
 					ctx.clearRect(0, 0, this.svgSize, this.svgSize);
 					ctx.drawImage(img, 0, 0, this.svgSize, this.svgSize);
@@ -96,10 +99,6 @@ export class Texture {
 			return Promise.resolve(this);
 		}
 		this.changed = false;
-		// delete the existing texture
-		if (this.texture) {
-			gl.deleteTexture(this.texture);
-		}
 		return new Promise( (resolve, reject) => {
 			const buffers: ArrayBuffer[] = [];
 			for (let i = 0; i < this.svgs.length; i++) {
@@ -146,26 +145,23 @@ export class Texture {
 		});
 	}
 }
-export class TextureShape { // per layer
-	private readonly textureSize: number;
-	private readonly maxTextureSize: number;
-	private readonly maxContainedTextures: number;
-	private textures: WebGLTexture[];
-	private texturesAt: number;
-	private curContainedTexture: number;
+export class TextureManager {
+	private readonly singleTextureSize: number;
+	private readonly atlasTextureSize: number;
 	private units: Texture[];
 	private readonly textureUnitsNum: number;
+	private readonly emptyAtlas: Uint8Array;
+	private readonly emptySingleTexture: Uint8Array;
 	public idUnit: VectorMap<number>; // the TU index for this (shapeId, shapeFillId)
 	private atlasWorker: Worker;
-	constructor(textureSize: number, textureUnits: number, maxTextureSize: number) {
-		this.textureSize = textureSize;
+	constructor(singleTextureSize: number, textureUnits: number, maxTextureSize: number) {
+		this.singleTextureSize = singleTextureSize;
 		this.textureUnitsNum = textureUnits;
-		this.maxTextureSize = maxTextureSize;
-		// tslint:disable-next-line:no-console
-		// console.log(`Using ${textureSize}x${textureSize} textures`);
-		this.maxContainedTextures = this.maxTextureSize / this.textureSize;
+		this.atlasTextureSize = maxTextureSize;
+		this.emptyAtlas = new Uint8Array(maxTextureSize * maxTextureSize * 4);
+		this.emptySingleTexture = new Uint8Array(singleTextureSize * singleTextureSize * 4);
 		this.idUnit = new VectorMap();
-		this.units = [new Texture(this.textureSize, this.maxTextureSize, 0)];
+		this.units = [new Texture(this.singleTextureSize, this.atlasTextureSize, 0)];
 		// Texture Atlas is computed in a WebWorker
 		// The texture buffer is sent in postMessage as a Transferable object
 		const workerCode = new Blob([`
@@ -176,8 +172,6 @@ export class TextureShape { // per layer
 			const resultLen = destLineLen * (size * num);
 			const result = new Uint8Array(resultLen);
 			const emptyLine = new Uint8Array(tLineSize);
-			emptyLine.fill(0);
-			// result.fill(0, 0, resultLen);
 			// create the texture atlas, line by line:
 			for (let l = 0; l < size; l++) {
 				for (let t = 0; t < num * num; t++) {
@@ -216,7 +210,6 @@ export class TextureShape { // per layer
 		`], {type: 'text/javascript'});
 		this.atlasWorker = new Worker(window.URL.createObjectURL(workerCode));
 	}
-
 	public getUnitIndex(shapeId: number, fillSetId: number): number {
 		for (let i = 0; i < this.units.length; i++) {
 			const curUnit = this.units[i];
@@ -240,26 +233,29 @@ export class TextureShape { // per layer
 	public resetUnits() {
 		for (let i = 0; i < this.units.length; i++) {
 			const curT = this.units[i];
-			const newT = new Texture(this.textureSize, this.maxTextureSize, i);
+			const newT = new Texture(this.singleTextureSize, this.atlasTextureSize, i);
 			newT.texture = curT.texture;
 			this.units[i] = newT;
 		}
 	}
-	/** Inserts an svg into the current texture atlas. Creates a new texture atlas if there is not enough space in the current one */
+	/** Inserts an svg into the current texture atlas.
+	 *  Creates a new texture atlas if there is not enough space in the current one
+	 *  Does not upload to GPU (just creates the ImageData)
+	 */
 	public texturize(img: HTMLImageElement, canvas: CanvasRenderingContext2D, shapeId: ShapeId, shapeFillId: ShapeFillSetId, svg: string): Promise<Texture> {
 		let curUnit = this.units.length - 1;
 		// check if there is space availabled in the current unit
 		if (!this.units[curUnit].hasSpace) {
 			// create a new texture atlas in a new texture unit
 			this.units.push(
-				new Texture(this.textureSize, this.maxTextureSize, curUnit + 1)
+				new Texture(this.singleTextureSize, this.atlasTextureSize, curUnit + 1)
 			);
 			curUnit++;
 		}
 		// add the texture
 		return this.units[curUnit].addSvg(new Vector2D(shapeId, shapeFillId), svg, img, canvas);
 	}
-	/** Puts all textures in VRAM; does nothing if texture was not changed; clears existing textures if changed; */
+	/** Uploads all changes to VRAM; does nothing if texture was not changed; clears existing textures if changed; */
 	public uploadToVRAM(gl: WebGLRenderingContext) {
 		const result: Array<Promise<Texture>> = [];
 		for (let i = 0; i < this.units.length; i++) {

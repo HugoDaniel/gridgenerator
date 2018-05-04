@@ -1,6 +1,6 @@
 import { State } from '../../../../data';
 import { ClipSpace } from '../../../runtime/clipspace';
-import { TextureShape } from '../../../runtime/texture_shape';
+import { TextureManager } from '../../../runtime/texture_manager';
 import { CanvasContext, WebGLContext } from '../../context';
 import { SqGridShader } from './sqgrid.shader';
 
@@ -14,7 +14,7 @@ export class LayersShader {
 	public framebuffer: WebGLFramebuffer | null;
 	public sqgrid: SqGridShader;
 	public draw: () => void;
-	constructor(canvas: WebGLContext, state: Readonly<State>, textures: TextureShape, clipspace: ClipSpace) {
+	constructor(canvas: WebGLContext, state: Readonly<State>, textures: TextureManager, clipspace: ClipSpace) {
 		this._state = state;
 		this.ratio = canvas.ratio;
 		this.width = canvas.width;

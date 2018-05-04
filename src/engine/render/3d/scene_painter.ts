@@ -1,6 +1,6 @@
 import { RGBColor, State } from '../../../data';
 import { ClipSpace } from '../../runtime/clipspace';
-import { TextureShape } from '../../runtime/texture_shape';
+import { TextureManager } from '../../runtime/texture_manager';
 import { CanvasContext, WebGLContext } from '../context';
 import { FullscreenShader } from './shaders/fullscreen.shader';
 
@@ -8,7 +8,7 @@ export class ScenePainter {
 	private webgl: WebGLContext;
 	private _state: Readonly<State>;
 	private fullscreenShader: FullscreenShader;
-	constructor(webgl: WebGLContext, state: Readonly<State>, textures: TextureShape, clipspace: ClipSpace) {
+	constructor(webgl: WebGLContext, state: Readonly<State>, textures: TextureManager, clipspace: ClipSpace) {
 		this.webgl = webgl;
 		this._state = state;
 		this.fullscreenShader = new FullscreenShader(webgl, state, textures, clipspace);
@@ -47,7 +47,7 @@ export class ScenePainter {
 		this.fullscreenShader.layers.sqgrid.isGridVisible = visible;
 		this.fullscreenShader.draw(0);
 	}
-	public redraw(textures: TextureShape, clipspace: ClipSpace, state: Readonly<State>) {
+	public redraw(textures: TextureManager, clipspace: ClipSpace, state: Readonly<State>) {
 		this.fullscreenShader.layers.sqgrid.textureIdsChanged = true;
 		this.fullscreenShader.layers.sqgrid.shapeTextures = textures;
 		this.fullscreenShader.layers.sqgrid.clipspace = clipspace;

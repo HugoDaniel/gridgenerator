@@ -1,6 +1,6 @@
 import { State } from '../../../../data';
 import { ClipSpace } from '../../../runtime/clipspace';
-import { TextureShape } from '../../../runtime/texture_shape';
+import { TextureManager } from '../../../runtime/texture_manager';
 import { CanvasContext, ShaderBuffer, ShaderProgram, switchProgramTo, WebGLContext } from '../../context';
 import { HelpersGL } from './helpersgl';
 import { LayersShader } from './layers.shader';
@@ -30,8 +30,8 @@ export class FullscreenShader {
 	private openAmmount: number;
 	private onAnimationDone: (() => void) | undefined;
 	public draw: (t: number | undefined) => void;
-	public debugTextures: TextureShape;
-	constructor(canvas: WebGLContext, state: Readonly<State>, textures: TextureShape, clipspace: ClipSpace) {
+	public debugTextures: TextureManager;
+	constructor(canvas: WebGLContext, state: Readonly<State>, textures: TextureManager, clipspace: ClipSpace) {
 		this.ratio = canvas.ratio;
 		this.width = canvas.width;
 		this.height = canvas.height;

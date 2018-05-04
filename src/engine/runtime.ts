@@ -6,7 +6,7 @@ import { DOMRects } from './runtime/dom_rects';
 import { InitialStateWorker } from './runtime/initialStateWorker';
 import { Loading } from './runtime/loading';
 import { Movement } from './runtime/movement';
-import { Texture, TextureShape } from './runtime/texture_shape';
+import { Texture, TextureManager } from './runtime/texture_manager';
 export { RuntimeMediaSize } from './runtime/device';
 import { Token } from './net/token';
 
@@ -22,7 +22,7 @@ export class Runtime {
 	public movement: Movement | null;
 	public colorPickerCtx: ColorPickerCanvasCtx | null;
 	public webglCtx: WebGLContext | null;
-	public textures: TextureShape | null;
+	public textures: TextureManager | null;
 	public clipSpace: ClipSpace;
 	public textureCanvas: CanvasRenderingContext2D | null;
 	public textureImg: HTMLImageElement | null;
@@ -96,7 +96,7 @@ export class Runtime {
 		return rt;
 	}
 	public static resetClipSpace(rt: Runtime, state: Readonly<State>, dontTexturize?: boolean): Promise<Runtime> {
-		const error = 'Cannot reset clip space because runtime has not TextureShape defined';
+		const error = 'Cannot reset clip space because runtime has no TextureManager defined';
 		const r: Promise<Runtime> = new Promise((resolve, reject) => {
 			if (!dontTexturize) {
 				rt.updateAllTextures(state).then((ta) => {
@@ -137,12 +137,12 @@ export class Runtime {
 		const img = rt.textureImg;
 		const gl = rt.webglCtx.ctx;
 		if (!rt.textures) {
-			throw new Error('Trying to texturize without a valid TextureShape');
+			throw new Error('Trying to texturize without a valid TextureManager');
 		}
 		// put the svg in a texture altas:
 		return rt.textures.texturize(img, canvas, shapeId, shapeFillId, svg);
 	}
-	/** Texturizes all the shapes present in the provided state ShapeMap; resets the runtime TextureShape to those textures */
+	/** Texturizes all the shapes present in the provided state ShapeMap; resets the runtime TextureManager to those textures */
 	public updateAllTextures(state: Readonly<State>): Promise<Texture[]> {
 		if (!this.webglCtx) {
 			// tslint:disable-next-line:no-console
@@ -154,7 +154,7 @@ export class Runtime {
 		// ^ [shapeId, shapeFillSetId, svg string]
 		const size = state.viewport.maxSize * pow2AtLeast(Math.ceil(this.webglCtx.ratio));
 		// ^ adjust to screen ratios that are not power of 2
-		this.textures = new TextureShape(size, this.webglCtx.maxNumTextures, this.webglCtx.maxTextureSize);
+		this.textures = new TextureManager(size, this.webglCtx.maxNumTextures, this.webglCtx.maxTextureSize);
 		// build the svgs and id's array:
 		for (const  [shapeId, shape] of state.shapes.entries()) {
 			for (const [shapeFillSetId, fillMap] of shape.entries()) {
@@ -169,7 +169,7 @@ export class Runtime {
 			}
 			// Sends all the texture units (one texture atlas per TU) to the GPU
 			if (!this.textures || !this.webglCtx) {
-				reject('No TextureShape is present');
+				reject('TextureManager is not present');
 			} else {
 				this.textures.uploadToVRAM(this.webglCtx.ctx).then(resolve);
 			}

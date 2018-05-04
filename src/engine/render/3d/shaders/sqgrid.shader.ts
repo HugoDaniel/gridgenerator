@@ -1,6 +1,6 @@
 import { RGBColor, State } from '../../../../data';
 import { ClipSpace } from '../../../runtime/clipspace';
-import { TextureShape, UVCoord } from '../../../runtime/texture_shape';
+import { TextureManager, UVCoord } from '../../../runtime/texture_manager';
 import { CanvasContext, ShaderBuffer, ShaderProgram, switchProgramTo, WebGLContext } from '../../context';
 import { HelpersGL } from './helpersgl';
 import { Locations } from './locations';
@@ -19,7 +19,7 @@ export class SqGridShader {
 	public buffers: ShaderBuffer[];
 	public shader: ShaderProgram;
 	public clipspace: ClipSpace;
-	public shapeTextures: TextureShape;
+	public shapeTextures: TextureManager;
 	public offset: [number, number];
 	private textureRot: Float32Array;
 	private textureRotBuffer: ShaderBuffer;
@@ -31,7 +31,7 @@ export class SqGridShader {
 	private cursorFaceId: number;
 	private readonly emptyUV: UVCoord;
 	public draw: () => void;
-	constructor(canvas: WebGLContext, state: Readonly<State>, textures: TextureShape, clipspace: ClipSpace) {
+	constructor(canvas: WebGLContext, state: Readonly<State>, textures: TextureManager, clipspace: ClipSpace) {
 		this._state = state;
 		this.clipspace = clipspace;
 		this.shapeTextures = textures;
@@ -278,9 +278,6 @@ export class SqGridShader {
 	}
 	`
 	private locations(gl: WebGLRenderingContext, p: WebGLProgram): Locations {
-		if (!p) {
-			return;
-		}
 		const loc = new Locations('SqGrid');
 		loc.locateAttrib(gl, p, 'aVertexIdd');
 		loc.locateAttrib(gl, p, 'aFaceIndex');

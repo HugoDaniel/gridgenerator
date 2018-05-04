@@ -1,5 +1,5 @@
 import { Grid, ShapeFillSetId, ShapeId, Vector2D, VectorMap, Viewport } from '../../data';
-import { TextureShape } from './texture_shape';
+import { TextureManager } from './texture_manager';
 
 /** ClipSpaceTexture is made of [ShapeId, ShapeFillSetId] */
 export type ClipSpaceTexture = [number, number];
@@ -41,14 +41,14 @@ export class ClipSpace {
 		const i = this.gridUnitIndex(x, y, width, view);
 		return i;
 	}
-	public deleteAt(sqIndex: number, shapeId: number, shapeFillSetId: number, gpuTextures: TextureShape) {
+	public deleteAt(sqIndex: number, shapeId: number, shapeFillSetId: number, gpuTextures: TextureManager) {
 		this.textures[sqIndex][0] = 0;
 		this.textures[sqIndex][1] = 0;
 		this.rotation[sqIndex] = 0;
 		const unitIndex = gpuTextures.getUnitIndex(shapeId, shapeFillSetId);
 		this.uv[unitIndex][sqIndex] = undefined;
 	}
-	public paintAt(sqIndex: number, shapeId: number, shapeFillSetId: number, rotation: number, gpuTextures: TextureShape) {
+	public paintAt(sqIndex: number, shapeId: number, shapeFillSetId: number, rotation: number, gpuTextures: TextureManager) {
 		// console.log('Painting at index', sqIndex);
 		// the whole screen is mapped into a texture array,
 		// get the corresponding texture for the sqIndex:
@@ -75,7 +75,7 @@ export class ClipSpace {
 			this.uv[u] = new Array(this.length);
 		}
 	}
-	public fromGrid(v: Viewport, grid: Grid, gpuTextures: TextureShape) {
+	public fromGrid(v: Viewport, grid: Grid, gpuTextures: TextureManager) {
 		this.clearTextures();
 		const u = v.unitSize;
 		const totalHorizSq = Math.ceil(this.w / u) + 2.0;
