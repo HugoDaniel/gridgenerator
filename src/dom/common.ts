@@ -109,4 +109,4 @@ export function removeTouch(elem: Element, obj: TouchEventI, removeStart: boolea
 	elem.removeEventListener('touchcancel', obj.onTouchCancel);
 }
 
-export enum UpdateAction { All = 'All' }
+export enum UpdateAction { All = 'All', Pan = 'Pan' }

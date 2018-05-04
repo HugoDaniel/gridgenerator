@@ -6,6 +6,7 @@ import { Vector2D } from './state/math/vector';
 import { Shape, ShapeFillSetId } from './state/shape/shape';
 import { ShapeId, ShapeMap, ShapeMapReviver } from './state/shape_map';
 import { UI, UIReviver } from './state/ui';
+import { ClipPattern, PatternHit } from './state/ui/clip_pattern';
 import { Viewport, ViewportReviver } from './state/viewport';
 export interface IStateSVGParts {
 	viewbox: number[];
@@ -77,12 +78,45 @@ export class State {
 	get ui(): UI {
 		return this._ui;
 	}
+	//#region Layer
 	get layers(): LayerMap {
 		return this._layers;
 	}
 	get currentLayer(): Grid {
 		return this._layers.getSelected();
 	}
+	get pattern(): ClipPattern | null {
+		if (!this.currentLayer.pattern) {
+			return null; // no pattern in the grid
+		}
+		const lid = this._layers.selectedLayerId;
+		const clipPattern = this._ui.patterns.get(lid);
+		if (!clipPattern) {
+			return null;
+		} else {
+			return clipPattern;
+		}
+	}
+	get isPatternOn(): boolean {
+		return this.ui.toolsSubmenus.isGridPatternOn;
+	}
+	public updatePatternsPos(): State {
+		for (const clip of this.ui.patterns.values()) {
+			if (clip) {
+				// console.log('UPDATING CLIP PATTERN POS');
+				clip.updateFromViewport(this.viewport);
+			}
+		}
+		return this;
+	}
+	public patternHit(x: number, y: number): PatternHit {
+		const pattern = this.pattern;
+		if (pattern) {
+			return pattern.hit(x, y);
+		}
+		return PatternHit.Inside;
+	}
+	//#endregion
 	//#region Shape
 	get currentLayerType(): GridType {
 		return this._layers.getSelected().type;

@@ -1,4 +1,5 @@
 import { CanvasContext, WebGLContext } from '../../engine';
+import { UpdateAction } from '../common';
 import Canvas, { ICanvasProps } from './base/canvas';
 export interface ISceneProps {
 	className?: string;
@@ -6,11 +7,11 @@ export interface ISceneProps {
 	width: number;
 	height: number;
 	onContext: (ctx: WebGLContext | CanvasContext) => void;
+	action?: UpdateAction;
 }
 export const Scene = (props: ISceneProps) => {
 	const canvasProps: ICanvasProps = {
 		is3D: true,
-		offscreen: false,
 		className: props.className,
 		onContext: props.onContext,
 		height: props.height,

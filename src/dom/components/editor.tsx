@@ -1,6 +1,7 @@
 import { linkEvent } from 'inferno';
 import { FeaturesMenuId, Project, Template, UIExportEditor, UIFillEditor, UIPublishEditor, UIShapeEditor, UIShapeEditorMode, UIState } from '../../data';
 import { Runtime, RuntimeMediaSize } from '../../engine';
+import { UpdateAction } from '../common';
 import { ColorPickerEvents } from '../events/color_picker_events';
 import { ExportEvents } from '../events/export_events';
 import { HUDEvents } from '../events/hud_events';
@@ -16,6 +17,7 @@ import { IShapeEditorProps, ShapeEditor } from './editor/shape_editor';
 import { ITemplatePickerProps, TemplatePicker } from './editor/template_picker';
 
 export interface IEditorProps {
+	action?: UpdateAction;
 	className?: string;
 	actionLabel: string;
 	actionDisabled: boolean;
@@ -44,7 +46,7 @@ export interface IEditorProps {
 	onExitShape: () => void;
 	onExitFill: () => void;
 	onFeaturesMenu: (feature: string, e: Event) => void;
-	onPricing: () => void;
+	onPricing: (e: any) => void;
 }
 function selectEditor(props: IEditorProps, colorPickerProps: IColorPickerProps, shapeEditorProps: IShapeEditorProps, templateProps: ITemplatePickerProps, exportProps: IExportProps, publishProps: IPublishProps) {
 	switch (props.at) {

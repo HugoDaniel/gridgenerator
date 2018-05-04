@@ -1,4 +1,4 @@
-import { Component } from 'inferno';
+import { Component, linkEvent } from 'inferno';
 import { Meander, MeanderCourse, PlayerState, Project, ProjectMap, State, ToolsMenuId, UIShapeEditorMode, UIState } from './data';
 import { UpdateAction } from './dom/common';
 import { addMouse, addTouch, removeMouse, removeTouch } from './dom/common';
@@ -31,8 +31,7 @@ export interface IGridGeneratorDOMProps {
 	runtime: Runtime;
 	player: PlayerState | null;
 	meander: Meander;
-	version: number;
-	maxVersion: number;
+	action?: UpdateAction;
 }
 
 function configEditorBtn(props: IGridGeneratorDOMProps, editorProps: IEditorProps): IEditorProps {
@@ -139,6 +138,7 @@ export class GridGeneratorDOM extends Component<IGridGeneratorDOMProps, any> {
 		}
 		const canCloseEditor = state.ui.isEditorOnTop || state.ui.isEnteringEditor;
 		const hudProps: IHUDProps = {
+			action: this.props.action,
 			className: `absolute top-0 left-0 w-100 h-100 ${hudZ}`,
 			isLoggedIn: !(runtime.token === undefined || runtime.token === null),
 			gotoLogin: events.meanderEvents.gotoLogin,
@@ -184,6 +184,7 @@ export class GridGeneratorDOM extends Component<IGridGeneratorDOMProps, any> {
 			Math.min(runtime.height, hres),
 			Math.min(runtime.width, state.ui.shapeEditor.templateRes));
 		let editorProps: IEditorProps = {
+			action: this.props.action,
 			className: `absolute bottom-0 w-100 h-100 ${editorZ}`,
 			isPaidAccount: this.props.meander.isPaidAccount,
 			onFeaturesMenu: events.hudEvents.onFeaturesMenu,
@@ -224,11 +225,13 @@ export class GridGeneratorDOM extends Component<IGridGeneratorDOMProps, any> {
 			className: `absolute top-0 left-0 ${sceneZ}`,
 			onContext: events.onWebGLInit,
 			height: runtime.height,
-			width: runtime.width
+			width: runtime.width,
+			action: this.props.action
 		};
 		const inProj = this.props.meander.course === MeanderCourse.Project
 		            || this.props.meander.course === MeanderCourse.None;
 		const meanderProps: IMeanderProps = {
+			action: this.props.action,
 			className: `${inProj ? 'h3 children-o-0' : 'h-100 bg-meander children-o-100'} w-100 f1 ttu fixed z-4 bottom-0 children-opacity`,
 			meander: this.props.meander,
 			events: this.props.events.meanderEvents,
@@ -255,19 +258,28 @@ export class GridGeneratorDOM extends Component<IGridGeneratorDOMProps, any> {
 			(this.props.projects.size > 0 &&
 			this.props.meander.profile.created &&
 			this.props.runtime.token);
-		// console.log('IS LOGGED IN', isLoggedIn);
-		const patternProps: IPatternProps = {
-			className: 'absolute absolute top-0 left-0 z-1',
-			w: runtime.width,
-			h: runtime.height
-		};
+		const pattern = state.pattern;
 		return (
 		<div style={{ cursor } }>
-			<Scene {...sceneProps} />
-			<Pattern {...patternProps} />
-			<HUD {...hudProps} />
-			<Editor {...editorProps} />
-			<MeanderFull {...meanderProps} />
+			<Scene {...sceneProps} onComponentShouldUpdate={this.props.events.shouldUpdateScene as (lastProps: any, nextProps: any) => boolean} />
+			{ pattern
+			? <Pattern
+					action={this.props.action}
+					className="absolute absolute top-0 left-0 z-1"
+					w={runtime.width}
+					h={runtime.height}
+					startPosX={pattern.screenStartX}
+					startPosY={pattern.screenStartY}
+					endPosX={pattern.screenEndX}
+					endPosY={pattern.screenEndY}
+					unitSize={state.viewport.unitSize}
+					onComponentShouldUpdate={this.props.events.shouldUpdatePattern as (lastProps: any, nextProps: any) => boolean}
+				/>
+			: <div />
+			}
+			<HUD {...hudProps}  onComponentShouldUpdate={this.props.events.shouldUpdateHUD as (lastProps: any, nextProps: any) => boolean} />
+			<Editor {...editorProps}  onComponentShouldUpdate={this.props.events.shouldUpdateEditor as (lastProps: any, nextProps: any) => boolean} />
+			<MeanderFull {...meanderProps}  onComponentShouldUpdate={this.props.events.shouldUpdateMeander as (lastProps: any, nextProps: any) => boolean} />
 		</div>
 		);
 		/*

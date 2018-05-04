@@ -9,9 +9,9 @@ export class Viewport {
 	public readonly maxSize: number;
 	public readonly minSize: number;
 	private _unitSize: number;
-	private _x: number;
-	private _y: number;
-	constructor(unitSize: number = 64, x: number = 0, y: number = 0, maxSize: number = 256) {
+	private _x: number; // in screen pixels
+	private _y: number; // in screen pixels
+	constructor(unitSize: number = 64.3, x: number = 0, y: number = 0, maxSize: number = 256) {
 		this._unitSize = unitSize;
 		this._x = x;
 		this._y = y;
@@ -65,15 +65,20 @@ export class Viewport {
 		this._y -= deltaY;
 		// console.log(`_x: ${this._x}, _y: ${this._y}`);
 	}
+	/** Returns the layer X coordinate for the first element on the screen (top left) */
 	public squareLayerX(): number {
 		const u = this.unitSize;
 		const viewx = this._x;
-		const initX = Math.floor(viewx / u);
-		return initX;
+		// const uvx = Math.abs(viewx / u);
+		// const initX = Math.sign(viewx) * Math.floor(uvx);
+		return Math.floor(viewx / u);
 	}
+	/** Returns the layer Y coordinate for the first element on the screen (top left) */
 	public squareLayerY(): number {
 		const u = this.unitSize;
 		const viewy = this._y;
+		return Math.floor(viewy / u);
+		/*
 		let initY = Math.floor(viewy / u);
 		// console.log('Y:', viewy, initY)
 		if (viewy === 0) {
@@ -81,58 +86,75 @@ export class Viewport {
 		} else
 		if (viewy < 0) {
 			initY += 1;
-			/*
-			if (viewy % u === 0) {
-				initY -= 1;
-			}
-			*/
 		} else if (viewy > 0) {
 			if (viewy % u === 0) {
 				initY = Math.floor(viewy / u);
 			}
 		}
 		return initY;
+		*/
 	}
-	public squareX(absX: number) {
+	/** Returns the screen X grid coordinate of the square under the 'screenX' pixel position */
+	public squareX(screenX: number) {
 		const u = this.unitSize;
 		const viewx = this._x;
-		let x = 0;
-		if (viewx < 0) {
-			if (absX > Math.abs(viewx % u)) {
-				x = Math.ceil((absX - Math.abs(viewx % u)) / u);
-			}
-			if (viewx % u === 0) {
-				x -= 1;
-			}
-		} else
-		if (viewx >= 0) {
-			if (absX > u - Math.abs(viewx % u)) {
-				x = Math.ceil((absX + Math.abs(viewx % u)) / u) - 1;
-			}
+		const uvx = Math.abs(viewx / u);
+		const deltaX = Math.sign(viewx) >= 0
+		? (1 - (uvx - Math.floor(uvx))) * u
+		: (uvx + Math.sign(viewx) * Math.floor(uvx)) * u;
+		const screenSq = Math.ceil((screenX - deltaX) / u);
+		let rounding = 0;
+		if (deltaX === 0 && Math.sign(viewx) < 0) {
+			rounding = -1;
 		}
-		return x;
+		return screenSq + rounding;
 	}
-	public squareY(absY: number) {
+
+	/** Returns the screen Y grid coordinate of the square under the 'screenY' pixel position */
+	public squareY(screenY: number) {
 		const u = this.unitSize;
 		const viewy = this._y;
-		let y = 1;
-		let off = 0;
-		if (viewy < 0) {
-			if (absY > Math.abs(viewy % u)) {
-				off = -1;
-				if (viewy % u === 0) {
-					off = -2;
-				}
-				y = Math.ceil((absY + u - Math.abs(viewy % u)) / u) + off;
-			} else {
-				y = 0;
-			}
-		} else
-		if (viewy >= 0) {
-			if (absY > u - Math.abs(viewy % u)) {
-				y = Math.ceil((absY + Math.abs(viewy % u)) / u);
-			}
+		const uvy = Math.abs(viewy / u);
+		const deltaY = Math.sign(viewy) >= 0
+		? (1 - (uvy - Math.floor(uvy))) * u
+		: (uvy + Math.sign(viewy) * Math.floor(uvy)) * u;
+		const screenSq = Math.ceil((screenY - deltaY) / u);
+		let rounding = 0;
+		if (deltaY === 0 && Math.sign(viewy) < 0) {
+			rounding = -1;
 		}
-		return y;
+		return screenSq + rounding;
+	}
+	/** returns the pixel X coordinate on the screen for the layer square X coordinate passed as arg */
+	public screenX(squareX: number) {
+		const u = this.unitSize;
+		const viewx = this._x;
+		const initX = this.squareLayerX();
+		if (squareX < initX) {
+			return -1; // not in screen
+		}
+		const uvx = Math.abs(viewx / u);
+		const deltaX = Math.sign(viewx) >= 0
+		? (1 - (uvx - Math.floor(uvx))) * u
+		: (uvx + Math.sign(viewx) * Math.floor(uvx)) * u;
+		const squareXInScreen = squareX - initX;
+		const result = Math.max(0, Math.round((squareXInScreen - 1) * u + deltaX));
+		return result;
+	}
+	/** returns the pixel Y coordinate on the screen for the layer square Y coordinate passed as arg */
+	public screenY(squareY: number) {
+		const u = this.unitSize;
+		const viewy = this._y;
+		const initY = this.squareLayerY();
+		if (squareY < initY) {
+			return -1; // not in screen
+		}
+		const uvy = Math.abs(viewy / u);
+		const deltaY = Math.sign(viewy) >= 0
+		? (1 - (uvy - Math.floor(uvy))) * u
+		: (uvy + Math.sign(viewy) * Math.floor(uvy)) * u;
+		const squareYInScreen = squareY - initY;
+		const result = Math.max(0, Math.round((squareYInScreen - 1) * u + deltaY));
+		return result;
 	}
 }

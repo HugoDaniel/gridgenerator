@@ -1,6 +1,6 @@
 import { FatState, GridElement, ToolsMenuId, Vector2D, Viewport } from '../../data';
 import { CanvasContext, ClipSpace, Runtime, ScenePainter, WebGLContext } from '../../engine';
-import { IEventHandler } from '../common';
+import { IEventHandler, UpdateAction } from '../common';
 import { Refresher } from './refresher';
 
 const enum SceneAction { Paint = 100, Delete, DeleteFill, Move, Zoom }
@@ -11,6 +11,7 @@ export class SceneEvents implements IEventHandler {
 	private startZoom: Vector2D | null;
 	private pointZoom: Vector2D | null;
 	private viewportZoom: Vector2D | null;
+	private startZoomSize: number | null;
 	private t1Start: Touch | null;
 	private t2Start: Touch | null;
 	private scene: ScenePainter | null;
@@ -190,10 +191,10 @@ export class SceneEvents implements IEventHandler {
 				this.onCursorMove(e.clientX, e.clientY);
 			}
 		};
-		this.onGridAction = (absX: number, absY: number) => {
+		this.onGridAction = (screenX: number, screenY: number) => {
 			// calculate the layer x, y pos
 			const view = this._state.current.viewport;
-			this.updateCursor(absX, absY, view);
+			this.updateCursor(screenX, screenY, view);
 			const cursor = this._state.current.currentLayer.cursor;
 			const layerX = cursor[0];
 			const layerY = cursor[1];
@@ -209,25 +210,27 @@ export class SceneEvents implements IEventHandler {
 			// console.log(`GRID (${layerX}, ${layerY})`, isElemDiff, isElemEq, this.curAction);
 			// Actions are performed bellow:
 			if (isElemDiff && (this.curAction === null || this.curAction === SceneAction.Paint)) {
-				this.paintAt(absX, absY, layerX, layerY, shapeId, shapeFillId, rot);
+				this.paintAt(screenX, screenY, layerX, layerY, shapeId, shapeFillId, rot);
 			} else if (isElemEq && (this.curAction === null || this.curAction === SceneAction.DeleteFill)) {
 				// delete while painting (only the current fill is deleted)
 				this.curAction = SceneAction.DeleteFill;
-				this.deleteAt(absX, absY, layerX, layerY, shapeId, shapeFillId);
+				this.deleteAt(screenX, screenY, layerX, layerY, shapeId, shapeFillId);
 			} else if (this.curAction === SceneAction.Delete) {
 				// delete
 				this.curAction = SceneAction.Delete;
-				this.deleteAt(absX, absY, layerX, layerY, shapeId, shapeFillId);
+				this.deleteAt(screenX, screenY, layerX, layerY, shapeId, shapeFillId);
 			} else {
 				// console.log('NOTHING');
 			}
 		};
 		this.onZoomIn = (e) => {
 			e.preventDefault();
+			console.log('zooming in');
 			this.clickZoom(1);
 		};
 		this.onZoomOut = (e) => {
 			e.preventDefault();
+			console.log('zooming out');
 			this.clickZoom(-1);
 		};
 		this.onCursorMove = (absX: number, absY: number) => {
@@ -270,14 +273,13 @@ export class SceneEvents implements IEventHandler {
 			this.scene.state = s.current;
 		}
 	}
-
 	/** Updates cursor if necessary, returns true if an update was done */
-	private updateCursor(absX: number, absY: number, view: Viewport): boolean {
+	private updateCursor(screenX: number, screenY: number, view: Viewport): boolean {
 		const needsCursorUpdate =
 			this._state.current.currentLayer.isCursorUpdateNeeded(
-				absX, absY, view);
+				screenX, screenY, view);
 		if (needsCursorUpdate) {
-			this._state.sceneCursor(absX, absY);
+			this._state.sceneCursor(screenX, screenY);
 		}
 		return needsCursorUpdate;
 	}
@@ -325,7 +327,8 @@ export class SceneEvents implements IEventHandler {
 			this.scene.hideCursor();
 		}
 		this._state.sceneMove(x - this.startMove.x, y - this.startMove.y);
-		this.refresher.refreshStateOnly(this._state);
+		// this.refresher.refreshStateOnly(this._state);
+		this.refresher.refreshStateAndDOM(this._state, UpdateAction.Pan);
 		this.startMove = new Vector2D(x, y);
 		Runtime.resetClipSpace(this.runtime, this._state.current, true).then((_rt: Runtime) => {
 			this.runtime = _rt;
@@ -334,26 +337,36 @@ export class SceneEvents implements IEventHandler {
 	}
 	private clickZoom(mult: number) {
 		// zoom into the middle of the screen
-		const midX = this.runtime.device.width / 2;
-		const midY = this.runtime.device.height / 2;
+		let midX = this.runtime.device.width / 2;
+		let midY = this.runtime.device.height / 2;
 		// initialize the zoom metadata
 		const v = this._state.current.viewport;
-		// the zoom ammount in pixels
-		let inc = 8;
-		if (v.unitSize > 64) {
-			inc = inc * (v.unitSize / 64);
-		}
-		let zoomAmmount = (inc - (64 - v.unitSize));
-		if (mult < 0) {
-			// zooming out
-			zoomAmmount -= inc * 2;
-		}
-		// console.log('FROM ', v.unitSize, 'AMMOUNT,', zoomAmmount);
-		if (!this.startZoom) {
+		if (!this.state.current.ui.isZooming) {
 			this.startZoom = new Vector2D(midX, midY);
 			this.pointZoom = new Vector2D(v.x + midX, v.y + midY);
 			this.viewportZoom = new Vector2D(v.x, v.y);
+			this.startZoomSize = v.unitSize;
+			this.state.sceneStartZoom();
+			this.refresher.refreshStateOnly(this.state);
+		} else if (this.startZoom) {
+			midX = this.startZoom.x;
+			midY = this.startZoom.y;
 		}
+		// the zoom ammount in pixels
+		let inc = 8;
+		const normalSize = this.startZoomSize || 64;
+		if (v.unitSize > normalSize) {
+			inc = inc * (v.unitSize / normalSize);
+		}
+		let zoomAmmount = 0;
+		if (mult < 0) {
+			// zooming out
+			zoomAmmount = -inc * 2;
+		} else {
+			// zooming in
+			zoomAmmount = inc * 2;
+		}
+		// console.log('FROM ', v.unitSize, 'AMMOUNT,', zoomAmmount);
 		this.zoom(midX - zoomAmmount, midY - zoomAmmount);
 	}
 	private zoom(x: number, y: number, mult: number = 1) {
@@ -361,10 +374,12 @@ export class SceneEvents implements IEventHandler {
 		const l = this._state.current.currentLayer;
 		const w = this.runtime.width;
 		const h = this.runtime.height;
-		if (!this.startZoom) {
+		if (!this.startZoom || !this.state.current.ui.isZooming) {
 			this.startZoom = new Vector2D(x, y);
 			this.pointZoom = new Vector2D(v.x + x, v.y + y);
 			this.viewportZoom = new Vector2D(v.x, v.y);
+			this.state.sceneStartZoom();
+			this.refresher.refreshStateOnly(this.state);
 			return;
 		}
 		if (!this.viewportZoom || !this.startZoom || !this.pointZoom) {

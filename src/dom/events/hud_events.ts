@@ -1,8 +1,9 @@
-import { FatActionSets, FatState, FillId, RGBColor, ShapeId, ToolsMenuId } from '../../data';
+import { FatActionSets, FatState, FillId, RGBColor, ShapeId, ToolsMenuId, UIState } from '../../data';
 import { ColorCanvasPainter, Runtime } from '../../engine';
+import { IEventHandler } from '../common';
 import { Refresher } from './refresher';
 
-export class HUDEvents {
+export class HUDEvents implements IEventHandler {
 	public runtime: Runtime;
 	public state: FatState;
 	public refresher: Refresher;
@@ -25,6 +26,14 @@ export class HUDEvents {
 	public onClearAll: () => void;
 	public onGridPattern: (e: Event) => void;
 	public onGridExit: (e: Event) => void;
+	// Event Handler methods are used to manipulate the pattern area
+	public onMouseUp: (e: MouseEvent) => void;
+	public onMouseMove: (e: MouseEvent) => void;
+	public onMouseDown: (e: MouseEvent) => void;
+	public onTouchStart: (e: TouchEvent) => void;
+	public onTouchMove: (e: TouchEvent) => void;
+	public onTouchEnd: (e: TouchEvent) => void;
+	public onTouchCancel: (e: TouchEvent) => void;
 	constructor(rt: Runtime, s: FatState, refresher: Refresher, openScene: (onDone: () => void) => void, closeScene: (onDone: () => void) => void, redrawScene: (onDone: () => void) => void) {
 		this.runtime = rt;
 		this.state = s;
@@ -207,16 +216,76 @@ export class HUDEvents {
 				this.redrawScene();
 			});
 		};
-
 		this.onGridPattern = (e) => {
 			e.preventDefault();
 			this.state.hudTogglePattern();
+			if (this.state.current.ui.toolsSubmenus.isGridPatternOn) {
+				// pattern was toggled
+				// 1. get the previous pattern dimensions
+				const pattern = this.state.current.pattern;
+				if (!pattern) {
+					const v = this.state.current.viewport;
+					// 2. if no pattern was defined, set a 3x3 pattern on the center of the screen
+					// a) find the grid element at the center of the screen
+					const centerX = v.squareX(this.runtime.width / 2);
+					const centerY = v.squareX(this.runtime.height / 2);
+					// b) adjust for real layer coords and call fat state function
+					this.state.hudNewPattern(v.squareLayerX() + centerX, v.squareLayerY() + centerY);
+				}
+				// 3. update the ui with the clipspace pattern coords
+				this.state.hudUpdatePatternPos();
+			}
 			this.refresher.refreshStateAndDOM(this.state);
 		};
 		this.onGridExit = (e) => {
 			e.preventDefault();
 			this.state.hudSelectTool(ToolsMenuId.Paint);
 			this.refresher.refreshStateAndDOM(this.state);
+		};
+		this.onMouseUp = (e: MouseEvent) => {
+			e.preventDefault();
+			// stop adjusting the pattern
+			this.state.hudStopPatternAdjust();
+			this.refresher.refreshStateAndDOM(this.state);
+		};
+		this.onMouseMove = (e: MouseEvent) => {
+			e.preventDefault();
+			const v = this.state.current.viewport;
+			// 2. if no pattern was defined, set a 3x3 pattern on the center of the screen
+			// a) find the grid element at the center of the screen
+			const layerX = v.squareLayerX() + v.squareX(e.clientX);
+			const layerY = v.squareLayerY() + v.squareX(e.clientY);
+			const pattern = this.state.current.pattern;
+			// only update if necessary:
+			if (pattern) {
+				if (this.state.current.ui.at === UIState.PatternAdjustEnd
+				&& (pattern.gridPattern.endX === layerX && pattern.gridPattern.endY === layerY)) {
+					return;
+				} else if (pattern.gridPattern.startX === layerX && pattern.gridPattern.startY === layerY) {
+					return;
+				}
+			}
+			this.state.hudPatternAdjust(layerX, layerY);
+			this.state.hudUpdatePatternPos();
+			this.refresher.refreshStateAndDOM(this.state);
+		};
+		this.onMouseDown = (e: MouseEvent) => {
+			e.preventDefault();
+			console.log('HUD DOWN');
+		};
+		this.onTouchStart = (e: TouchEvent) => {
+			e.preventDefault();
+		};
+		this.onTouchMove = (e: TouchEvent) => {
+			e.preventDefault();
+		};
+		this.onTouchEnd = (e: TouchEvent) => {
+			e.preventDefault();
+			this.state.hudStopPatternAdjust();
+			this.refresher.refreshStateAndDOM(this.state);
+		};
+		this.onTouchCancel = (e: TouchEvent) => {
+			e.preventDefault();
 		};
  	}
 }

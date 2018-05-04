@@ -5,6 +5,7 @@ export interface TilePatternReviver {
 	ey: number;
 }
 export class TilePattern {
+	// Layer coords: (for window coords check out the ClipPattern class in ui/)
 	public startX: number;
 	public startY: number;
 	public endX: number;

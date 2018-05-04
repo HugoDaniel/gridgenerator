@@ -1,5 +1,6 @@
 import { Meander, MeanderCourse, PlayerState, ProfileStatus, Project, StoredProject } from '../../data';
 import { MainMenuId, Menu } from '../../data';
+import { UpdateAction } from '../common';
 import { IMainMenuProps, MainMenu } from '../components/hud/main_menu';
 import { MeanderEvents } from '../events/meander_events';
 import { PlayerEvents } from '../events/player_events';
@@ -13,6 +14,7 @@ import { MeanderRecover } from './meander/recover';
 import { MeanderVerify } from './meander/verify';
 
 export interface IMeanderProps {
+	action?: UpdateAction;
 	className?: string;
 	projects: StoredProject[];
 	currentProject: Project;

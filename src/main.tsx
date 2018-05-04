@@ -161,9 +161,7 @@ class Main {
 				events={this.events}
 				meander={this.meander}
 				player={this.player}
-				// recorder related props
-				version={this.state.version}
-				maxVersion={this.state.maxVersion}
+				action={action}
 			/>, this.container);
 	}
 }

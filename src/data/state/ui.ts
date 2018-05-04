@@ -1,8 +1,11 @@
 import { FillMap } from './fill_map';
 import { Grid, IGridDimension } from './layer/grid';
+import { LayerId } from './layer/layer';
+import { TilePattern, TilePatternReviver } from './layer/tile_pattern';
 import { Path } from './shape/path';
 import { Shape, ShapeFillSetId } from './shape/shape';
 import { ShapeId, ShapeMap } from './shape_map';
+import { ClipPattern } from './ui/clip_pattern';
 import { DefaultFeaturesMenu, DefaultMainMenu, DefaultToolsMenu, FeaturesMenuId, MainMenuId, ToolsMenuId } from './ui/defaults';
 import { UIExportEditor } from './ui/export';
 import { UIFillEditor, UIFillEditorReviver } from './ui/fill_editor';
@@ -19,11 +22,13 @@ export interface UIReviver {
 	et: boolean;
 	ent: boolean;
 	ext: boolean;
+	z: boolean;
 	f: UIFillEditorReviver;
 	s: UIShapeEditorReviver;
 	tsm: ToolsSubmenusReviver;
+	p: Array<[number, TilePatternReviver]>;
 }
-export const enum UIState { Project = 'Project', ShapeEditor = 'ShapeEditor', FillEditor = 'FillEditor', Export = 'Export', Publish = 'Publish', PublishPreview = 'PublishPreview' }
+export const enum UIState { Project = 'Project', ShapeEditor = 'ShapeEditor', FillEditor = 'FillEditor', Export = 'Export', Publish = 'Publish', PublishPreview = 'PublishPreview', PatternAdjustStart = 'PatternAdjustStart', PatternAdjustEnd = 'PatternAdjustEnd' }
 
 export class UI {
 	public at: UIState; // the current UI state
@@ -37,10 +42,12 @@ export class UI {
 	public isEditorOnTop: boolean;
 	public isEnteringEditor: boolean;
 	public isExitingEditor: boolean;
+	public isZooming: boolean;
 	public fillEditor: UIFillEditor;
 	public shapeEditor: UIShapeEditor;
 	public exportEditor: UIExportEditor;
 	public publishEditor: UIPublishEditor;
+	public patterns: Map<LayerId, ClipPattern>;
 	constructor(grid?: Grid, shapesMap?: ShapeMap, fills?: FillMap) {
 		// allow for an empty uninitialized UI (useful to revive)
 		if (!grid || !shapesMap || !fills) {
@@ -63,11 +70,13 @@ export class UI {
 		this.isEditorOnTop = false;
 		this.isEnteringEditor = false;
 		this.isExitingEditor = false;
+		this.isZooming = false;
 		this.fillEditor = new UIFillEditor(shape, fills);
 		this.shapeEditor = new UIShapeEditor();
 		this.exportEditor = new UIExportEditor(null, '', 0);
 		this.publishEditor = new UIPublishEditor();
 		this.toolsSubmenus = new ToolsSubmenus();
+		this.patterns = new Map();
 	}
 	public toJSON(): UIReviver {
 		return {
@@ -79,9 +88,12 @@ export class UI {
 			et: this.isEditorOnTop,
 			ent: this.isEnteringEditor,
 			ext: this.isExitingEditor,
+			z: this.isZooming,
 			f: this.fillEditor.toJSON(),
 			s: this.shapeEditor.toJSON(),
-			tsm: this.toolsSubmenus.toJSON()
+			tsm: this.toolsSubmenus.toJSON(),
+			p: [...this.patterns].map(([lid, cpat]) =>
+				[lid, cpat.gridPattern.toJSON()] as [number, TilePatternReviver])
 		};
 	}
 	public static revive(o: UIReviver) {
@@ -112,6 +124,7 @@ export class UI {
 		result.isEditorOnTop = o.et;
 		result.isEnteringEditor = o.ent;
 		result.isExitingEditor = o.ext;
+		result.isZooming = o.z;
 		result.fillEditor = UIFillEditor.revive(o.f);
 		result.shapeEditor = UIShapeEditor.revive(o.s);
 		if (o.tsm) {
@@ -119,12 +132,19 @@ export class UI {
 		} else {
 			result.toolsSubmenus = new ToolsSubmenus();
 		}
+		result.patterns = new Map(
+			o.p.map(([lid, pat]) =>
+				[lid, new ClipPattern(TilePattern.revive(pat))]as [LayerId, ClipPattern])
+		);
 		return result;
 	}
 	get currentTool(): ToolsMenuId {
 		return this.toolsMenu.selected;
 	}
 	public selectTool(id: ToolsMenuId): UI {
+		if (id === ToolsMenuId.Zoom) {
+			this.isZooming = false;
+		}
 		this.toolsMenu.selected = id;
 		return this;
 	}

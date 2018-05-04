@@ -5,10 +5,12 @@ import { State } from './state';
 import { RGBColor } from './state/color/rgb';
 import { FillId } from './state/fill_map';
 import { GridType } from './state/layer/grid';
+import { TilePattern } from './state/layer/tile_pattern';
 import { Vector2D } from './state/math/vector';
 import { ShapeFillSetId } from './state/shape/shape';
 import { ShapeId } from './state/shape_map';
 import { UIState } from './state/ui';
+import { ClipPattern } from './state/ui/clip_pattern';
 import { ToolsMenuId, UIFillEditorColorMode } from './state/ui/defaults';
 import { UIFillEditor } from './state/ui/fill_editor';
 
@@ -499,7 +501,72 @@ export class FatState {
 	public hudTogglePattern(): FatState {
 		this._state.ui.toolsSubmenus.isGridPatternOn =
 		!this._state.ui.toolsSubmenus.isGridPatternOn;
+		if (!this._state.ui.toolsSubmenus.isGridPatternOn) {
+			// remove pattern
+			this._state.layers.getSelected().pattern = null;
+		}
 		this.mod('hudTogglePattern', null);
+		return this;
+	}
+	public hudNewPattern(cx: number, cy: number): FatState {
+		const grid = this._state.layers.getSelected();
+		grid.pattern = new TilePattern(cx - 1, cy - 1, cx + 1, cy + 1);
+		const lid = this._state.layers.selectedLayerId;
+		const clip = new ClipPattern(grid.pattern);
+		this._state.ui.patterns.set(lid, clip);
+		this.mod('hudNewPattern', [cx, cy]);
+		return this;
+	}
+	public hudUpdatePatternPos(): FatState {
+		this._state.updatePatternsPos();
+		this.mod('hudUpdatePatternPos', null);
+		return this;
+	}
+	public hudStartPatternAdjust(startPos: boolean): FatState {
+		if (startPos) {
+			this._state.ui.at = UIState.PatternAdjustStart;
+		} else {
+			this._state.ui.at = UIState.PatternAdjustEnd;
+		}
+		this.mod('hudStartPatternAdjust', [startPos]);
+		return this;
+	}
+	public hudPatternAdjust(layerX: number, layerY: number): FatState {
+		const grid = this._state.currentLayer;
+		// check which pattern position is being adjusted (start or end ?)
+		if (this._state.ui.at === UIState.PatternAdjustEnd) {
+			// set the grid tilepattern to match the new positions
+			if (grid.pattern) {
+				if (grid.pattern.startX < layerX) {
+					grid.pattern.endX = layerX;
+				}
+				if (grid.pattern.startY < layerY) {
+					grid.pattern.endY = layerY;
+				}
+			}
+		} else {
+			if (grid.pattern) {
+				if (grid.pattern.endX > layerX) {
+					grid.pattern.startX = layerX;
+				}
+				if (grid.pattern.endY > layerY) {
+					grid.pattern.startY = layerY;
+				}
+			}
+		}
+		const lid = this._state.layers.selectedLayerId;
+		const clip = this._state.ui.patterns.get(lid);
+		if (clip && grid.pattern) {
+			clip.gridPattern = grid.pattern;
+			this._state.ui.patterns.set(lid, clip);
+		}
+		// update the clip pattern
+		this.mod('hudPatternAdjust', [layerX, layerY]);
+		return this;
+	}
+	public hudStopPatternAdjust(): FatState {
+		this._state.ui.at = UIState.Project;
+		this.mod('hudStopPatternAdjust', null);
 		return this;
 	}
 	//#endregion
@@ -611,11 +678,13 @@ export class FatState {
 	}
 	public sceneMove(deltaX: number, deltaY: number): FatState {
 		this._state.viewport.move(deltaX, deltaY);
+		this._state.updatePatternsPos();
 		this.mod('sceneMove', [deltaX, deltaY]);
 		return this;
 	}
 	public sceneZoom(px: number, py: number, ammount: number, cx: number, cy: number, vx: number, vy: number): FatState {
 		this._state.viewport.changeZoom(px, py, ammount, cx, cy, vx, vy);
+		this._state.updatePatternsPos();
 		this.mod('sceneZoom', [px, py, ammount]);
 		return this;
 	}
@@ -628,6 +697,11 @@ export class FatState {
 		this._state.ui.toolsSubmenus.isGridVisible =
 			!this._state.ui.toolsSubmenus.isGridVisible;
 		this.mod('sceneToggleGrid', null);
+		return this;
+	}
+	public sceneStartZoom(): FatState {
+		this._state.ui.isZooming = true;
+		this.mod('sceneStartZoom', null);
 		return this;
 	}
 	//#endregion

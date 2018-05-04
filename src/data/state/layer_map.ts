@@ -59,6 +59,9 @@ export class LayerMap {
 		}
 		return l.data;
 	}
+	get selectedLayerId(): LayerId {
+		return this.selected;
+	}
 	/**
 	 * selects a shape in the current selected layer
 	 */

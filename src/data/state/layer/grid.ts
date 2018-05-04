@@ -97,13 +97,13 @@ export class Grid {
 		const offY = initY + (y * view.unitSize) + (u - view.y % u);
 		return new Vector2D(offX, offY);
 	}
-	private gridX(absX: number, view: Viewport) {
+	private gridX(screenX: number, view: Viewport) {
 		const initX = view.squareLayerX();
-		return initX + view.squareX(absX);
+		return initX + view.squareX(screenX);
 	}
-	private gridY(absY: number, view: Viewport) {
+	private gridY(screenY: number, view: Viewport) {
 		const initY = view.squareLayerY();
-		return initY + view.squareY(absY);
+		return initY + view.squareY(screenY);
 	}
 	public renderSVGUse(dims: IGridDimension, res: number, useRes: boolean = true): string[] {
 		const result = [] as string[];
@@ -178,9 +178,12 @@ export class Grid {
 	public coordsElemAt(absX: number, absY: number, view: Viewport): Vector2D {
 		return new Vector2D(this.gridX(absX, view), this.gridY(absY, view));
 	}
-	public isCursorUpdateNeeded(absX: number, absY: number, view: Viewport): boolean {
-		const x = this.gridX(absX, view);
-		const y = this.gridY(absY, view);
+	public isCursorUpdateNeeded(screenX: number, screenY: number, view: Viewport): boolean {
+		const x = this.gridX(screenX, view);
+		const y = this.gridY(screenY, view);
+		if (this.cursor[0] !== x || this.cursor[1] !== y) {
+			view.screenY(y);
+		}
 		return (this.cursor[0] !== x || this.cursor[1] !== y);
 	}
 	public updateCursor(absX: number, absY: number, view: Viewport) {

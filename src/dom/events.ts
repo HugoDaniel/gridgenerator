@@ -1,6 +1,12 @@
-import { FatState, Meander, MeanderCourse, PlayerState, ProjectMap, UIShapeEditorMode, UIState, State } from '../data';
+import { FatState, Meander, MeanderCourse, PlayerState, ProjectMap, State, UIShapeEditorMode, UIState } from '../data';
+import { PatternHit } from '../data/state/ui/clip_pattern';
 import { Net, Runtime, WebGLContext } from '../engine';
-import { addMouse, addTouch, IEventHandler, removeMouse, removeTouch } from './common';
+import { addMouse, addTouch, IEventHandler, removeMouse, removeTouch, UpdateAction } from './common';
+import { IEditorProps } from './components/editor';
+import { IHUDProps } from './components/hud';
+import { IMeanderProps } from './components/meander';
+import { IPatternProps } from './components/pattern';
+import { ISceneProps } from './components/scene';
 import { ColorPickerEvents } from './events/color_picker_events';
 import { ExportEvents } from './events/export_events';
 import { HUDEvents } from './events/hud_events';
@@ -39,6 +45,12 @@ export class Events {
 	public projectEvents: ProjectEvents;
 	public playerEvents: PlayerEvents | null;
 	public meanderEvents: MeanderEvents;
+	// should updates:
+	public shouldUpdateHUD: (lastProps: IHUDProps, nextProps: IHUDProps) => boolean;
+	public shouldUpdateScene: (lastProps: ISceneProps, nextProps: ISceneProps) => boolean;
+	public shouldUpdateMeander: (lastProps: IMeanderProps, nextProps: IMeanderProps) => boolean;
+	public shouldUpdateEditor: (lastProps: IEditorProps, nextProps: IEditorProps) => boolean;
+	public shouldUpdatePattern: (lastProps: IPatternProps, nextProps: IPatternProps) => boolean;
 
 	constructor(rt: Runtime, s: FatState, m: Meander, net: Net, proj: ProjectMap, player: PlayerState | null, refresher: Refresher) {
 		this.runtime = rt;
@@ -58,6 +70,15 @@ export class Events {
 				this.runtime.device.isUsingMouse = true;
 				this.refresher.refreshRuntimeOnly(this.runtime);
 				this.updateMouseUsage();
+			}
+			if (this.state.current.isPatternOn) {
+				// was the action inside, outside or on the circles ?
+				const hit = this.state.current.patternHit(e.clientX, e.clientY);
+				if (hit === PatternHit.EndCircle || hit === PatternHit.StartCircle) {
+					this.state.hudStartPatternAdjust(hit === PatternHit.StartCircle);
+					this.refresher.refreshStateOnly(this.state);
+					return;
+				}
 			}
 			this.getEventHandler().onMouseDown(e);
 		};
@@ -135,6 +156,26 @@ export class Events {
 			this.projectEvents.reviveProject,
 			this.projectEvents.reviveNetProject
 		);
+		this.shouldUpdateHUD = (lastProps, nextProps) => {
+			const dontUpdate = nextProps.action === UpdateAction.Pan;
+			return !dontUpdate;
+		};
+		this.shouldUpdateScene = (lastProps, nextProps) => {
+			const dontUpdate = nextProps.action === UpdateAction.Pan;
+			return !dontUpdate;
+		};
+		this.shouldUpdateMeander = (lastProps, nextProps) => {
+			const dontUpdate = nextProps.action === UpdateAction.Pan;
+			return !dontUpdate;
+		};
+		this.shouldUpdateEditor = (lastProps, nextProps) => {
+			const dontUpdate = nextProps.action === UpdateAction.Pan;
+			return !dontUpdate;
+		};
+		this.shouldUpdatePattern = (lastProps, nextProps) => {
+			// const dontUpdate = nextProps.action === UpdateAction.Pan;
+			return true;
+		};
 		if (player) {
 			this.playerEvents = new PlayerEvents(rt, player, refresher, this.meanderEvents.gotoRoot);
 		}
@@ -209,19 +250,22 @@ export class Events {
 		}
 	}
 	private getEventHandler(): IEventHandler {
+		const isAt = this.state.current.ui.at;
 		// TODO: allow event to go to project if x is outside a given threshold (to paint while editing a shape)
-		if (this.state.current.ui.at === UIState.FillEditor
+		if (isAt === UIState.FillEditor
 			|| this.state.current.ui.shapeEditor.editorMode === UIShapeEditorMode.Fill) {
-				// console.log('HANDLING WITH FILL EDITOR');
-				return this.colorPickerEvents;
-			} else if (this.state.current.ui.at === UIState.ShapeEditor) {
-				// console.log('HANDLING WITH SHAPE EDITOR');
-				return this.shapeEditorEvents;
-			} else if (this.state.current.ui.at === UIState.Publish) {
-				return this.publishEvents;
-			} else if (this.state.current.ui.at === UIState.Export) {
-				return this.exportEvents;
-			}
+			// console.log('HANDLING WITH FILL EDITOR');
+			return this.colorPickerEvents;
+		} else if (isAt === UIState.ShapeEditor) {
+			// console.log('HANDLING WITH SHAPE EDITOR');
+			return this.shapeEditorEvents;
+		} else if (isAt === UIState.Publish || this.state.current.ui.at === UIState.PublishPreview) {
+			return this.publishEvents;
+		} else if (isAt === UIState.Export) {
+			return this.exportEvents;
+		} else if (isAt === UIState.PatternAdjustEnd || isAt === UIState.PatternAdjustStart) {
+			return this.hudEvents;
+		}
 		return this.sceneEvents;
 	}
 }

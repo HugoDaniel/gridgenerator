@@ -166,6 +166,8 @@ export class TextureShape { // per layer
 		this.maxContainedTextures = this.maxTextureSize / this.textureSize;
 		this.idUnit = new VectorMap();
 		this.units = [new Texture(this.textureSize, this.maxTextureSize, 0)];
+		// Texture Atlas is computed in a WebWorker
+		// The texture buffer is sent in postMessage as a Transferable object
 		const workerCode = new Blob([`
 		onmessage = function(e) {
 			const { num, images, size, ammount, unitIndex } = e.data;

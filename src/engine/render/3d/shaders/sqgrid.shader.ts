@@ -250,7 +250,7 @@ export class SqGridShader {
 		float offX = mod((iOffset.x / iResolution.x) * 2.0, len.x);
 		float offY = mod((iOffset.y / iResolution.y) * 2.0, len.y);
 		float faceX = -1.0 + mod(face, (numSquares.x)) * len.x - len.x / 2.0 - offX;
-		float faceY = -1.0 + ceil(face / (numSquares.x)) * len.y - len.y / 2.0 - offY - step(0.0, iOffset.y) * len.y;
+		float faceY = -1.0 + ceil(face / (numSquares.x)) * len.y - len.y / 2.0 - offY;
 		float x = faceX + aVertexPosition.x * len.x / 2.0;
 		float y = faceY + aVertexPosition.y * len.y / 2.0;
 		float faceVisible = step(face, (numSquares.x) * (numSquares.y));
