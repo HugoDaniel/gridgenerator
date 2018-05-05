@@ -109,7 +109,6 @@ export class HelpersGL {
 	}
 	public static textureArray(gl: WebGLRenderingContext, _texture: ArrayBufferView, width: number, height: number, doMipMap: boolean = false): WebGLTexture {
 		const toGPU = (_gl: WebGLRenderingContext) => {
-			console.log('MALLOC TEXTURE WITH ', width, height);
 			return _gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, width, height, 0, gl.RGBA, gl.UNSIGNED_BYTE, _texture);
 		};
 		return HelpersGL.putTextureInGPU(gl, toGPU, doMipMap);

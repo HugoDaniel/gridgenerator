@@ -113,6 +113,7 @@ export class VectorMap<T> {
 		this.tree.set(x, ys);
 		return this;
 	}
+	/** Adds a value into the VectorMap x,y position set by Vector2D v */
 	public addValue(v: Vector2D, value: T): VectorMap<T> {
 		return this.addXY(v.x, v.y, value);
 	}

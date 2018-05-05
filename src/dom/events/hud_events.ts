@@ -135,13 +135,7 @@ export class HUDEvents implements IEventHandler {
 					this.refresher.refreshStateAndDOM(this.state);
 				}
 			});
-			// update the runtime textures and the clipspace info
-			Runtime.resetClipSpace(this.runtime, this.state.current).then((_rt) => {
-				// update the DOM
-				this.refresher.refreshAll(_rt, this.state);
-				// redraw gl scene
-				this.redrawScene();
-			});
+			this.shape2Texture();
 		};
 		this.onSaveShape = () => {
 			const shapeId = this.state.current.newShapeId(this.runtime.rnd);
@@ -157,12 +151,7 @@ export class HUDEvents implements IEventHandler {
 					this.refresher.refreshStateAndDOM(this.state);
 				}
 			});
-			// update the runtime textures and clipspace
-			Runtime.resetClipSpace(this.runtime, this.state.current).then((_rt) => {
-				this.refresher.refreshAll(_rt, this.state);
-				// redraw gl scene
-				this.redrawScene();
-			});
+			this.shape2Texture();
 			return null;
 		};
 		this.onSelectShape = (shapeId: ShapeId) => {
@@ -271,7 +260,6 @@ export class HUDEvents implements IEventHandler {
 		};
 		this.onMouseDown = (e: MouseEvent) => {
 			e.preventDefault();
-			console.log('HUD DOWN');
 		};
 		this.onTouchStart = (e: TouchEvent) => {
 			e.preventDefault();
@@ -287,5 +275,20 @@ export class HUDEvents implements IEventHandler {
 		this.onTouchCancel = (e: TouchEvent) => {
 			e.preventDefault();
 		};
- 	}
+	}
+	/** Renders the shape into a GPU Texture and refreshes all the state */
+	private shape2Texture() {
+		const shape = this.state.current.selectedShape;
+		const shapeId = this.state.current.selectedShapeId;
+		const newFillSetId = this.state.current.selectedShape.selectedFillSet;
+		const size = this.runtime.getTextureSize(this.state.current.viewport);
+		const svg = this.state.current.fills.buildSVG(
+			shape.resolution, shape.getSelectedFills(), size, size);
+		this.runtime.addTexture(shapeId, newFillSetId, svg).then(() => {
+			// update the DOM
+			this.refresher.refreshAll(this.runtime, this.state);
+			// redraw gl scene
+			this.redrawScene();
+		});
+	}
 }

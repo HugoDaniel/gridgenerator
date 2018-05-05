@@ -1,9 +1,9 @@
 import { FatState, FillId, RGBColor, UIShapeEditorMode, Vector2D } from '../../data';
+import { ExportEditorMode } from '../../data/state/ui/export';
 import { Movement, Runtime } from '../../engine';
 import { getEventX, getEventY, IEventHandler } from '../common';
 import { IShapePointAttribs } from '../components/editor/shape/point';
 import { Refresher } from './refresher';
-import { ExportEditorMode } from '../../data/state/ui/export';
 
 export class ShapeEditorEvents implements IEventHandler {
 	public runtime: Runtime;
@@ -47,7 +47,6 @@ export class ShapeEditorEvents implements IEventHandler {
 			// this.onMovement(getEventX(e), getEventY(e));
 		};
 		this.onTouchStart = (e) => {
-			console.log('AHNDLING START TOUCH', e);
 			const curMode = this.state.current.ui.shapeEditor.editorMode;
 			if (curMode === UIShapeEditorMode.Shape) {
 				const touch = e.touches.item(0);

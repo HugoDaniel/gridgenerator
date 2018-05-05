@@ -30,7 +30,6 @@ export interface IEventHandler {
 	onTouchEnd: (e: TouchEvent) => void;
 	onTouchCancel: (e: TouchEvent) => void;
 }
-
 export function svgInit(className: string, size: number, zoom: number, margin: number = 10) {
 	const m = margin;
 	const dimension = zoom !== 0 ? `${size * zoom}px` : `${size}px`;

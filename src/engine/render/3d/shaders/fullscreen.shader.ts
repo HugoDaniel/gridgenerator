@@ -80,6 +80,7 @@ export class FullscreenShader {
 			this.gl.vertexAttribPointer(this.shader.loc.attrib('aTextureCoord'), this.buffers[2].itemSize, this.gl.FLOAT, false, 0, 0);
 			this.gl.activeTexture(this.gl.TEXTURE0);
 			this.gl.bindTexture(this.gl.TEXTURE_2D, this.textures[0]);
+			// console.log('TEXTURE AT 0', this.debugTextures.getGLTexture(0))
 			// this.gl.bindTexture(this.gl.TEXTURE_2D, this.debugTextures.getGLTexture(0));
 			this.shader.loc.setSamplerUniform(this.gl, 'uSampler', 0);
 			this.setUniforms();

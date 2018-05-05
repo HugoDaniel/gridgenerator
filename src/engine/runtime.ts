@@ -1,4 +1,4 @@
-import { pow2AtLeast, RandomArray, ShapeFillSetId, ShapeId, State } from '../data';
+import { pow2AtLeast, RandomArray, ShapeFillSetId, ShapeId, State, Viewport } from '../data';
 import { CanvasContext, ColorPickerCanvasCtx, WebGLContext } from './render/context';
 import { ClipSpace } from './runtime/clipspace';
 import { Device } from './runtime/device';
@@ -6,7 +6,8 @@ import { DOMRects } from './runtime/dom_rects';
 import { InitialStateWorker } from './runtime/initialStateWorker';
 import { Loading } from './runtime/loading';
 import { Movement } from './runtime/movement';
-import { Texture, TextureManager } from './runtime/texture_manager';
+import { TextureAtlas } from './runtime/texture_atlas';
+import { TextureManager } from './runtime/texture_manager';
 export { RuntimeMediaSize } from './runtime/device';
 import { Token } from './net/token';
 
@@ -60,9 +61,6 @@ export class Runtime {
 	}
 	public static newProject(rt: Runtime, state: Readonly<State>) {
 		if (rt.webglCtx) {
-			if (rt.textures) {
-				rt.textures.resetUnits();
-			}
 			return Runtime.resetClipSpace(rt, state);
 		}
 		return Promise.resolve(rt);
@@ -119,7 +117,7 @@ export class Runtime {
 		return r;
 	}
 	/** Inserts the svg in the texture atlas */
-	public static texturize(rt: Runtime, shapeId: ShapeId, shapeFillId: ShapeFillSetId, svg: string): Promise<Texture> {
+	public static texturize(rt: Runtime, shapeId: ShapeId, shapeFillId: ShapeFillSetId, svg: string): Promise<TextureAtlas> {
 		if (!rt.webglCtx) {
 			// tslint:disable-next-line:no-console
 			console.trace();
@@ -142,26 +140,38 @@ export class Runtime {
 		// put the svg in a texture altas:
 		return rt.textures.texturize(img, canvas, shapeId, shapeFillId, svg);
 	}
+	public getTextureSize(v: Viewport) {
+		if (this.webglCtx) {
+			return v.maxSize * pow2AtLeast(Math.ceil(this.webglCtx.ratio));
+		} else {
+			return v.maxSize;
+		}
+	}
 	/** Texturizes all the shapes present in the provided state ShapeMap; resets the runtime TextureManager to those textures */
-	public updateAllTextures(state: Readonly<State>): Promise<Texture[]> {
+	public updateAllTextures(state: Readonly<State>): Promise<TextureAtlas[]> {
 		if (!this.webglCtx) {
 			// tslint:disable-next-line:no-console
 			console.trace();
 			throw new Error('Cannot updateAllTextures without a WebGL context');
 		}
-		const result: Array<Promise<Texture>> = [];
+		const result: Array<Promise<TextureAtlas>> = [];
 		const ids: Array<[number, number, string]> = new Array();
 		// ^ [shapeId, shapeFillSetId, svg string]
-		const size = state.viewport.maxSize * pow2AtLeast(Math.ceil(this.webglCtx.ratio));
+		const size = this.getTextureSize(state.viewport);
 		// ^ adjust to screen ratios that are not power of 2
-		this.textures = new TextureManager(size, this.webglCtx.maxNumTextures, this.webglCtx.maxTextureSize);
+		if (this.textures) {
+			// textures were already allocated, use this memory, just reset it
+			this.textures.resetUnits();
+		} else {
+			this.textures = new TextureManager(size, this.webglCtx.maxNumTextures, this.webglCtx.maxTextureSize / 4);
+		}
 		// build the svgs and id's array:
 		for (const  [shapeId, shape] of state.shapes.entries()) {
 			for (const [shapeFillSetId, fillMap] of shape.entries()) {
 				ids.push([shapeId, shapeFillSetId, state.fills.buildSVG(shape.resolution, fillMap, size, size)]);
 			}
 		}
-		const r: Promise<Texture[]> = new Promise( async (resolve, reject) => {
+		const r: Promise<TextureAtlas[]> = new Promise( async (resolve, reject) => {
 			// place each svg in texture atlas in sequence!
 			// (this must be done in sequece, otherwise the image.onload gets overwritten)
 			for (const [shapeId, shapeFillId, svg] of ids) {
@@ -175,5 +185,13 @@ export class Runtime {
 			}
 		});
 		return r;
+	}
+	public addTexture(shapeId: ShapeId, shapeFillId: ShapeFillSetId, svg: string) {
+		return Runtime.texturize(this, shapeId, shapeFillId, svg).then(() => {
+			if (!this.textures || !this.webglCtx) {
+				return Promise.resolve([]);
+			}
+			return this.textures.uploadToVRAM(this.webglCtx.ctx);
+		});
 	}
 }

@@ -1,31 +1,31 @@
 import { Vector2D } from '../../data';
-
-const enum TextureAction { Alloc = 'Alloc', Add = 'Add', Remove = 'Remove', Update = 'Update' }
+export interface ITextureChange {
+	action: TextureAction;
+}
+export type TextureChange = TextureChangeUpdate | TextureChangeAlloc;
+export const enum TextureAction { Alloc = 'Alloc', Update = 'Update' }
 /** Allocate memory on the GPU for the texture atlas */
-class TextureChangeAlloc {
+export class TextureChangeAlloc implements ITextureChange {
 	public readonly action: TextureAction = TextureAction.Alloc;
 	constructor(
-		readonly emptyAtlas: Uint8Array
+		readonly emptyAtlas: Uint8Array,
+		readonly width: number,
+		readonly height: number
 	) {}
 }
-/** Add a new SVG to the atlas */
-class TextureChangeAdd {
-	public readonly action: TextureAction = TextureAction.Add;
-	constructor(
-		readonly id: Vector2D, readonly svg: string
-	) {}
-}
-/** Remove an existing SVG from the atlas */
-class TextureChangeRemove {
-	public readonly action: TextureAction = TextureAction.Remove;
-	constructor(
-		readonly id: Vector2D
-	) {}
-}
-/** Updates an existing SVG on the atlas */
-class TextureChangeUpdate {
+/** Updates an existing space on the atlas */
+export class TextureChangeUpdate implements ITextureChange {
 	public readonly action: TextureAction = TextureAction.Update;
-	constructor(
-		readonly id: Vector2D, readonly svg: string
-	) {}
+	public readonly xoffset: number;
+	public readonly yoffset: number;
+	public readonly width: number;
+	public readonly height: number;
+	public readonly data: Uint8Array;
+	constructor(size: number, bottomLeftCoords: Vector2D, d: Uint8Array) {
+		this.width = size;
+		this.height = size;
+		this.xoffset = bottomLeftCoords.x;
+		this.yoffset = bottomLeftCoords.y;
+		this.data = d;
+	}
 }
