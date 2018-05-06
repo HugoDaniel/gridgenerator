@@ -262,7 +262,7 @@ export class GridGeneratorDOM extends Component<IGridGeneratorDOMProps, any> {
 		return (
 		<div style={{ cursor } }>
 			<Scene {...sceneProps} onComponentShouldUpdate={this.props.events.shouldUpdateScene as (lastProps: any, nextProps: any) => boolean} />
-			{ pattern
+			{ pattern && !canCloseEditor
 			? <Pattern
 					action={this.props.action}
 					className="absolute absolute top-0 left-0 z-1"

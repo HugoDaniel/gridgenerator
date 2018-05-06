@@ -223,6 +223,16 @@ export class HUDEvents implements IEventHandler {
 				}
 				// 3. update the ui with the clipspace pattern coords
 				this.state.hudUpdatePatternPos();
+				// 4. update the clipspace
+				if (this.state.current.currentLayer.pattern && this.runtime.textures) {
+					this.runtime.clipSpace.fromGrid(
+						this.state.current.viewport,
+						this.state.current.currentLayer,
+						this.runtime.textures,
+						true); // <- hide original grid
+					this.redrawScene();
+					this.refresher.refreshRuntimeOnly(this.runtime);
+				}
 			}
 			this.refresher.refreshStateAndDOM(this.state);
 		};
