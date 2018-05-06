@@ -235,6 +235,15 @@ export class HUDEvents implements IEventHandler {
 			e.preventDefault();
 			// stop adjusting the pattern
 			this.state.hudStopPatternAdjust();
+			// check for pattern, and hide the original grid
+			if (this.state.current.currentLayer.pattern && this.runtime.textures) {
+				this.runtime.clipSpace.fromGrid(
+					this.state.current.viewport,
+					this.state.current.currentLayer,
+					this.runtime.textures,
+					true); // <- hide original grid
+				this.redrawScene();
+			}
 			this.refresher.refreshStateAndDOM(this.state);
 		};
 		this.onMouseMove = (e: MouseEvent) => {
@@ -244,19 +253,7 @@ export class HUDEvents implements IEventHandler {
 			// a) find the grid element at the center of the screen
 			const layerX = v.squareLayerX() + v.squareX(e.clientX);
 			const layerY = v.squareLayerY() + v.squareX(e.clientY);
-			const pattern = this.state.current.pattern;
-			// only update if necessary:
-			if (pattern) {
-				if (this.state.current.ui.at === UIState.PatternAdjustEnd
-				&& (pattern.gridPattern.endX === layerX && pattern.gridPattern.endY === layerY)) {
-					return;
-				} else if (pattern.gridPattern.startX === layerX && pattern.gridPattern.startY === layerY) {
-					return;
-				}
-			}
-			this.state.hudPatternAdjust(layerX, layerY);
-			this.state.hudUpdatePatternPos();
-			this.refresher.refreshStateAndDOM(this.state);
+			this.patternify(layerX, layerY, false);
 		};
 		this.onMouseDown = (e: MouseEvent) => {
 			e.preventDefault();
@@ -266,10 +263,28 @@ export class HUDEvents implements IEventHandler {
 		};
 		this.onTouchMove = (e: TouchEvent) => {
 			e.preventDefault();
+			const v = this.state.current.viewport;
+			// 2. if no pattern was defined, set a 3x3 pattern on the center of the screen
+			// a) find the grid element at the center of the screen
+			const touch = e.touches.item(0);
+			if (touch) {
+				const layerX = v.squareLayerX() + v.squareX(touch.clientX);
+				const layerY = v.squareLayerY() + v.squareX(touch.clientY);
+				this.patternify(layerX, layerY, false);
+			}
 		};
 		this.onTouchEnd = (e: TouchEvent) => {
 			e.preventDefault();
 			this.state.hudStopPatternAdjust();
+			// check for pattern, and hide the original grid
+			if (this.state.current.currentLayer.pattern && this.runtime.textures) {
+				this.runtime.clipSpace.fromGrid(
+					this.state.current.viewport,
+					this.state.current.currentLayer,
+					this.runtime.textures,
+					true); // <- hide original grid
+				this.redrawScene();
+			}
 			this.refresher.refreshStateAndDOM(this.state);
 		};
 		this.onTouchCancel = (e: TouchEvent) => {
@@ -290,5 +305,29 @@ export class HUDEvents implements IEventHandler {
 			// redraw gl scene
 			this.redrawScene();
 		});
+	}
+	private patternify(layerX: number, layerY: number, show: boolean) {
+		const pattern = this.state.current.pattern;
+		// only update if necessary:
+		if (pattern) {
+			if (this.state.current.ui.at === UIState.PatternAdjustEnd
+			&& (pattern.gridPattern.endX === layerX && pattern.gridPattern.endY === layerY)) {
+				return;
+			} else if (pattern.gridPattern.startX === layerX && pattern.gridPattern.startY === layerY) {
+				return;
+			}
+		}
+		this.state.hudPatternAdjust(layerX, layerY);
+		this.state.hudUpdatePatternPos();
+		// check for pattern, and show the original grid
+		if (this.state.current.currentLayer.pattern && this.runtime.textures) {
+			this.runtime.clipSpace.fromGrid(
+				this.state.current.viewport,
+				this.state.current.currentLayer,
+				this.runtime.textures,
+				show); // <- show pattern grid (if true), or original grid (if false)
+			this.redrawScene();
+		}
+		this.refresher.refreshStateAndDOM(this.state);
 	}
 }

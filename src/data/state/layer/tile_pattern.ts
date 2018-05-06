@@ -27,4 +27,28 @@ export class TilePattern {
 	public static revive(o: TilePatternReviver) {
 		return new TilePattern(o.sx, o.sy, o.ex, o.ey);
 	}
+	public getX(layerX: number): number {
+		const w = (this.endX - this.startX); // width
+		// console.log(`s,e=${this.startX},${this.endX}; w,h=${w},${(this.endY - this.startY)}`);
+		if (layerX < this.startX) {
+			const dx = this.startX - layerX; // distance from startX
+			return this.startX + ((w - (dx % w)) % w);
+		} else if (layerX >= this.endX) {
+			const dx = layerX - this.endX;
+			return this.startX + (dx % w);
+		} else {
+			return layerX;
+		}
+	}
+	public getY(layerY: number): number {
+		const h = (this.endY - this.startY); // height
+		if (layerY < this.startY) {
+			const dy = this.startY - layerY; // distance from startY
+			return this.startY + ((h - (dy % h)) % h);
+		} else if (layerY >= this.endY) {
+			return this.startY + ((layerY - this.endY) % h);
+		} else {
+			return layerY;
+		}
+	}
 }

@@ -75,7 +75,7 @@ export class ClipSpace {
 			this.uv[u] = new Array(this.length);
 		}
 	}
-	public fromGrid(v: Viewport, grid: Grid, gpuTextures: TextureManager) {
+	public fromGrid(v: Viewport, grid: Grid, gpuTextures: TextureManager, isPatternOn?: boolean) {
 		this.clearTextures();
 		const u = v.unitSize;
 		const totalHorizSq = Math.ceil(this.w / u) + 2.0;
@@ -84,10 +84,17 @@ export class ClipSpace {
 		const signY = Math.sign(v.y);
 		const initX = v.squareLayerX();
 		const initY = v.squareLayerY();
+		const usePattern = isPatternOn; // isPatternOn;
 		// read the layer grid x,y painted elements
 		for (let x = 0; x < totalHorizSq; x++) {
 			for (let y = 0; y < totalVertSq; y++) {
-				const elem = grid.getElementAt(initX + x, initY + y);
+				let atX = initX + x;
+				let atY = initY + y;
+				if (usePattern && grid.pattern) {
+					atX = grid.pattern.getX(atX);
+					atY = grid.pattern.getY(atY);
+				}
+				const elem = grid.getElementAt(atX, atY);
 				if (!elem) {
 					continue;
 				}

@@ -225,12 +225,10 @@ export class SceneEvents implements IEventHandler {
 		};
 		this.onZoomIn = (e) => {
 			e.preventDefault();
-			console.log('zooming in');
 			this.clickZoom(1);
 		};
 		this.onZoomOut = (e) => {
 			e.preventDefault();
-			console.log('zooming out');
 			this.clickZoom(-1);
 		};
 		this.onCursorMove = (absX: number, absY: number) => {
@@ -306,8 +304,19 @@ export class SceneEvents implements IEventHandler {
 		if (!this.runtime.textures) {
 			throw new Error('Cannot paint: not runtime textures present');
 		}
-		this.runtime.clipSpace.paintAt(sqIndex, shapeId, shapeFillId, rot, this.runtime.textures);
-		this.redraw();
+		// check for pattern (which requires a reset to the clipspace)
+		if (this.state.current.currentLayer.pattern) {
+			this.runtime.clipSpace.fromGrid(
+				this.state.current.viewport,
+				this.state.current.currentLayer,
+				this.runtime.textures,
+				this.state.current.isPatternOn);
+			this.redraw();
+			this.refresher.refreshRuntimeOnly(this.runtime);
+		} else {
+			this.runtime.clipSpace.paintAt(sqIndex, shapeId, shapeFillId, rot, this.runtime.textures);
+			this.redraw();
+		}
 	}
 	private deleteAt(x: number, y: number, layerX: number, layerY: number, shapeId: number, shapeFillId: number) {
 		this._state.sceneDelete(layerX, layerY);
@@ -315,8 +324,19 @@ export class SceneEvents implements IEventHandler {
 		if (!this.runtime.textures) {
 			throw new Error('Cannot delete: not runtime textures present');
 		}
-		this.runtime.clipSpace.deleteAt(sqIndex, shapeId, shapeFillId, this.runtime.textures);
-		this.redraw();
+		// check for pattern (which requires a reset to the clipspace)
+		if (this.state.current.currentLayer.pattern) {
+			this.runtime.clipSpace.fromGrid(
+				this.state.current.viewport,
+				this.state.current.currentLayer,
+				this.runtime.textures,
+				this.state.current.isPatternOn);
+			this.redraw();
+			this.refresher.refreshRuntimeOnly(this.runtime);
+		} else {
+			this.runtime.clipSpace.deleteAt(sqIndex, shapeId, shapeFillId, this.runtime.textures);
+			this.redraw();
+		}
 	}
 	private move(x: number, y: number) {
 		if (!this.startMove) {
@@ -400,10 +420,21 @@ export class SceneEvents implements IEventHandler {
 		this._state.sceneZoom(px, py, -ammount, cx, cy, ovx, ovy);
 		this.refresher.refreshStateOnly(this._state);
 		this.startZoom = new Vector2D(x, y);
-		Runtime.resetClipSpace(this.runtime, this._state.current, true).then((_rt: Runtime) => {
-			this.refresher.refreshAll(_rt, this._state);
+		// check for pattern (which requires a reset to the clipspace)
+		if (this.state.current.currentLayer.pattern && this.runtime.textures) {
+			this.runtime.clipSpace.fromGrid(
+				this.state.current.viewport,
+				this.state.current.currentLayer,
+				this.runtime.textures,
+				this.state.current.isPatternOn);
 			this.redraw();
-		});
+			this.refresher.refreshAll(this.runtime, this._state);
+		} else {
+			Runtime.resetClipSpace(this.runtime, this._state.current, true).then((_rt: Runtime) => {
+				this.refresher.refreshAll(_rt, this._state);
+				this.redraw();
+			});
+		}
 	}
 	get _scene() {
 		return this.scene;
