@@ -348,10 +348,15 @@ export class SceneEvents implements IEventHandler {
 		}
 		this._state.sceneMove(x - this.startMove.x, y - this.startMove.y);
 		// this.refresher.refreshStateOnly(this._state);
-		this.refresher.refreshStateAndDOM(this._state, UpdateAction.Pan);
+		if (this._state.current.isPatternOn) {
+			this.refresher.refreshStateAndDOM(this._state, UpdateAction.Pan);
+		} else {
+			this.refresher.refreshStateOnly(this._state);
+		}
 		this.startMove = new Vector2D(x, y);
 		Runtime.resetClipSpace(this.runtime, this._state.current, true).then((_rt: Runtime) => {
 			this.runtime = _rt;
+			this.refresher.refreshRuntimeOnly(_rt);
 			this.redraw();
 		});
 	}

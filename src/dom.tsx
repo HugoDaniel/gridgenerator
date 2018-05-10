@@ -136,8 +136,10 @@ export class GridGeneratorDOM extends Component<IGridGeneratorDOMProps, any> {
 			editorZ = 'z-2';
 			hudZ = 'z-1';
 		}
+		// const debugInfo = `TEXTURE SIZE: ${this.props.runtime.getTextureSize(state.viewport)}; DPR: ${this.props.runtime.device.dpr}`;
 		const canCloseEditor = state.ui.isEditorOnTop || state.ui.isEnteringEditor;
 		const hudProps: IHUDProps = {
+			title: state.ui.title,
 			action: this.props.action,
 			className: `absolute top-0 left-0 w-100 h-100 ${hudZ}`,
 			isLoggedIn: !(runtime.token === undefined || runtime.token === null),

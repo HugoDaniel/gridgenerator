@@ -74,8 +74,9 @@ class Main {
 			this.newProject.bind(this)
 		);
 		this.events = new Events(this.runtime, this.state, this.meander, this.net, this.projects, this.player, refresher);
-		this.debug = new Debug(false, this.runtime, this.events, this.state);
-		//                     ^ set to false on production
+		// @ts-ignore
+		this.debug = new Debug(process.env.NODE_ENV === 'development', this.runtime, this.events, this.state);
+		//                     ^ false on production
 	}
 	public setMeander(m: Meander): void {
 		this.meander = m;
