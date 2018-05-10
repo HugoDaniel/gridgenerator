@@ -70,8 +70,8 @@ export class MeanderEvents {
 	public sessionExpired: () => void;
 	private goby: any;
 	// actions from outside:
-	public storeCurProj: () => void; // from ProjectEvents
-	public restorePrevProj: (id: number) => Promise<void>; // from ProjectEvents
+	// public storeCurProj: () => void; // from ProjectEvents
+	// public restorePrevProj: (id: number) => Promise<void>; // from ProjectEvents
 	public refreshProjs: (projs: StoredProject[], closeCurrent?: boolean) => void; // from ProjectEvents
 	public getProject: (id: number) => StoredProject | undefined;
 	public reviveProj: (id: number) => Promise<Project>;
@@ -82,8 +82,8 @@ export class MeanderEvents {
 		this.meander = m;
 		this.net = net;
 		this.refresher = refresher;
-		this.storeCurProj = storeCurProj;
-		this.restorePrevProj = restorePrevProj;
+		// this.storeCurProj = storeCurProj;
+		// this.restorePrevProj = restorePrevProj;
 		this.refreshProjs = refreshProjs;
 		this.reviveProj = reviveProj;
 		this.reviveNetProj = reviveNetProj;
@@ -179,11 +179,13 @@ export class MeanderEvents {
 							this.updateDOM();
 						});
 						// restore the project
+						/*
 						this.restorePrevProj(p.id).then(() => {
 							this.meander.profile.stopLoading('');
 							this.updateDOM();
 							resolve();
 						}, this.updateDOM);
+						*/
 					} else {
 						// console.log('NO PROFILE ID');
 						this.meander.profile.errorLoading('Profile with no ID. Please get in contact with us.');
@@ -286,7 +288,7 @@ export class MeanderEvents {
 			this.verifyEmail(window.location.search);
 		};
 		this.onRouteLogin = () => {
-			this.storeCurProj();
+			// this.storeCurProj();
 			this.meander.course = MeanderCourse.Login;
 		};
 		this.onRouteLoginSocial = () => {
@@ -338,11 +340,17 @@ export class MeanderEvents {
 					// get the client token and display the drop-in
 					this.net.billing.getClientToken(this.runtime.token).then((resp) => {
 						this.meander.profile.billingToken = resp;
+						console.log('GOT BRAINTREE RESP', resp);
 						// set the drop in
 						braintree.create({
-							authorization: resp,
-							container: '#braintree-container'
+							authorization: resp, // 'production_mdp59rxw_z64km74wv5cqbck3', // resp,
+							container: '#braintree-container',
+							dataCollector: {
+								kount: true
+							}
 						}, (createErr, instance) => {
+							console.log('CREAATE ERR', createErr);
+							console.log('INSTANCE', instance);
 							// set the profile billing instance
 							this.meander.profile.billingInstance = instance;
 							// stop loading

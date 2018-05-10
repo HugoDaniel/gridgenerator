@@ -31,7 +31,7 @@ export const PublishPreview = (props: IPublishPreviewProps) => {
 		w = Math.floor(h * vbh / vbw);
 	}
 	const xlink = { 'xmlns:xlink': 'http://www.w3.org/1999/xlink' };
-	const projectUrl = `https://gridgenerator.com/grid/${props.project.id}`;
+	const projectUrl = `https://gridgenerator.com/p/${props.project.id}`;
 	return (
 		<div
 			style={{ height: props.height }}
@@ -66,9 +66,8 @@ export const PublishPreview = (props: IPublishPreviewProps) => {
 						height={`${h}px`}
 						shape-rendering="crispEdges"
 						viewBox={`0 0 ${vbw} ${vbh}`}
-							dangerouslySetInnerHTML={ { __html: props.project.svg } }
-					>
-					</svg>
+						dangerouslySetInnerHTML={ { __html: props.project.svg } }
+					/>
 				</div>
 				<h2 className="mt4 mb3">
 					Share

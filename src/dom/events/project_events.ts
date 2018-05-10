@@ -48,15 +48,18 @@ export class ProjectEvents {
 			return Promise.reject(`No such project ${id}`);
 		};
 		this.beforeLogin = () => {
+			/*
 			console.log('beforeLogin, storing state');
 			const _s = this.state;
 			localStorage.setItem('beforeLoginFat', JSON.stringify(_s.toJSON()));
 			localStorage.setItem('beforeLoginState', JSON.stringify(_s.current.toJSON()));
 			localStorage.setItem('beforeLoginProj', JSON.stringify(this.projects.current.toJSON()));
 			console.log('beforeLogin, state stored');
+			*/
 		};
 		this.afterLogin = (id: number) => {
 			return new Promise( (resolve, reject) => {
+				/*
 				// restore from localStorage
 				const storedFat = localStorage.getItem('beforeLoginFat');
 				const storedState = localStorage.getItem('beforeLoginState');
@@ -82,7 +85,8 @@ export class ProjectEvents {
 					this.refresher.refreshAll(newRuntime, newState);
 					resolve();
 					return;
-				});
+				})
+				;*/
 			});
 		};
 		const workerCode = new Blob([`

@@ -132,10 +132,12 @@ export class UI {
 		} else {
 			result.toolsSubmenus = new ToolsSubmenus();
 		}
-		result.patterns = new Map(
-			o.p.map(([lid, pat]) =>
-				[lid, new ClipPattern(TilePattern.revive(pat))]as [LayerId, ClipPattern])
-		);
+		if (o.p) {
+			result.patterns = new Map(
+				o.p.map(([lid, pat]) =>
+					[lid, new ClipPattern(TilePattern.revive(pat))]as [LayerId, ClipPattern])
+			);
+		}
 		return result;
 	}
 	get currentTool(): ToolsMenuId {

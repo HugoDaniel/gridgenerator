@@ -12,7 +12,7 @@ export class Debug {
 	public showTextures: () => void;
 	constructor(enabled: boolean, rt: Runtime, events: Events, state: FatState) {
 		this.updateNumber = 0;
-		enabled = enabled;
+		this.enabled = enabled;
 		this.runtime = rt;
 		this.events = events;
 		this.fat = state;

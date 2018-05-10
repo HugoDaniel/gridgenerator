@@ -55,6 +55,7 @@ export function MeanderLogin(props: IMeanderLoginProps) {
 								</a>
 							</div>
 						: <div className="social">
+								<p className="f7 tc ttu gray">or</p>
 								<a className="f4 fw6 black link dim" href="/auth/google">
 									<div className="b--black-10 pa2 link f7 br1 transition-o ba pointer near-white dim o-100 flex items-center justify-between">
 										<img className="w1 h1" src={google_icon} alt="google icon" />

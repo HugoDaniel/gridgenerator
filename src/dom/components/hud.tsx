@@ -10,6 +10,7 @@ import { ISubmenuZoomProps, SubmenuZoom } from './hud/submenu_zoom';
 import { IToolsMenuProps, ToolsMenu } from './hud/tools_menu';
 import { IZoomMenuProps, ZoomMenu } from './hud/zoom_menu';
 export interface IHUDProps {
+	title: string;
 	action?: UpdateAction;
 	className?: string;
 	ui: UI;
@@ -143,7 +144,7 @@ export const HUD = (props: IHUDProps) => {
 			<h1
 				className={`mb0 lh-title f6 w-100 tc sans-serif ttu black transition-transform ${props.ui.at === UIState.Project ? '' : 'translate-y--3'}`}
 				$HasVNodeChildren>
-					{createTextVNode(props.ui.title)}
+					{createTextVNode(props.title)}
 			</h1>
 			<FeaturesMenu {...featuresMenuProps} />
 			<ToolsMenu {...toolsMenuProps} />
