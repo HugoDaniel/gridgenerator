@@ -1,4 +1,5 @@
 import { FatState, GridElement, ToolsMenuId, Vector2D, Viewport } from '../../data';
+import { UICursor } from '../../data/state/ui/cursor';
 import { CanvasContext, ClipSpace, Runtime, ScenePainter, WebGLContext } from '../../engine';
 import { IEventHandler, UpdateAction } from '../common';
 import { Refresher } from './refresher';
@@ -162,6 +163,8 @@ export class SceneEvents implements IEventHandler {
 		};
 		this.onMouseUp = (e: MouseEvent) => {
 			this.stopAction();
+			// update mouse cursor if needed
+			this.updateMouseIcon(e.clientX, e.clientY);
 		};
 		this.onMouseDown = (e: MouseEvent) => {
 			// set the state for the grid action
@@ -211,10 +214,12 @@ export class SceneEvents implements IEventHandler {
 			// Actions are performed bellow:
 			if (isElemDiff && (this.curAction === null || this.curAction === SceneAction.Paint)) {
 				this.paintAt(screenX, screenY, layerX, layerY, shapeId, shapeFillId, rot);
-			} else if (isElemEq && (this.curAction === null || this.curAction === SceneAction.DeleteFill)) {
+			// } else if (isElemEq && (this.curAction === null || this.curAction === SceneAction.DeleteFill)) {
+			} else if (isElemEq && this.curAction === null) {
 				// delete while painting (only the current fill is deleted)
-				this.curAction = SceneAction.DeleteFill;
-				this.deleteAt(screenX, screenY, layerX, layerY, shapeId, shapeFillId);
+				// this.curAction = SceneAction.DeleteFill;
+				// this.deleteAt(screenX, screenY, layerX, layerY, shapeId, shapeFillId);
+				this.rotateAt(screenX, screenY, layerX, layerY, shapeId, shapeFillId);
 			} else if (this.curAction === SceneAction.Delete) {
 				// delete
 				this.curAction = SceneAction.Delete;
@@ -239,9 +244,9 @@ export class SceneEvents implements IEventHandler {
 			const updated = this.updateCursor(absX, absY, view);
 			if (updated) {
 				const sqIndex = ClipSpace.gridIndex(absX, absY, view, this.runtime.width);
-				// const c = this._state.current.currentLayer.cursor;
-				// DEBUG: console.log(`(${c[0]}, ${c[1]})\t->\t${sqIndex}\t(${Math.ceil(sqIndex)})`);
 				this.scene.cursorMove(sqIndex);
+				// update mouse cursor if needed
+				this.updateMouseIcon(absX, absY);
 			}
 		};
 		this.reset = () => {
@@ -269,6 +274,38 @@ export class SceneEvents implements IEventHandler {
 		this._state = s;
 		if (this.scene) {
 			this.scene.state = s.current;
+		}
+	}
+	private updateMouseIcon(absX: number, absY: number) {
+		const view = this._state.current.viewport;
+		const grid = this._state.current.currentLayer;
+		const shapeId = grid.selectedShape;
+		const shapeFillId = this._state.current.selectedShape.selectedFillSet;
+		const rot = grid.getShapeRotation(shapeId);
+		const x = view.squareLayerX() + view.squareX(absX);
+		const y = view.squareLayerY() + view.squareY(absY);
+		const layerElem = grid.getElementAt(x, y);
+		// conditions to check the action to perform
+		const isElemDiff = !layerElem || layerElem.shapeId !== shapeId || layerElem.fillSetId !== shapeFillId || layerElem.rotation !== rot;
+		const isElemEq = layerElem && layerElem.shapeId === shapeId && layerElem.fillSetId === shapeFillId && layerElem.rotation === rot;
+		// isElemEq can be undefined
+		const toolId = this._state.current.ui.currentTool;
+		const canRotate =
+			toolId !== ToolsMenuId.Move &&
+			toolId !== ToolsMenuId.Delete &&
+			toolId !== ToolsMenuId.Zoom;
+		if (isElemEq && canRotate) {
+			// set cursor to rotation
+			if (this._state.current.ui.cursorHandler.cursor !== UICursor.Rotate) {
+				this._state.hudMouseCursorRotate();
+				this.refresher.refreshStateAndDOM(this._state);
+			}
+		} else {
+			const ui = this._state.current.ui;
+			if (ui.cursorHandler.cursor !== ui.currentToolMouseIcon()) {
+				this._state.hudMouseCursorFromTool();
+				this.refresher.refreshStateAndDOM(this._state);
+			}
 		}
 	}
 	/** Updates cursor if necessary, returns true if an update was done */
@@ -317,6 +354,12 @@ export class SceneEvents implements IEventHandler {
 			this.runtime.clipSpace.paintAt(sqIndex, shapeId, shapeFillId, rot, this.runtime.textures);
 			this.redraw();
 		}
+	}
+	private rotateAt(x: number, y: number, layerX: number, layerY: number, shapeId: number, shapeFillId: number) {
+		this._state.hudRotateShape();
+		this.refresher.refreshStateAndDOM(this.state);
+		const grid = this._state.current.currentLayer;
+		this.paintAt(x, y, layerX, layerY, shapeId, shapeFillId, grid.getShapeRotation(shapeId));
 	}
 	private deleteAt(x: number, y: number, layerX: number, layerY: number, shapeId: number, shapeFillId: number) {
 		this._state.sceneDelete(layerX, layerY);

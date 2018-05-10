@@ -14,14 +14,6 @@ import { IMeanderProps, MeanderFull } from './dom/components/meander';
 import { Runtime, RuntimeMediaSize } from './engine';
 export { Refresher } from './dom/events/refresher';
 export { UpdateAction } from './dom/common';
-// @ts-ignore
-import cursor_eraser from './assets/icons/cursor-eraser.svg';
-// @ts-ignore
-import cursor_move from './assets/icons/cursor-move.svg';
-// @ts-ignore
-import cursor_paint from './assets/icons/cursor-pencil.svg';
-// @ts-ignore
-import cursor_zoom from './assets/icons/cursor-zoom.svg';
 import { IPatternProps, Pattern } from './dom/components/pattern';
 
 export interface IGridGeneratorDOMProps {
@@ -101,26 +93,8 @@ export class GridGeneratorDOM extends Component<IGridGeneratorDOMProps, any> {
 		removeMouse(domElem, this.props.events);
 		removeTouch(domElem, this.props.events);
 	}
-	private selectCursor(props: IGridGeneratorDOMProps, inProj: boolean): string | null {
-		if (inProj) {
-			if (props.state.ui.at === UIState.Project) {
-				switch (props.state.ui.toolsMenu.selected) {
-					case ToolsMenuId.Paint:
-					return `url(${cursor_paint}), auto`;
-					case ToolsMenuId.Delete:
-					return `url(${cursor_eraser}), auto`;
-					case ToolsMenuId.Move:
-					return `url(${cursor_move}), auto`;
-					case ToolsMenuId.Zoom:
-					return `url(${cursor_zoom}), auto`;
-
-					// add more here
-				}
-			} else {
-				return `url(${cursor_paint}), auto`;
-			}
-		}
-		return null;
+	private selectCursor(props: IGridGeneratorDOMProps, inProj: boolean): string {
+		return props.state.ui.cursorHandler.iconURL();
 	}
 	public render() {
 		const state: Readonly<State> = this.props.state;

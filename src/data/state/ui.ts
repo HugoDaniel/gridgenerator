@@ -6,6 +6,7 @@ import { Path } from './shape/path';
 import { Shape, ShapeFillSetId } from './shape/shape';
 import { ShapeId, ShapeMap } from './shape_map';
 import { ClipPattern } from './ui/clip_pattern';
+import { UICursor, UICursorHandler } from './ui/cursor';
 import { DefaultFeaturesMenu, DefaultMainMenu, DefaultToolsMenu, FeaturesMenuId, MainMenuId, ToolsMenuId } from './ui/defaults';
 import { UIExportEditor } from './ui/export';
 import { UIFillEditor, UIFillEditorReviver } from './ui/fill_editor';
@@ -48,6 +49,7 @@ export class UI {
 	public exportEditor: UIExportEditor;
 	public publishEditor: UIPublishEditor;
 	public patterns: Map<LayerId, ClipPattern>;
+	public cursorHandler: UICursorHandler;
 	constructor(grid?: Grid, shapesMap?: ShapeMap, fills?: FillMap) {
 		// allow for an empty uninitialized UI (useful to revive)
 		if (!grid || !shapesMap || !fills) {
@@ -77,6 +79,7 @@ export class UI {
 		this.publishEditor = new UIPublishEditor();
 		this.toolsSubmenus = new ToolsSubmenus();
 		this.patterns = new Map();
+		this.cursorHandler = new UICursorHandler();
 	}
 	public toJSON(): UIReviver {
 		return {
@@ -138,6 +141,7 @@ export class UI {
 					[lid, new ClipPattern(TilePattern.revive(pat))]as [LayerId, ClipPattern])
 			);
 		}
+		result.cursorHandler = new UICursorHandler();
 		return result;
 	}
 	get currentTool(): ToolsMenuId {
@@ -148,7 +152,27 @@ export class UI {
 			this.isZooming = false;
 		}
 		this.toolsMenu.selected = id;
+		this.cursorFromTool();
 		return this;
+	}
+	public currentToolMouseIcon(): UICursor {
+		return UICursorHandler.toolIcon(this.toolsMenu.selected);
+	}
+	private cursorFromTool() {
+		// update cursor icon:
+		switch (this.toolsMenu.selected) {
+			case ToolsMenuId.Delete:
+			this.cursorHandler.cursor = UICursor.Delete;
+			break;
+			case ToolsMenuId.Move:
+			this.cursorHandler.cursor = UICursor.Move;
+			break;
+			case ToolsMenuId.Zoom:
+			this.cursorHandler.cursor = UICursor.Zoom;
+			break;
+			default:
+			this.cursorHandler.cursor = UICursor.Paint;
+		}
 	}
 	public refreshMenus(_grid: Grid, _shapesMap: ShapeMap, svgs: Map<ShapeFillSetId, string>) {
 		const shapeIds = [..._grid.shapes.keys()];
@@ -242,6 +266,7 @@ export class UI {
 	public enterFeature(feature: FeaturesMenuId | string, grid: Grid, shapeOutline: string, shapeRes: number): UI {
 		this.at = this.stateFromFeature(feature);
 		const dim = grid.dimensions();
+		this.cursorHandler.cursor = UICursor.None;
 		this.initFeature(feature, dim, shapeOutline, shapeRes);
 		return this;
 	}
@@ -276,16 +301,19 @@ export class UI {
 	}
 	public closeFeatures(): UI {
 		this.at = UIState.Project;
+		this.cursorFromTool();
 		return this;
 	}
 	public enteringEditor(): UI {
 		this.isEnteringEditor = true;
 		this.isExitingEditor = false;
+		this.cursorHandler.cursor = UICursor.Paint;
 		return this;
 	}
 	public exitingEditor(): UI {
 		this.isExitingEditor = true;
 		this.isEnteringEditor = false;
+		this.cursorFromTool();
 		return this;
 	}
 	public editorStopAnim(): UI {

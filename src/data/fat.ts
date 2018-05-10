@@ -11,6 +11,7 @@ import { ShapeFillSetId } from './state/shape/shape';
 import { ShapeId } from './state/shape_map';
 import { UIState } from './state/ui';
 import { ClipPattern } from './state/ui/clip_pattern';
+import { UICursor } from './state/ui/cursor';
 import { ToolsMenuId, UIFillEditorColorMode } from './state/ui/defaults';
 import { UIFillEditor } from './state/ui/fill_editor';
 
@@ -567,6 +568,16 @@ export class FatState {
 	public hudStopPatternAdjust(): FatState {
 		this._state.ui.at = UIState.Project;
 		this.mod('hudStopPatternAdjust', null);
+		return this;
+	}
+	public hudMouseCursorRotate(): FatState {
+		this._state.ui.cursorHandler.cursor = UICursor.Rotate;
+		this.mod('hudMouseCursorRotate', null);
+		return this;
+	}
+	public hudMouseCursorFromTool(): FatState {
+		this._state.ui.cursorHandler.cursor = this._state.ui.currentToolMouseIcon();
+		this.mod('hudMouseCursorFromTool', null);
 		return this;
 	}
 	//#endregion

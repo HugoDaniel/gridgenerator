@@ -154,7 +154,7 @@ export class TextureAtlas {
 				case TextureAction.Update:
 				this.gpuTextureUpdate(gl, c as TextureChangeUpdate); break;
 			}
-			HelpersGL.checkError(gl);
+			// HelpersGL.checkError(gl);
 		}
 		// clear the changes array:
 		this.changed = false;
