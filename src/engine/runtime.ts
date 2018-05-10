@@ -141,11 +141,15 @@ export class Runtime {
 		return rt.textures.texturize(img, canvas, shapeId, shapeFillId, svg);
 	}
 	public getTextureSize(v: Viewport) {
+		/*
 		if (this.webglCtx) {
-			return v.maxSize * pow2AtLeast(Math.ceil(this.webglCtx.ratio));
+			return pow2AtLeast(v.maxSize * this.webglCtx.ratio);
 		} else {
-			return v.maxSize;
+			return pow2AtLeast(v.maxSize * (this.device.dpr / 100));
 		}
+		*/
+		// return pow2AtLeast(v.maxSize * (this.device.dpr / 100));
+		return v.maxSize;
 	}
 	/** Texturizes all the shapes present in the provided state ShapeMap; resets the runtime TextureManager to those textures */
 	public updateAllTextures(state: Readonly<State>): Promise<TextureAtlas[]> {
@@ -163,7 +167,7 @@ export class Runtime {
 			// textures were already allocated, use this memory, just reset it
 			this.textures.resetUnits();
 		} else {
-			this.textures = new TextureManager(size, this.webglCtx.maxNumTextures, this.webglCtx.maxTextureSize / 4);
+			this.textures = new TextureManager(this.device.dpr / 100, size, this.webglCtx.maxNumTextures, this.webglCtx.maxTextureSize / 4);
 		}
 		// build the svgs and id's array:
 		for (const  [shapeId, shape] of state.shapes.entries()) {

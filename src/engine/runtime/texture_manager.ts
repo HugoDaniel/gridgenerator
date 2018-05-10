@@ -13,14 +13,16 @@ export class TextureManager {
 	private readonly emptyAtlas: Uint8Array;
 	private readonly emptySingleTexture: Uint8Array;
 	public idUnit: VectorMap<number>; // the TU index for this (shapeId, shapeFillId)
-	constructor(singleTextureSize: number, textureUnits: number, maxTextureSize: number) {
+	private readonly dpr: number;
+	constructor(dpr: number, singleTextureSize: number, textureUnits: number, maxTextureSize: number) {
 		this.singleTextureSize = singleTextureSize;
 		this.textureUnitsNum = textureUnits;
 		this.atlasTextureSize = maxTextureSize;
+		this.dpr = dpr;
 		this.emptyAtlas = new Uint8Array(maxTextureSize * maxTextureSize * 4);
 		this.emptySingleTexture = new Uint8Array(singleTextureSize * singleTextureSize * 4);
 		this.idUnit = new VectorMap();
-		this.units = [new TextureAtlas(this.singleTextureSize, this.atlasTextureSize, 0, this.emptyAtlas)];
+		this.units = [new TextureAtlas(this.dpr, this.singleTextureSize, this.atlasTextureSize, 0, this.emptyAtlas)];
 	}
 	public getUnitIndex(shapeId: number, fillSetId: number): number {
 		for (let i = 0; i < this.units.length; i++) {
@@ -57,7 +59,7 @@ export class TextureManager {
 		if (!this.units[curUnit].hasSpace) {
 			// create a new texture atlas in a new texture unit
 			this.units.push(
-				new TextureAtlas(this.singleTextureSize, this.atlasTextureSize, curUnit + 1, this.emptyAtlas)
+				new TextureAtlas(this.dpr, this.singleTextureSize, this.atlasTextureSize, curUnit + 1, this.emptyAtlas)
 			);
 			curUnit++;
 		}

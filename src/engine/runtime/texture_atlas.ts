@@ -28,14 +28,16 @@ export class TextureAtlas {
 	/** the maximum number of textures that this atlas can hold */
 	public readonly lineSize: number;
 	public readonly glTextureSize: number;
+	public readonly dpr: number;
 	/** The WebGL texture atlas */
 	public texture: WebGLTexture | null;
 	/** Flag that indicates if changes need to be flushed to the GPU */
 	public changed: boolean;
 	/** List of changes yet to be flushed to the GPU */
 	public changes: TextureChange[];
-	constructor(svgSize: number, glTextureSize: number, unitIndex: number, emptyAtlas: Uint8Array) {
+	constructor(dpr: number, svgSize: number, glTextureSize: number, unitIndex: number, emptyAtlas: Uint8Array) {
 		this.unitIndex = unitIndex;
+		this.dpr = dpr;
 		this.texturesPerLine = glTextureSize / svgSize;
 		this.maxTextures = this.texturesPerLine * this.texturesPerLine;
 		this.uvCoords = new Array(this.maxTextures);
@@ -121,7 +123,7 @@ export class TextureAtlas {
 				this.at++;
 				// calculate the uv coord for this new texture
 				const num = this.texturesPerLine;
-				const uvLen = 1 / num;
+				const uvLen = (1 / num);
 				const ammount = this.maxTextures;
 				const u = index % num * uvLen;
 				const v = Math.floor(index / num) * uvLen;
@@ -169,13 +171,13 @@ export class TextureAtlas {
 				change.height,
 				false);
 			this.texture = webglTexId;
-			console.log('GPU: MALLOC TEXTURE ID', change);
+			// console.log('GPU: MALLOC TEXTURE ID', change);
 			resolve(webglTexId);
 		});
 	}
 	/** Updates a single texture space in the atlas texture on the GPU */
 	private gpuTextureUpdate(gl: WebGLRenderingContext, change: TextureChangeUpdate): Promise<void> {
-		console.log('GPU: UPDATE TEXTURE ', change);
+		// console.log('GPU: UPDATE TEXTURE ', change);
 		return new Promise((resolve, reject) => {
 			gl.bindTexture(gl.TEXTURE_2D, this.texture);
 			gl.texSubImage2D(

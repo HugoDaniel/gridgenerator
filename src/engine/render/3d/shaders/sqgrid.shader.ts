@@ -254,13 +254,6 @@ export class SqGridShader {
 		float x = faceX + aVertexPosition.x * len.x / 2.0;
 		float y = faceY + aVertexPosition.y * len.y / 2.0;
 		float faceVisible = step(face, (numSquares.x) * (numSquares.y));
-		/*
-		float faceX = -1.0 + mod(face, numSquares.x) * len.x + len.x / 2.0;
-		float faceY = -1.0 + floor(face / numSquares.x) * len.y + len.y / 2.0;
-		float x = faceX + aVertexPosition.x * len.x / 2.0;
-		float y = faceY + aVertexPosition.y * len.y / 2.0;
-		float faceVisible = step(face, numSquares.x * numSquares.y);
-		*/
 		gl_Position = vec4(x, -y, z, faceVisible);
 	}
 	`
