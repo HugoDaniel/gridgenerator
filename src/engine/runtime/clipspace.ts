@@ -49,7 +49,9 @@ export class ClipSpace {
 		this.uv[unitIndex][sqIndex] = undefined;
 	}
 	public paintAt(sqIndex: number, shapeId: number, shapeFillSetId: number, rotation: number, gpuTextures: TextureManager) {
-		// console.log('Painting at index', sqIndex);
+		if (!this.textures[sqIndex]) {
+			return;
+		}
 		// the whole screen is mapped into a texture array,
 		// get the corresponding texture for the sqIndex:
 		this.textures[sqIndex][0] = shapeId;

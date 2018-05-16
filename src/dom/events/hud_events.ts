@@ -194,6 +194,7 @@ export class HUDEvents implements IEventHandler {
 			this.refresher.refreshAll(this.runtime, this.state);
 		};
 		this.onSelectFill = (fillId: FillId) => {
+			console.log('SELECTING FILL', fillId);
 			this.state.hudSelectFill(fillId);
 			this.refresher.refreshAll(this.runtime, this.state);
 		};
