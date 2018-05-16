@@ -270,9 +270,9 @@ export class UI {
 		this.initFeature(feature, dim, shapeOutline, shapeRes);
 		return this;
 	}
-	public newShape(p: Path): UI {
+	public editShape(p: Path, fills: string[] = [], isExistingShape: boolean = false): UI {
 		this.at = UIState.ShapeEditor;
-		this.shapeEditor.fromPath(p, []);
+		this.shapeEditor.fromPath(p, fills, isExistingShape);
 		return this;
 	}
 	public closeNewShape(): UI {

@@ -24,6 +24,7 @@ export interface UIShapeEditorReviver {
 export enum UIShapeEditorMode { Shape = 1, Fill, TemplateSelector }
 export class UIShapeEditor {
 	public editorMode: UIShapeEditorMode;
+	public isExistingShape: boolean;
 	public primaryActionTitle: string;
 	// ^ button title
 	public clickablePts: VectorSet;
@@ -109,7 +110,7 @@ export class UIShapeEditor {
 		result.ambiguities = o.a;
 		return result;
 	}
-	public fromPath(p: Path, fills: string[]) {
+	public fromPath(p: Path, fills: string[], isExistingShape: boolean = false) {
 		this.editorMode = UIShapeEditorMode.Shape;
 		this.templatePath = p.template.pathString;
 		this.templateBase = p.template.baseString;
@@ -129,6 +130,12 @@ export class UIShapeEditor {
 		this.selectedAction = p.getSelectedInstance();
 		this.selectedShape = -1;
 		this.ambiguities = p.ambiguities;
+		this.isExistingShape = isExistingShape;
+		if (this.isExistingShape) {
+			this.primaryActionTitle = 'Change Shape';
+		} else {
+			this.primaryActionTitle = 'Create Shape';
+		}
 	}
 	public unselectShape(): void {
 		this.selectedShape = -1;

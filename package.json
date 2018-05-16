@@ -26,7 +26,7 @@
   "dependencies": {
     "braintree-web-drop-in": "^1.10.0",
     "goby": "^1.1.2",
-    "inferno": "^5.0.3"
+    "inferno": "^5.0.5"
   },
   "devDependencies": {
     "@types/chai": "^4.1.2",
@@ -37,7 +37,7 @@
     "mocha": "^4.1.0",
     "ts-transform-classcat": "^0.0.2",
     "ts-transform-inferno": "^1.8.2",
-    "tslint": "^5.9.1",
+    "tslint": "^5.10.0",
     "typescript": "^2.8.1",
     "uglify-es": "^3.3.10"
   }

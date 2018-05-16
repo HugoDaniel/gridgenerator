@@ -62,6 +62,15 @@ export class ColorMap {
 			return RGBColor.toHex(rgb);
 		}
 	}
+	/** Duplicates the color in the colorId, into the new Id provided */
+	public duplicateColor(colorId: ColorId, newId: ColorId) {
+		const color = this.colors.get(colorId);
+		if (!color) {
+			throw new Error(`Cannot duplicate colorId ${colorId}, not found`);
+		}
+		this.colors.set(newId, new RGBColor(
+			color.r, color.g, color.b, color.a));
+	}
 	public iter() {
 		return this.colors.entries();
 	}

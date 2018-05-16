@@ -47,7 +47,13 @@ export class HUDEvents implements IEventHandler {
 			this.refresher.refreshStateAndDOM(this.state);
 		};
 		this.onDiscardShape = () => {
-			this.state.hudDiscardNewShape();
+			// is editing an existing shape ?
+			const isExisting = this.state.current.ui.shapeEditor.isExistingShape;
+			if (!isExisting) {
+				this.state.hudDiscardNewShape();
+			} else {
+				this.state.hudDiscardEditedShape();
+			}
 			// update the DOM
 			this.refresher.refreshAll(this.runtime, this.state);
 			// start the scene animation
@@ -138,10 +144,28 @@ export class HUDEvents implements IEventHandler {
 			this.shape2Texture();
 		};
 		this.onSaveShape = () => {
-			const shapeId = this.state.current.newShapeId(this.runtime.rnd);
-			const shapeFillSetId = this.runtime.rnd.pop();
+			// is editing an existing shape ?
+			const isExisting = this.state.current.ui.shapeEditor.isExistingShape;
 			const type = this.state.current.currentLayerType;
-			this.state.hudSaveShape(type, shapeId, shapeFillSetId);
+			if (isExisting) {
+				const shapeId = this.state.current.selectedShapeId;
+				const shapeFillSetId = this.state.current.selectedShape.selectedFillSet;
+				// get the maximum needed fill ids to duplicate the whole shape fills
+				const rndIds = this.state.current.fills.rndFillIds(
+					this.runtime.rnd,
+					this.state.current.shapes.getMaxNeededDups(shapeId)
+				);
+				// save the shape transformations and fill ids
+				this.state.hudSaveShape(type, shapeId, shapeFillSetId, rndIds);
+				this.refresher.refreshStateOnly(this.state);
+				this.refresher.refreshRuntimeOnly(this.runtime);
+				this.shape2Texture(true);
+			} else {
+				const shapeId = this.state.current.newShapeId(this.runtime.rnd);
+				const shapeFillSetId = this.runtime.rnd.pop();
+				this.state.hudSaveShape(type, shapeId, shapeFillSetId, []);
+				this.shape2Texture();
+			}
 			// update the DOM (needed before calling closeScene(), to set z-index)
 			this.refresher.refreshAll(this.runtime, this.state);
 			// start the open/close scene column animation
@@ -151,7 +175,6 @@ export class HUDEvents implements IEventHandler {
 					this.refresher.refreshStateAndDOM(this.state);
 				}
 			});
-			this.shape2Texture();
 			return null;
 		};
 		this.onSelectShape = (shapeId: ShapeId) => {
@@ -161,7 +184,10 @@ export class HUDEvents implements IEventHandler {
 			if (this.state.current.ui.currentTool !== ToolsMenuId.Paint) {
 				this.state.hudSelectShape(shapeId);
 			} else if (shapeId === layer.selectedShape) {
-				this.state.hudRotateShape();
+				// Edit the shape
+				this.state.hudEnterEditShape();
+				// start the scene animation
+				this.openScene(this.showEditor);
 			} else {
 				this.state.hudSelectShape(shapeId);
 			}
@@ -301,19 +327,37 @@ export class HUDEvents implements IEventHandler {
 		};
 	}
 	/** Renders the shape into a GPU Texture and refreshes all the state */
-	private shape2Texture() {
+	private async shape2Texture(update: boolean = false) {
 		const shape = this.state.current.selectedShape;
 		const shapeId = this.state.current.selectedShapeId;
 		const newFillSetId = this.state.current.selectedShape.selectedFillSet;
 		const size = this.runtime.getTextureSize(this.state.current.viewport);
 		const svg = this.state.current.fills.buildSVG(
 			shape.resolution, shape.getSelectedFills(), size, size);
-		this.runtime.addTexture(shapeId, newFillSetId, svg).then(() => {
+		// console.log('GOT SVG', svg);
+		if (update) {
+			// update all the fill set ids of the shape
+			// now update all the fill set ids
+			for (const [fillSetId, m] of shape.entries()) {
+				await this.runtime.updateTexture(shapeId, fillSetId,
+					this.state.current.fills.buildSVG(
+						shape.resolution, m, size, size
+					)
+				);
+			}
+			// done updating all textures
 			// update the DOM
 			this.refresher.refreshAll(this.runtime, this.state);
 			// redraw gl scene
 			this.redrawScene();
-		});
+		} else {
+			this.runtime.addTexture(shapeId, newFillSetId, svg).then(() => {
+				// update the DOM
+				this.refresher.refreshAll(this.runtime, this.state);
+				// redraw gl scene
+				this.redrawScene();
+			});
+		}
 	}
 	private patternify(layerX: number, layerY: number, show: boolean) {
 		const pattern = this.state.current.pattern;

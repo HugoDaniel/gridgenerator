@@ -88,6 +88,14 @@ export class FillMap {
 		}
 		return obj.toString();
 	}
+	/** Transforms a Map of (d string, fillId) to a Map of (d string, fill string) */
+	public getShapeFills(fills: Map<string, number>): Map<string, string> {
+		const result = new Map();
+		for (const [d, fid] of fills.entries()) {
+			result.set(d, this.getFill(fid));
+		}
+		return result;
+	}
 	public getFillObj(fillId: FillId): RGBColor | undefined {
 		/* in the future:
 		const fillType = this.fills.get(fillId);
@@ -140,12 +148,61 @@ export class FillMap {
 		}
 		return result;
 	}
+	/** Generate n random fillId's */
+	public rndFillIds(rnd: RandomArray, n: number): number[] {
+		const result = [] as number[];
+		for (let i = 0; i < n; i++) {
+			result.push(this.rndFillId(rnd));
+		}
+		return result;
+	}
 	public rndFillId(rnd: RandomArray): number {
 		let fillId = rnd.pop();
 		while (this.fills.has(fillId)) {
 			fillId = rnd.pop();
 		}
 		return fillId;
+	}
+	public duplicateMany(original: FillId[], pool: number[], ammount: number): Map<FillId, FillId[]> {
+		const result = new Map() as Map<FillId, FillId[]>;
+		let poolAt = 0;
+		for (let i = 0; i < original.length; i++) {
+			const fid = original[i];
+			const dups = pool.slice(poolAt, ammount);
+			this.duplicateSingle(fid, ammount, pool.slice(poolAt, ammount));
+			result.set(fid, dups);
+			poolAt += ammount;
+		}
+		return result;
+	}
+	/** Duplicates a single FillId, n times */
+	public duplicateSingle(fillId: FillId, n: number, pool: number[]): void {
+		const t = this.fills.get(fillId);
+		if (!t) {
+			throw new Error(`Cannot duplicate FillId ${fillId}. Not Found.`);
+		}
+		let c;
+		switch (t) {
+			case FillType.Color:
+			c = this.colors.get(fillId);
+			break;
+			default:
+			return; // cannot duplicate this fill id
+		}
+		if (!c) {
+			throw new Error(`Cannot find the FillId ${fillId} content to duplicate.`);
+		}
+		for (let i = 0; (i < n || i < pool.length); i++) {
+			switch (t) {
+				case FillType.Color:
+				this.colors.registerColor(new RGBColor(
+					c.r, c.g, c.b, c.a
+				), pool[i]);
+				break;
+				default: continue;
+			}
+			this.fills.set(pool[i], t);
+		}
 	}
 	public newFills(fillIds: FillId[], colors: RGBColor[]): FillMap {
 		if (fillIds.length !== colors.length) {

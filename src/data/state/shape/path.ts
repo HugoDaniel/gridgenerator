@@ -2,6 +2,11 @@ import { VectorSet } from '../math/set';
 import { Vector2D } from '../math/vector';
 import { ElementType, Template, TemplateElement, TemplateElementReviver, TemplateReviver } from './template';
 
+export interface IPathFigure {
+	d: string;
+	fillId: number;
+	isHidden: boolean;
+}
 const enum ActionType { Move = 1, Line, HLine, VLine, Arc, Close }
 export interface PathActionReviver {
 	at: number;
@@ -798,5 +803,22 @@ export class Path {
 			result.set(this.svgs[i], this.fillIds[i]);
 		}
 		return result;
+	}
+	public svgForFillId(fillId: number) {
+		const index = this.fills.indexOf(fillId);
+		if (index >= 0) {
+			return this.svgs[index];
+		} else {
+			return null;
+		}
+	}
+	public *figures(): IterableIterator<IPathFigure> {
+		for (let i = 0; i < this.fills.length; i++) {
+			yield ({
+				d: this.svgs[i],
+				fillId: this.fills[i],
+				isHidden: this.hidden.has(i)
+			});
+		}
 	}
 }

@@ -329,9 +329,19 @@ export class FatState {
 		this._state.ui.enteringEditor();
 		this.mod('hudEnterFeature', [feature]);
 	}
+	public hudEnterEditShape() {
+		// get the path for the current selected shapeId/fillId
+		const p = this._state.shapes.editShape(
+			this._state.ui.shapesMenu.selected);
+		// get fill strings from the editor fill ids
+		this._state.ui.editShape(p, this._editorFills(), true);
+		// true because the editor is for an existing shape ^
+		this._state.ui.enteringEditor();
+		this.mod('hudEnterEditShape', null);
+	}
 	public hudEnterNewShape() {
 		const p = this._state.shapes.newShape(this._state.currentLayerType);
-		this._state.ui.newShape(p);
+		this._state.ui.editShape(p);
 		this._state.ui.enteringEditor();
 		this.mod('hudEnterNewShape', null);
 	}
@@ -343,6 +353,11 @@ export class FatState {
 		this._state.ui.exitingEditor();
 		this._state.ui.editorOnBottom();
 		this.mod('hudDiscardNewShape', null);
+	}
+	public hudDiscardEditedShape() {
+		this._state.ui.exitingEditor();
+		this._state.ui.editorOnBottom();
+		this.mod('hudDiscardEditedShape', null);
 	}
 	public hudEnterNewFill(shapeFillSetId: number, newFillIds: number[], colors: RGBColor[]): FatState {
 		// set the new fill id's colors
@@ -421,12 +436,26 @@ export class FatState {
 		this.mod('hudSaveNewFills', null);
 		return this;
 	}
-	public hudSaveShape(type: GridType, shapeId: ShapeId, shapeFillId: ShapeFillSetId): FatState {
-		// save the current editing shape
-		const shape = this._state.shapes.saveCurrentShape(type, shapeId, shapeFillId);
-		// add it to the current selected layer
+	public hudSaveShape(type: GridType, shapeId: ShapeId, shapeFillId: ShapeFillSetId, newFillIds: number[]): FatState {
+		// the current selected layer to update
 		const grid = this._state.layers.getSelected();
-		grid.addNewShape(shapeId, shapeFillId);
+		// is editing an existing shape ?
+		const isExisting = this._state.ui.shapeEditor.isExistingShape;
+		let shape;
+		if (isExisting) {
+			// analyze the new shape and return the transformations that need to be performed
+			const changes = this._state.shapes.getShapeChanges(shapeId);
+			// get the fill ids that need to be duplicated
+			const dupsNeeded = this._state.shapes.getNeededDups(shapeId, changes);
+			// duplicate the fillIds and create a map of duplicates
+			const dups = this._state.fills.duplicateMany(dupsNeeded.fillIds, newFillIds, dupsNeeded.size);
+			// update the current editing shape
+			shape = this._state.shapes.saveUpdatedShape(type, shapeId, shapeFillId, dups, changes);
+		} else {
+			// save the current editing shape
+			shape = this._state.shapes.saveNewShape(type, shapeId, shapeFillId);
+			grid.addNewShape(shapeId, shapeFillId);
+		}
 		// update the shapes menu and fills menu
 		this._state.ui.refreshMenus(
 			grid, this._state.shapes, this._state.fills.buildShapeSVG(shape)
@@ -434,7 +463,7 @@ export class FatState {
 		// return to the project editing
 		this._state.ui.exitingEditor();
 		this._state.ui.editorOnBottom();
-		this.mod('hudSaveShape', [type, shapeId, shapeFillId]);
+		this.mod('hudSaveShape', [type, shapeId, shapeFillId, newFillIds]);
 		return this;
 	}
 	public hudSelectShape(shapeId: ShapeId): FatState {
@@ -471,7 +500,7 @@ export class FatState {
 		this.mod('hudRotateShape', null);
 		return this;
 	}
-	public hudSelectFill(fillId: FillId): FatState {
+	public hudSelectFill(fillId: ShapeFillSetId): FatState {
 		// get selected layer and shape id
 		const grid = this._state.layers.getSelected();
 		const shape = this._state.shapes.getShapeById(grid.selectedShape);
@@ -585,58 +614,68 @@ export class FatState {
 	//#region Shape Editor
 	private _editorFills() {
 		// get fill strings from the editor fill ids
-		const fills: string[] = [];
-		for (const fid of this._state.shapes.editor.fillIds) {
-			fills.push(this._state.fills.getFill(fid));
-		}
-		return fills;
+		return this._state.shapes.editor.fillIds.map(((fid) => this._state.fills.getFill(fid)));
 	}
 	public shapeClose(pt: Vector2D, colors: RGBColor[], fillId: FillId[]): FatState {
 		this._state.fills.newFills(fillId, colors);
 		this._state.shapes.editorCloseShape(pt, fillId[0]);
+		// is editing an existing shape ?
+		const isExisting = this._state.ui.shapeEditor.isExistingShape;
 		// get fill strings from the editor fill ids
-		this._state.ui.shapeEditor.fromPath(this._state.shapes.editor, this._editorFills());
+		this._state.ui.shapeEditor.fromPath(this._state.shapes.editor, this._editorFills(), isExisting);
 		this._state.ui.shapeEditor.selectMostRecentShape();
 		this.mod('shapeClose', [pt, colors, fillId]);
 		return this;
 	}
 	public shapePointAction(pt: Vector2D): FatState {
 		this._state.shapes.editorSelectPt(pt);
-		this._state.ui.shapeEditor.fromPath(this._state.shapes.editor, this._editorFills());
+		// is editing an existing shape ?
+		const isExisting = this._state.ui.shapeEditor.isExistingShape;
+		this._state.ui.shapeEditor.fromPath(this._state.shapes.editor, this._editorFills(), isExisting);
 		this._state.ui.shapeEditor.unselectShape();
 		this.mod('shapePointAction', [pt]);
 		return this;
 	}
 	public shapeReverseTo(i: number): FatState {
 		this._state.shapes.editorReverseTo(i);
-		this._state.ui.shapeEditor.fromPath(this._state.shapes.editor, this._editorFills());
+		// is editing an existing shape ?
+		const isExisting = this._state.ui.shapeEditor.isExistingShape;
+		this._state.ui.shapeEditor.fromPath(this._state.shapes.editor, this._editorFills(), isExisting);
 		this.mod('shapeReverseTo', [i]);
 		return this;
 	}
 	public shapeSolveAmbiguity(i: number): FatState {
 		this._state.shapes.editorSolveAmbiguity(i);
-		this._state.ui.shapeEditor.fromPath(this._state.shapes.editor, this._editorFills());
+		// is editing an existing shape ?
+		const isExisting = this._state.ui.shapeEditor.isExistingShape;
+		this._state.ui.shapeEditor.fromPath(this._state.shapes.editor, this._editorFills(), isExisting);
 		this.mod('shapeSolveAmbiguity', [i]);
 		return this;
 	}
 	public shapeSelectFigure(d: string): FatState {
 		// discard current shape if being edited
 		this._state.shapes.editorDiscardCurrent();
+		// is editing an existing shape ?
+		const isExisting = this._state.ui.shapeEditor.isExistingShape;
 		// update the editor ui with the selected shape
-		this._state.ui.shapeEditor.fromPath(this._state.shapes.editor, this._editorFills());
+		this._state.ui.shapeEditor.fromPath(this._state.shapes.editor, this._editorFills(), isExisting);
 		this._state.ui.shapeEditor.selectShape(d);
 		this.mod('shapeSelectFigure', [d]);
 		return this;
 	}
 	public shapeDeleteFigure(): FatState {
 		this._state.shapes.editorDeleteShape(this._state.ui.shapeEditor.selectedShape);
-		this._state.ui.shapeEditor.fromPath(this._state.shapes.editor, this._editorFills());
+		// is editing an existing shape ?
+		const isExisting = this._state.ui.shapeEditor.isExistingShape;
+		this._state.ui.shapeEditor.fromPath(this._state.shapes.editor, this._editorFills(), isExisting);
 		this.mod('shapeDeleteFigure', null);
 		return this;
 	}
 	public shapeEditFigure(): FatState {
 		this._state.shapes.editorChangeShape(this._state.ui.shapeEditor.selectedShape);
-		this._state.ui.shapeEditor.fromPath(this._state.shapes.editor, this._editorFills());
+		// is editing an existing shape ?
+		const isExisting = this._state.ui.shapeEditor.isExistingShape;
+		this._state.ui.shapeEditor.fromPath(this._state.shapes.editor, this._editorFills(), isExisting);
 		this.mod('shapeEditFigure', null);
 		return this;
 	}
@@ -660,7 +699,7 @@ export class FatState {
 	}
 	public shapeSelectTemplate(tid: number): FatState {
 		const p = this._state.shapes.editorNewTemplate(tid);
-		this._state.ui.newShape(p);
+		this._state.ui.editShape(p);
 		this.mod('shapeSelectTemplate', [tid]);
 		return this;
 	}

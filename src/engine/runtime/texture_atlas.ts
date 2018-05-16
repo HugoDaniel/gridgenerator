@@ -140,18 +140,43 @@ export class TextureAtlas {
 			}, reject);
 		});
 	}
+	/** Renders the SVG into an Image and then into a Canvas. Replaces the Texture with the provided id */
+	public updateSVG(id: Vector2D, svg: string, img: HTMLImageElement, ctx: CanvasRenderingContext2D): Promise<TextureAtlas> {
+		return new Promise((resolve, reject) => {
+			this.renderToArray(svg, img, ctx).then((arrData) => {
+				const index = this.indices.get(id);
+				if (!index) {
+					console.log('COULD NOT FIND INDEX');
+					reject('Texture not present. Cannot update it.');
+					return;
+				}
+				console.log('UPDATING INDEX', index, 'with coords', this.uvCoords[index]);
+				this.svgs[index] = arrData;
+				// set it to be flushed to the GPU when a flush occurs
+				this.changed = true;
+				this.changes.push(new TextureChangeUpdate(
+					this.svgSize, this.textureCoords(index), arrData
+				));
+				resolve(this);
+			}, reject);
+		});
+	}
 	/** Flushes all changes to the GPU; does nothing if there aren't any changes to perform */
 	public toGPU(gl: WebGLRenderingContext): Promise<TextureAtlas> {
 		// do nothing if this texture was not changed
 		if (!this.changed) {
+			console.log('toGPU(): NOTHING CHANGED');
 			return Promise.resolve(this);
 		}
+		console.log('toGPU(): ', this.changes);
 		for (let i = 0; i < this.changes.length; i++) {
 			const c = this.changes[i];
 			switch (c.action) {
 				case TextureAction.Alloc:
+				console.log('toGPU(): Alloc');
 				this.gpuTextureAlloc(gl, c as TextureChangeAlloc); break;
 				case TextureAction.Update:
+				console.log('toGPU(): Update', c);
 				this.gpuTextureUpdate(gl, c as TextureChangeUpdate); break;
 			}
 			// HelpersGL.checkError(gl);

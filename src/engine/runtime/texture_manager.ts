@@ -66,6 +66,21 @@ export class TextureManager {
 		// add the texture
 		return this.units[curUnit].addSvg(new Vector2D(shapeId, shapeFillId), svg, img, canvas);
 	}
+	/** Updates an svg on the texture atlas.
+	 *  Does not upload to GPU (just searches for the array with the ImageData copy)
+	 */
+	public updateTexture(img: HTMLImageElement, canvas: CanvasRenderingContext2D, shapeId: ShapeId, shapeFillId: ShapeFillSetId, svg: string): Promise<TextureAtlas> {
+		for (let i = 0; i < this.units.length; i++) {
+			const unit = this.units[i];
+			if (unit.hasId(shapeId, shapeFillId)) {
+				// found the unit to update
+				console.log('UPDATING TEXTURE IN UNIT', unit);
+				return unit.updateSVG(new Vector2D(shapeId, shapeFillId), svg, img, canvas);
+			}
+		}
+		// no unit found for the provided id
+		return Promise.reject(`No unit found for the provided id ${shapeId} and fill ${shapeFillId}`);
+	}
 	/** Uploads all changes to VRAM; does nothing if texture was not changed; clears existing textures if changed; */
 	public uploadToVRAM(gl: WebGLRenderingContext) {
 		const result: Array<Promise<TextureAtlas>> = [];

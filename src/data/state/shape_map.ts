@@ -3,7 +3,7 @@ import { GridType } from './layer/grid';
 import { RandomArray } from './math/random';
 import { Vector2D } from './math/vector';
 import { Path, PathActionReviver, PathReviver } from './shape/path';
-import { Shape, ShapeFillSetId, ShapeReviver } from './shape/shape';
+import { IDupsNeeded, IUpdatedShapeCmds, Shape, ShapeFillSetId, ShapeReviver } from './shape/shape';
 import { squareDefaultTemplate, squareDiagTemplate, squareRoundTrisTemplate, Template, TemplateReviver, triHDefaultTemplate, triVDefaultTemplate } from './shape/template';
 
 export type ShapeId = number;
@@ -114,10 +114,55 @@ export class ShapeMap {
 	public getShapeById(shapeId: ShapeId): Shape | undefined {
 		return this.shapes.get(shapeId);
 	}
+	/** Sets the shape map editor to be the one from the provided shape */
+	public editShape(shapeId: ShapeId): Path {
+		const shape = this.getShapeById(shapeId);
+		if (shape) {
+			this._editor = shape.updateEditorFills();
+			this._editorTemplate = shape.editor.template;
+		}
+		return this.editor;
+	}
 	get editor(): Path {
 		return this._editor;
 	}
-	public saveCurrentShape(type: GridType, shapeId: ShapeId, shapeFillId: ShapeFillSetId): Shape {
+	public getShapeChanges(shapeId: number): IUpdatedShapeCmds {
+		const s = this.getShapeById(shapeId);
+		if (s) {
+			return s.analyzeUpdatedShape(this._editor);
+		} else {
+			throw new Error(`ShapeId ${shapeId} not found to analyze the updates needed`);
+		}
+	}
+	public getMaxNeededDups(shapeId: number): number {
+		const s = this.getShapeById(shapeId);
+		if (s) {
+			return s.maxFillIds();
+		} else {
+			throw new Error(`ShapeId ${shapeId} not found to get the max fill ids that are needed`);
+		}
+	}
+	public getNeededDups(shapeId: number, cmds: IUpdatedShapeCmds): IDupsNeeded {
+		const s = this.getShapeById(shapeId);
+		if (s) {
+			return s.needsNewFillIds(cmds);
+		} else {
+			throw new Error(`ShapeId ${shapeId} not found to get the duplicate fill ids that are needed`);
+		}
+	}
+	public saveUpdatedShape(type: GridType, shapeId: ShapeId, shapeFillId: ShapeFillSetId, dups: Map<number, number[]>, changes: IUpdatedShapeCmds): Shape {
+		// this.created = shapeId;
+		// const result = new Shape(type, this._editor, shapeFillId);
+		// this.shapes.set(shapeId, result);
+		const shape = this.shapes.get(shapeId);
+		if (!shape) {
+			throw new Error(`Existing shape with id ${shapeId} not found`);
+		}
+		shape.updateShape(this._editor, dups, changes);
+		this._editor = new Path(this._editor.template);
+		return shape;
+	}
+	public saveNewShape(type: GridType, shapeId: ShapeId, shapeFillId: ShapeFillSetId): Shape {
 		this.created = shapeId;
 		const result = new Shape(type, this._editor, shapeFillId);
 		this.shapes.set(shapeId, result);
@@ -188,6 +233,13 @@ export class ShapeMap {
 			throw new Error('Cannot find the shape');
 		}
 		shape.selectedFillId = fillId;
+	}
+	public getShapeFillId(shapeId: number): ShapeFillSetId {
+		const shape = this.shapes.get(shapeId);
+		if (!shape) {
+			throw new Error('Cannot find the shape');
+		}
+		return shape.selectedFillId;
 	}
 	////////////////////
 	////////////////////

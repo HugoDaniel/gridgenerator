@@ -117,7 +117,7 @@ export class Runtime {
 		return r;
 	}
 	/** Inserts the svg in the texture atlas */
-	public static texturize(rt: Runtime, shapeId: ShapeId, shapeFillId: ShapeFillSetId, svg: string): Promise<TextureAtlas> {
+	public static texturize(rt: Runtime, shapeId: ShapeId, shapeFillId: ShapeFillSetId, svg: string, isUpdate: boolean = false): Promise<TextureAtlas> {
 		if (!rt.webglCtx) {
 			// tslint:disable-next-line:no-console
 			console.trace();
@@ -137,8 +137,13 @@ export class Runtime {
 		if (!rt.textures) {
 			throw new Error('Trying to texturize without a valid TextureManager');
 		}
-		// put the svg in a texture altas:
-		return rt.textures.texturize(img, canvas, shapeId, shapeFillId, svg);
+		if (isUpdate) {
+			// update the svg in its texture altas:
+			return rt.textures.updateTexture(img, canvas, shapeId, shapeFillId, svg);
+		} else {
+			// put the svg in a texture altas:
+			return rt.textures.texturize(img, canvas, shapeId, shapeFillId, svg);
+		}
 	}
 	public getTextureSize(v: Viewport) {
 		/*
@@ -197,5 +202,15 @@ export class Runtime {
 			}
 			return this.textures.uploadToVRAM(this.webglCtx.ctx);
 		});
+	}
+	public updateTexture(shapeId: ShapeId, shapeFillId: ShapeFillSetId, svg: string) {
+		return Runtime.texturize(this, shapeId, shapeFillId, svg, true).then(() => {
+			if (!this.textures || !this.webglCtx) {
+				return Promise.resolve([]);
+			}
+			return this.textures.uploadToVRAM(this.webglCtx.ctx);
+		}, (error) =>
+		// tslint:disable-next-line:no-console
+		console.log('GOT error updating texture', error));
 	}
 }
