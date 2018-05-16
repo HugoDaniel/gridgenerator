@@ -74,7 +74,6 @@ export class TextureManager {
 			const unit = this.units[i];
 			if (unit.hasId(shapeId, shapeFillId)) {
 				// found the unit to update
-				console.log('UPDATING TEXTURE IN UNIT', unit);
 				return unit.updateSVG(new Vector2D(shapeId, shapeFillId), svg, img, canvas);
 			}
 		}
