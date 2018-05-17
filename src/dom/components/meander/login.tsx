@@ -27,7 +27,7 @@ export function MeanderLogin(props: IMeanderLoginProps) {
 							<small className="db f7 pa0 ma0">Please check your e-mail to proceed</small>
 						</div>
 					:
-					<div className="w5 h5 pa3 ba br2 b--gray bg-white">
+					<div className="w5 pa3 ba br2 b--gray bg-white">
 						<form noValidate={true} id="login-form" className="w-100">
 							<fieldset className="bn pa0">
 							<input className={inputcx} type="email" placeholder="e-mail" name="login-u" id="login-u" required disabled={props.isLoading} />

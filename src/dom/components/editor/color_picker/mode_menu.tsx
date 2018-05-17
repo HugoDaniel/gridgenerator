@@ -14,7 +14,7 @@ export function ModeMenu(props: IModeMenuProps) {
 			<button
 				onClick={linkEvent(id, props.onAction)}
 				className={`h3 pointer bg-transparent bn pa0 ma0 w3 ${isSelected ? 'bottom-circle' : 'hover-color'}`}>
-				<img src={e.iconUrl} alt={id} className={'w2'} />
+				<img src={e.iconUrl} alt={`${id}`} className={'w2'} />
 				<p className={'f7 black ma0 pa0'}>{e.label}</p>
 			</button>
 		)}

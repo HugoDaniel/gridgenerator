@@ -194,7 +194,8 @@ export class HUDEvents implements IEventHandler {
 			this.refresher.refreshAll(this.runtime, this.state);
 		};
 		this.onSelectFill = (fillId: FillId) => {
-			console.log('SELECTING FILL', fillId);
+			// check if the current fill is already selected
+			// if it is, then enter fill editing mode
 			this.state.hudSelectFill(fillId);
 			this.refresher.refreshAll(this.runtime, this.state);
 		};

@@ -13,7 +13,7 @@ import { UIState } from './state/ui';
 import { ClipPattern } from './state/ui/clip_pattern';
 import { UICursor } from './state/ui/cursor';
 import { ToolsMenuId, UIFillEditorColorMode } from './state/ui/defaults';
-import { UIFillEditor } from './state/ui/fill_editor';
+import { UIFillEditor, UIFillEditorMode } from './state/ui/fill_editor';
 
 export interface FatStateReviver {
 	m: ModificationReviver[];
@@ -319,6 +319,24 @@ export class FatState {
 		this._state.fills.selectFillId(fillId);
 		this.updateSelectedColor();
 		this.mod('colorPickerSelectFillId', [fillId]);
+		return this;
+	}
+	public colorPickerEnterCode(): FatState {
+		this._state.ui.fillEditor.editorMode = UIFillEditorMode.Code;
+		this.mod('colorPickerEnterCode', null);
+		return this;
+	}
+	public colorPickerExitCode(): FatState {
+		this._state.ui.fillEditor.editorMode = UIFillEditorMode.Color;
+		this.mod('colorPickerExitCode', null);
+		return this;
+	}
+
+	public colorPickerSaveCode(hex: string): FatState {
+		this._state.ui.fillEditor.editorMode = UIFillEditorMode.Color;
+		this._state.fills.colors.editorColorPick(hex);
+		this.updateSelectedColor();
+		this.mod('colorPickerSaveCode', [hex]);
 		return this;
 	}
 	//#endregion

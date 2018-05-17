@@ -54,16 +54,16 @@ export const enum ToolsMenuId {
 	Grid
 }
 export const DefaultToolsMenu: Map<ToolsMenuId, MenuEntry> = new Map([
-	[ ToolsMenuId.Undo,    new MenuEntry('Undo', tools_undo_icon) ],
+	[ ToolsMenuId.Undo,    new MenuEntry('Undo', tools_undo_icon, 'Undo') ],
 // 	[ ToolsMenuId.Artists, new MenuEntry('Artists', tools_artists_icon) ],
-  [ ToolsMenuId.Zoom,    new MenuEntry('Zoom', tools_zoom_icon) ],
-	[ ToolsMenuId.Move,    new MenuEntry('Move', tools_move_icon) ],
-	[ ToolsMenuId.Grid,    new MenuEntry('Grid', tools_grid_icon) ],
-	[ ToolsMenuId.Delete,  new MenuEntry('Delete', tools_delete_icon) ],
-	[ ToolsMenuId.Paint,   new MenuEntry('Paint', tools_paint_icon) ]
+  [ ToolsMenuId.Zoom,    new MenuEntry('Zoom', tools_zoom_icon, 'Zoom') ],
+	[ ToolsMenuId.Move,    new MenuEntry('Move', tools_move_icon, 'Pan/Move Grid') ],
+	[ ToolsMenuId.Grid,    new MenuEntry('Grid', tools_grid_icon, 'Pattern') ],
+	[ ToolsMenuId.Delete,  new MenuEntry('Delete', tools_delete_icon, 'Eraser') ],
+	[ ToolsMenuId.Paint,   new MenuEntry('Paint', tools_paint_icon, 'Draw') ]
 ]);
 
-export enum UIFillEditorColorMode { Saturation = 1, Hering, Lightness }
+export enum UIFillEditorColorMode { Saturation = 1, Hering, Lightness, Code }
 
 export const DefaultColorMenu: Map<UIFillEditorColorMode, MenuEntry> = new Map([
 	[ UIFillEditorColorMode.Saturation, new MenuEntry('Saturation', picker_saturation_icon) ],

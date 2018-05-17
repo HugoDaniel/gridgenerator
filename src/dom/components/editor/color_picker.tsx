@@ -1,9 +1,10 @@
 import { Component } from 'inferno';
-import { FillId, UIFillEditor } from '../../../data';
+import { FillId, UIFillEditor, UIFillEditorMode } from '../../../data';
 import { Runtime, RuntimeMediaSize } from '../../../engine';
 import { ColorPickerEvents } from '../../events/color_picker_events';
 import { Button, IButtonProps } from '../base/buttons';
 import { ColorCanvas, IColorCanvasProps } from './color_picker/canvas';
+import { ColorCode, IColorCodeProps } from './color_picker/color_code';
 import { ColorShapes, IColorShapesProps } from './color_picker/color_shapes';
 import { IModeMenuProps, ModeMenu } from './color_picker/mode_menu';
 import { IRecentColorsProps, RecentColors } from './color_picker/recent';
@@ -54,6 +55,11 @@ export const ColorPicker = (props: IColorPickerProps) => {
 		onCanvasUnmount: colorPickerEvents.onColorCanvasUnmount,
 		style: { width: `${canvasStyleSize}px`, height: `${canvasStyleSize}px` }
 	};
+	const colorCodeProps: IColorCodeProps = {
+		style: { width: `${canvasStyleSize}px`, height: `${canvasStyleSize}px` },
+		color: fillEditor.colorCode,
+		onDone: colorPickerEvents.onSaveCode
+	};
 	const systemPickerProps: ISystemPickerBtnProps = {
 		className: `${runtime.device.hasSystemColorPicker ? 'dn' : 'absolute w3 h3 br-100'}`,
 		style: { transform: 'translateY(-2rem)' },
@@ -100,12 +106,17 @@ export const ColorPicker = (props: IColorPickerProps) => {
 		>
 			<div className={'flex flex-column justify-center items-center'}>
 				<ColorCanvas {...colorCanvasProps} />
-				<ModeMenu {...modeMenuProps} />
-				<div
-					className="center mt4-ns"
-				>
-					<ColorShapes {...colorShapesProps} />
-				</div>
+				{ fillEditor.editorMode === UIFillEditorMode.Code ?
+					<ColorCode {...colorCodeProps} /> :
+					<ModeMenu {...modeMenuProps} />
+				}
+				{ fillEditor.editorMode !== UIFillEditorMode.Code ?
+					<div
+						className="center mt4-ns"
+					>
+						<ColorShapes {...colorShapesProps} />
+				</div> : <div />
+				}
 				{ fillPaths[0].length > 1 ?
 					<FiguresMenu {...figMenuProps} /> : <div/>
 				}
@@ -113,6 +124,8 @@ export const ColorPicker = (props: IColorPickerProps) => {
 					className="fixed bottom-0 left-0 flex flex-column-reverse items-center justify-center h-100 w2 w3-ns overflow-hidden"
 					hexValues={fillEditor.mruColors}
 					onColorSelect={colorPickerEvents.onColorPick}
+					onCode={colorPickerEvents.onCode}
+					isOnCode={fillEditor.editorMode === UIFillEditorMode.Code}
 				/>
 			</div>
 		</div>

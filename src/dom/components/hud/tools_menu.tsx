@@ -54,6 +54,7 @@ export const ToolsMenu = (props: IToolsMenuProps) =>
 					onClick={linkEvent(id, props.onAction)}
 					{...noPropagation}
 					className={`f7 no-underline black hover-color ttu sans-serif dib ph2 pv2 ${isSelected ? 'bottom-circle' : ''}`}>
+					{ e.tooltip ? <div className="absolute" tooltip={e.tooltip} /> : <div /> }
 					<img src={e.iconUrl} alt={`${e.label} tool`} className={'w1'} />
 				</a>);
 			}

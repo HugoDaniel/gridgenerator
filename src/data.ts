@@ -12,7 +12,7 @@ export { ElementType, TemplateElement } from './data/state/shape/template';
 export { Shape, ShapeFillSetId } from './data/state/shape/shape';
 export { UI, UIState } from './data/state/ui';
 export { UIShapeEditor, UIShapeEditorMode } from './data/state/ui/shape_editor';
-export { UIFillEditor } from './data/state/ui/fill_editor';
+export { UIFillEditor, UIFillEditorMode } from './data/state/ui/fill_editor';
 export { UIExportEditor, ExportEditorFormat } from './data/state/ui/export';
 export { UIPublishEditor, PublishState, PublishAt } from './data/state/ui/publish';
 export { UIFillPath } from './data/state/ui/fill_path';

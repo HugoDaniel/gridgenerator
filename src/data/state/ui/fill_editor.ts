@@ -1,3 +1,4 @@
+import { RGBColor } from '../color/rgb';
 import { WheelMode } from '../color/wheel';
 import { FillId, FillMap } from '../fill_map';
 import { Shape } from '../shape/shape';
@@ -15,7 +16,7 @@ export interface UIFillEditorReviver {
 	s: FillId;
 	mru: string[];
 }
-export enum UIFillEditorMode { Color = 1 }
+export enum UIFillEditorMode { Color = 1, Code = 2 }
 export class UIFillEditor {
 	public editorMode: UIFillEditorMode;
 	public primaryActionTitle: string;
@@ -26,6 +27,7 @@ export class UIFillEditor {
 	public paths: Map<FillId, UIFillPath>;
 	public selected: FillId;
 	public mruColors: string[];
+	public colorCode: RGBColor;
 	// TODO: defs and patterns
 	// TODO: originalFillValues (when changing a fill)
 	constructor(shape?: Shape, fills?: FillMap) {
@@ -46,6 +48,12 @@ export class UIFillEditor {
 		this.templatePath = shape.editor.template.baseString;
 		this.templateRes = shape.resolution;
 		this.mruColors = fills.colors.mruColors(8).slice(1);
+		const c = fills.getFillObj(this.selected);
+		if (!c) {
+			this.colorCode = new RGBColor(128, 128, 128, 1.0);
+		} else {
+			this.colorCode = c;
+		}
 	}
 	/**
 	 * Returns an array with [hex strings, path strings, selected fill id]

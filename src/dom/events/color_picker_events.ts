@@ -1,4 +1,4 @@
-import { FatState, UIFillEditorColorMode, WheelMode } from '../../data';
+import { FatState, UIFillEditorColorMode, UIFillEditorMode, WheelMode } from '../../data';
 import { CanvasContext, ColorCanvasPainter, Runtime, toColorPickerCanvasCtx } from '../../engine';
 import { Movement } from '../../engine/runtime/movement';
 import { getEventX, getEventY, IEventHandler } from '../common';
@@ -14,6 +14,8 @@ export class ColorPickerEvents implements IEventHandler {
 	public onStopMovement: () => void;
 	public onMovement: (_x: number, _y: number) => void;
 	public onModeChange: (m: UIFillEditorColorMode) => void;
+	public onCode: () => void;
+	public onSaveCode: (hex: string) => void;
 	public onColorPick: (hex: string) => void;
 	public onChangeFillId: (fillId: number) => void;
 	public onMouseDown: (e: MouseEvent) => void;
@@ -39,25 +41,39 @@ export class ColorPickerEvents implements IEventHandler {
 			this.refresher.refreshRuntimeOnly(this.runtime);
 		};
 		this.onMouseDown = (e) => {
-			this.onStartMovement(getEventX(e), getEventY(e));
+			if (this.state.current.ui.fillEditor.editorMode === UIFillEditorMode.Color) {
+				this.onStartMovement(getEventX(e), getEventY(e));
+			}
 		};
 		this.onMouseUp = (e) => {
-			this.onStopMovement();
+			if (this.state.current.ui.fillEditor.editorMode === UIFillEditorMode.Color) {
+				this.onStopMovement();
+			}
 		};
 		this.onMouseMove = (e) => {
-			this.onMovement(getEventX(e), getEventY(e));
+			if (this.state.current.ui.fillEditor.editorMode === UIFillEditorMode.Color) {
+				this.onMovement(getEventX(e), getEventY(e));
+			}
 		};
 		this.onTouchStart = (e) => {
-			this.onStartMovement(getEventX(e), getEventY(e));
+			if (this.state.current.ui.fillEditor.editorMode === UIFillEditorMode.Color) {
+				this.onStartMovement(getEventX(e), getEventY(e));
+			}
 		};
 		this.onTouchMove = (e) => {
-			this.onMovement(getEventX(e), getEventY(e));
+			if (this.state.current.ui.fillEditor.editorMode === UIFillEditorMode.Color) {
+				this.onMovement(getEventX(e), getEventY(e));
+			}
 		};
 		this.onTouchEnd = (e) => {
-			this.onStopMovement();
+			if (this.state.current.ui.fillEditor.editorMode === UIFillEditorMode.Color) {
+				this.onStopMovement();
+			}
 		};
 		this.onTouchCancel = (e) => {
-			this.onStopMovement();
+			if (this.state.current.ui.fillEditor.editorMode === UIFillEditorMode.Color) {
+				this.onStopMovement();
+			}
 		};
 		this.onStartMovement = (x: number, y: number) => {
 			// const obj = movementObject(e);
@@ -167,6 +183,22 @@ export class ColorPickerEvents implements IEventHandler {
 		};
 		this.onModeChange = (m) => {
 			this.state.colorPickerModeChange(m);
+			this.refresher.refreshStateAndDOM(this.state);
+			if (!this.runtime.colorPickerCtx) {
+				throw new Error('Cannot select color, runtime context is not present');
+			}
+			ColorCanvasPainter.INIT(this.runtime.colorPickerCtx, this.state.current);
+		};
+		this.onCode = () => {
+			if (this.state.current.ui.fillEditor.editorMode === UIFillEditorMode.Code) {
+				this.state.colorPickerExitCode();
+			} else {
+				this.state.colorPickerEnterCode();
+			}
+			this.refresher.refreshStateAndDOM(this.state);
+		};
+		this.onSaveCode = (hex: string) => {
+			this.state.colorPickerSaveCode(hex);
 			this.refresher.refreshStateAndDOM(this.state);
 			if (!this.runtime.colorPickerCtx) {
 				throw new Error('Cannot select color, runtime context is not present');

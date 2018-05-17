@@ -7,6 +7,9 @@ export class Input extends Component<any, any> {
 	public handleText(that, e: Event) {
 		const t = e.target as HTMLInputElement;
 		that.setState({ inputValue: (t.value ? t.value : '') });
+		if (this.props.onInput) {
+			this.props.onInput(t.value);
+		}
 	}
 	public render() {
 		return (
@@ -19,6 +22,7 @@ export class Input extends Component<any, any> {
 				onInput={linkEvent(this, this.handleText)}
 				disabled={this.props.disabled}
 				placeholder={this.props.placeholder || ''}
+				maxLength={this.props.maxLength || null}
 			/>
 		);
 	}
