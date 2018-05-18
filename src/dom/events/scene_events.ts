@@ -393,15 +393,24 @@ export class SceneEvents implements IEventHandler {
 		// this.refresher.refreshStateOnly(this._state);
 		if (this._state.current.isPatternOn) {
 			this.refresher.refreshStateAndDOM(this._state, UpdateAction.Pan);
+			if (!this.runtime.textures) {
+				return;
+			}
+			this.runtime.clipSpace.fromGrid(
+				this.state.current.viewport,
+				this.state.current.currentLayer,
+				this.runtime.textures,
+				this.state.current.isPatternOn);
+			this.redraw();
 		} else {
 			this.refresher.refreshStateOnly(this._state);
+			Runtime.resetClipSpace(this.runtime, this._state.current, true).then((_rt: Runtime) => {
+				this.runtime = _rt;
+				this.refresher.refreshRuntimeOnly(_rt);
+				this.redraw();
+			});
 		}
 		this.startMove = new Vector2D(x, y);
-		Runtime.resetClipSpace(this.runtime, this._state.current, true).then((_rt: Runtime) => {
-			this.runtime = _rt;
-			this.refresher.refreshRuntimeOnly(_rt);
-			this.redraw();
-		});
 	}
 	private clickZoom(mult: number) {
 		// zoom into the middle of the screen
@@ -470,7 +479,6 @@ export class SceneEvents implements IEventHandler {
 		this.startZoom = new Vector2D(x, y);
 		// check for pattern (which requires a reset to the clipspace)
 		if (this.state.current.currentLayer.pattern && this.runtime.textures) {
-			console.log('VIEWPORT', this.state.current.viewport)
 			this.runtime.clipSpace.fromGrid(
 				this.state.current.viewport,
 				this.state.current.currentLayer,
