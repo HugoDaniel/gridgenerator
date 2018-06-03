@@ -4,36 +4,15 @@ export const enum ProfileMenuId {
 	Projects = 'projects',
 	Billing = 'billing'
 }
-export const enum ProfileBillingId {
-	Free = 'free',
-	Standard = 'standard',
-	Enterprise = 'enterprise'
-}
-export const enum ProfileBillingFreq {
-	Monthly = 'monthly',
-	Yearly = 'yearly'
-}
-export const enum ProfileBillingAt {
-	CheckoutInfo = 'checkout_info',
-	CheckoutInfoExpanded = 'checkout_info_expanded',
-	CheckoutThankYou = 'checkout_thankyou',
-	History = 'billing_history'
-}
 export interface IProfileForm {
 	name: string;
 	about: string;
 }
-export interface IBillingInvoice {
-	status: string;
-	date: string;
-	ammount: number;
-	currency: string;
-}
+
 export const enum ProfileStatus { Error = 100, Loading, Success, Nothing }
 const DefaultProfileMenu: Map<ProfileMenuId, MenuEntry> = new Map([
 	[ ProfileMenuId.Projects, new MenuEntry('My Projects', 'light-green')],
-	[ ProfileMenuId.Profile, new MenuEntry('About me', 'lightest-blue')],
-	[ ProfileMenuId.Billing, new MenuEntry('Billing', 'light-yellow')]
+	[ ProfileMenuId.Profile, new MenuEntry('About me', 'lightest-blue')]
 ]);
 export class MeanderProfile {
 	public menu: Menu<ProfileMenuId>;
@@ -45,34 +24,14 @@ export class MeanderProfile {
 	public form: IProfileForm | null;
 	public loadingStatus: ProfileStatus;
 	public loadingStatusMsg: string | null;
-	public billing: ProfileBillingId;
-	public billingAt: ProfileBillingAt;
-	public billingToken: string | null;
-	public billingFreq: ProfileBillingFreq;
-	public billingInstance: any | null;
-	public billingEmail: string | null;
-	public billingCompany: string | null;
-	public billingAddressCountry: string | null;
-	public billingAddressPostalCode: string | null;
-	public billingAddress: string | null;
-	public billingVatID: string | null;
-	public billingError: string | null;
-	public billingSubscription: any | null;
-	public billingInvoices: IBillingInvoice[];
 	constructor() {
 		this.menu = new Menu(DefaultProfileMenu);
 		this.menu.selected = ProfileMenuId.Projects;
 		this.badges = [];
-		this.billing = ProfileBillingId.Free;
-		this.billingAt = ProfileBillingAt.CheckoutInfo;
-		this.billingToken = null;
-		this.billingFreq = ProfileBillingFreq.Yearly;
-		this.billingInstance = null;
-		this.billingInvoices = [];
 		this.clear();
 	}
 	public isPayedAccount(): boolean {
-		return this.billing !== ProfileBillingId.Free;
+		return true; // no paid accounts
 	}
 	public clear() {
 		this.id = null;

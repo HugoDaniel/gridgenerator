@@ -29,7 +29,17 @@ export interface UIReviver {
 	tsm: ToolsSubmenusReviver;
 	p: Array<[number, TilePatternReviver]>;
 }
-export const enum UIState { Project = 'Project', ShapeEditor = 'ShapeEditor', FillEditor = 'FillEditor', Export = 'Export', Publish = 'Publish', PublishPreview = 'PublishPreview', PatternAdjustStart = 'PatternAdjustStart', PatternAdjustEnd = 'PatternAdjustEnd' }
+export const enum UIState {
+	Project = 'Project',
+	ShapeEditor = 'ShapeEditor',
+	FillEditor = 'FillEditor',
+	Export = 'Export',
+	Publish = 'Publish',
+	PublishPreview = 'PublishPreview',
+	PatternAdjustStart = 'PatternAdjustStart',
+	PatternAdjustEnd = 'PatternAdjustEnd',
+	Product = 'Product'
+}
 
 export class UI {
 	public at: UIState; // the current UI state
@@ -231,6 +241,7 @@ export class UI {
 		switch (feature) {
 			case FeaturesMenuId.Export: return UIState.Export;
 			case FeaturesMenuId.Publish: return UIState.Publish;
+			case FeaturesMenuId.Product: return UIState.Product;
 			default:
 			return UIState.Project;
 		}

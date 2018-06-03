@@ -2,7 +2,6 @@
 import { IProfileForm, MeanderProfile, Menu, ProfileMenuId, Project, StoredProject } from '../../../data';
 import { ProfileBillingFreq } from '../../../data/meander/profile';
 import { IMeanderMenuProps, MeanderMenu } from './menu';
-import { IProfileBillingProps, ProfileBilling } from './profile_billing';
 import { IProfileMeProps, ProfileMe } from './profile_me';
 import { IProfileProjectsProps, ProfileProjects } from './profile_projects';
 import { IMeanderWrapperProps, MeanderWrapper } from './wrapper';
@@ -14,13 +13,8 @@ export interface IProfileSectionProps extends IMeanderWrapperProps {
 	subtitleClassName: string;
 	onMenuAction: (optionId: ProfileMenuId, e?: Event) => void;
 	onProfileUpdate: (e: Event) => void;
-	onProfileHeroName: (e: Event) => void;
 	onProjectView: (id: number, e: Event) => void;
 	onProjectNew: () => void;
-	onPaymentFreqChange: (option: ProfileBillingFreq) => void;
-	onBillingCheckout: () => void;
-	onBillingExpand: () => void;
-	onBillingDone: () => void;
 	menu: Menu<ProfileMenuId>;
 	profile: MeanderProfile;
 	profileId: number;
@@ -35,7 +29,6 @@ export interface IProfileSectionProps extends IMeanderWrapperProps {
 	badges: string[];
 	currentProject: Project;
 	isLoading: boolean;
-	isGobyAvailable: boolean;
 }
 export function ProfileSection(props: IProfileSectionProps) {
 	const mainCx = '';
@@ -59,10 +52,8 @@ export function ProfileSection(props: IProfileSectionProps) {
 						badges={props.badges}
 						isLoading={props.profileIsLoading}
 						onUpdate={props.onProfileUpdate}
-						onSuperHero={props.onProfileHeroName}
 						hasError={props.profileHasError}
 						loadingMsg={props.profileLoadingMsg}
-						isGobyAvailable={props.isGobyAvailable}
 					/>
 					: props.menu.selected === ProfileMenuId.Projects ?
 					<ProfileProjects
@@ -75,20 +66,7 @@ export function ProfileSection(props: IProfileSectionProps) {
 						onProjectNew={props.onProjectNew}
 						isLoading={props.isLoading}
 					/>
-					:
-					<ProfileBilling
-						className={props.sectionClassName}
-						titleClassName={props.titleClassName}
-						subtitleClassName={props.subtitleClassName}
-						isLoading={props.isLoading}
-						hasError={false}
-						loadingMsg="Loading"
-						profile={props.profile}
-						onPaymentFreqChange={props.onPaymentFreqChange}
-						onBillingCheckout={props.onBillingCheckout}
-						onBillingExpand={props.onBillingExpand}
-						onBillingDone={props.onBillingDone}
-					/>
+					: <div />
 				}
 			</div>
 		</MeanderWrapper>

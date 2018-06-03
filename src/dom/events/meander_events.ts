@@ -1,5 +1,3 @@
-import braintree from 'braintree-web-drop-in';
-import goby from 'goby';
 import { isArray } from 'inferno-shared';
 import { AboutMenuId, getCountry, IProfileForm, MainMenuId, Meander, MeanderCourse, MeanderLogin, MeanderView, PlayerState, ProfileBillingAt, ProfileBillingFreq, ProfileBillingId, ProfileMenuId, ProfileStatus, Project, RecoverState, State, StoredProject, VerifyingState } from '../../data';
 import { Net, Runtime, Token } from '../../engine';
@@ -37,7 +35,6 @@ export class MeanderEvents {
 	public onRouteLoginSocial: () => void;
 	public onRouteLoginError: () => void;
 	public onRouteProfile: () => void;
-	public onRouteBilling: () => void;
 	public onRouteAbout: () => void;
 	public onRoutePricing: () => void;
 	public onRouteCollective: () => void;
@@ -46,14 +43,9 @@ export class MeanderEvents {
 	public onAboutSubmenuAction: (optionId: AboutMenuId, e: Event) => void;
 	public onProfileSubmenuAction: (optionId: ProfileMenuId, e: Event) => void;
 	public onProfileUpdate: (e: Event) => void;
-	public onProfileSuperHero: (e: Event) => void;
 	public onProfileProjects: () => void;
 	public onProfilePaymentFreqChange: (op: ProfileBillingFreq) => void;
-	public onBillingCheckout: () => void;
-	public onBillingExpand: () => void;
-	public onBillingDone: () => void;
 	public blurProject: () => void;
-	public onEnterBilling: () => void;
 	public onMenuAction: (id: MainMenuId, e: Event) => void;
 	public fromRoute: () => void;
 	public gotoRoot: () => void;
@@ -68,7 +60,6 @@ export class MeanderEvents {
 	public registerEmail: (e?: Event) => void;
 	public clearToken: () => void;
 	public sessionExpired: () => void;
-	private goby: any;
 	// actions from outside:
 	// public storeCurProj: () => void; // from ProjectEvents
 	// public restorePrevProj: (id: number) => Promise<void>; // from ProjectEvents
@@ -90,18 +81,6 @@ export class MeanderEvents {
 		this.getProject = getProj;
 		this.loading = new Loading();
 		this.appContainer = document.getElementById('app');
-		if (goby) {
-			this.goby = goby.init();
-			if (this.goby) {
-				this.runtime.isGobyAvailable = true;
-			} else {
-				this.runtime.isGobyAvailable = false;
-			}
-		} else {
-			// tslint:disable-next-line:no-console
-			console.warn('GOBY not found', goby);
-			this.runtime.isGobyAvailable = false;
-		}
 		this.refresher.refreshRuntimeOnly(this.runtime);
 		this.startLoading = () => {
 			this.loading.startFullscreen().then((l) => this.loading = l);
@@ -168,26 +147,10 @@ export class MeanderEvents {
 					if (p && p.id) {
 						this.meander.profile.buildProfile(p.id, p.name, p.about, p.createdAt, p.badges);
 						// get info
-						this.net.profile.getAccountType(token).then( (accountTypeData) => {
-							this.meander.profile.billing = accountTypeData.billingId;
-							this.meander.profile.billingEmail = accountTypeData.email;
-							if (this.meander.profile.billing !== ProfileBillingId.Free) {
-								// show history instead of account billing payment form:
-								this.meander.profile.billingAt = ProfileBillingAt.History;
-								this.meander.profile.billingSubscription = accountTypeData.subscription;
-							}
-							this.updateDOM();
-						});
-						// restore the project
-						/*
-						this.restorePrevProj(p.id).then(() => {
-							this.meander.profile.stopLoading('');
-							this.updateDOM();
-							resolve();
-						}, this.updateDOM);
-						*/
+						this.meander.profile.stopLoading('');
+						this.updateDOM();
+						resolve();
 					} else {
-						// console.log('NO PROFILE ID');
 						this.meander.profile.errorLoading('Profile with no ID. Please get in contact with us.');
 						this.updateDOM();
 						resolve();
@@ -221,10 +184,6 @@ export class MeanderEvents {
 				});
 			});
 		};
-		this.onEnterBilling = () => {
-			window.history.pushState({}, 'Billing', '/billing');
-			this.fromRoute();
-		};
 		this.onMenuAction = (id: MainMenuId, e: Event) => {
 			e.preventDefault();
 			const hist: IMeanderHistory = {
@@ -252,9 +211,6 @@ export class MeanderEvents {
 				break;
 				case MainMenuId.Profile:
 				this.onRouteProfile();
-				break;
-				case 'billing':
-				this.onRouteBilling();
 				break;
 				case 'login':
 				this.onRouteLogin();
@@ -327,76 +283,6 @@ export class MeanderEvents {
 				this.onRouteLogin();
 			}
 		};
-		this.onRouteBilling = () => {
-			// check if there is a user logged in
-			if (this.runtime.token && this.runtime.token.id) {
-				this.meander.course = MeanderCourse.Profile;
-				this.meander.profile.menu.selected = ProfileMenuId.Billing;
-				// check if this is a paid account
-				if (this.meander.profile.billing === ProfileBillingId.Free) {
-					// loading
-					this.meander.profile.startLoading();
-					this.updateDOM();
-					// get the client token and display the drop-in
-					this.net.billing.getClientToken(this.runtime.token).then((resp) => {
-						this.meander.profile.billingToken = resp;
-						console.log('GOT BRAINTREE RESP', resp);
-						// set the drop in
-						braintree.create({
-							authorization: resp, // 'production_mdp59rxw_z64km74wv5cqbck3', // resp,
-							container: '#braintree-container',
-							dataCollector: {
-								kount: true
-							}
-						}, (createErr, instance) => {
-							console.log('CREAATE ERR', createErr);
-							console.log('INSTANCE', instance);
-							// set the profile billing instance
-							this.meander.profile.billingInstance = instance;
-							// stop loading
-							this.meander.profile.stopLoading('');
-							this.updateDOM();
-						});
-					}, (error) => {
-						// TODO: Set error message
-					});
-				} else {
-					// show the account billing info
-					if (this.runtime.token) {
-						this.net.billing.getInvoiceHistory(this.runtime.token).then((resp) => {
-							// console.log('GOT INVOICE HISTORY', resp);
-							if (resp.list) {
-								// create IBillingInvoice
-								const invoices = resp.list.map( (l) => {
-									const d = new Date(l.invoice.status === 'paid' ? l.invoice.paid_at * 1000 : l.invoice.date * 1000);
-									const month = d.getUTCMonth() + 1;
-									const day = d.getUTCDate();
-									const year = d.getUTCFullYear();
-									const paidAt = `${year}/${month}/${day}`;
-									return ({
-										status: l.invoice.status,
-										date: paidAt,
-										ammount: l.invoice.total,
-										currency: l.invoice.currency_code
-									});
-								});
-								this.meander.profile.billingInvoices = invoices;
-								this.updateDOM();
-							}
-						}, (invoiceError) => {
-							this.meander.profile.billingError = invoiceError.message;
-							this.updateDOM();
-						});
-					} else {
-						this.sessionExpired();
-						this.updateDOM();
-					}
-				}
-				this.updateDOM();
-			} else {
-				this.onRouteLogin();
-			}
-		};
 		this.onRouteViewProject = (projNum: string) => {
 			this.meander.course = MeanderCourse.ViewProject;
 			const projInfo = projNum.split('#');
@@ -463,8 +349,6 @@ export class MeanderEvents {
 			this.updateDOM();
 			if (optionId === ProfileMenuId.Projects) {
 				this.onProfileProjects();
-			} else if (optionId === ProfileMenuId.Billing) {
-				this.onEnterBilling();
 			}
 		};
 		this.gotoPricing = (e?: Event) => {
@@ -537,14 +421,6 @@ export class MeanderEvents {
 				}
 			);
 		};
-		this.onProfileSuperHero = (e: Event) => {
-			e.preventDefault();
-			const formData = this.getProfileForm();
-			const newName = this.goby.generate(['pre', 'suf']);
-			formData.name = newName;
-			this.meander.profile.form = formData;
-			this.updateDOM();
-		};
 		this.onProfileProjects = () => {
 			if (this.runtime.token) {
 				this.meander.profile.startLoading();
@@ -571,71 +447,6 @@ export class MeanderEvents {
 			} else {
 				this.gotoLogin();
 				this.updateDOM();
-			}
-		};
-		this.onProfilePaymentFreqChange = (op) => {
-			this.meander.profile.billingFreq = op;
-			this.updateDOM();
-		};
-		this.onBillingExpand = () => {
-			if (this.meander.profile.billingAt === ProfileBillingAt.CheckoutInfo) {
-				this.meander.profile.billingAt = ProfileBillingAt.CheckoutInfoExpanded;
-			} else {
-				this.meander.profile.billingAt = ProfileBillingAt.CheckoutInfo;
-			}
-			this.updateDOM();
-		};
-		this.onBillingDone = () => {
-			this.meander.profile.menu.selected = ProfileMenuId.Projects;
-			this.updateDOM();
-			this.onProfileProjects();
-		};
-		this.onBillingCheckout = () => {
-			// console.log('CHECKING OUT!', braintree, 'INSTANCE:', braintree.instance);
-			const instance = this.meander.profile.billingInstance;
-			if (instance && instance.requestPaymentMethod) {
-				instance.requestPaymentMethod((err, payload) => {
-					if (err) {
-						this.meander.profile.billingError = 'Error in payment, please try again.';
-						this.updateDOM();
-					} else if (this.runtime.token) {
-						// TODO: set button loading
-						this.meander.profile.loadingStatus = ProfileStatus.Loading;
-						this.updateDOM();
-						// Get billing info
-						const billingInfo = this.getBillingInfo();
-						// Submit payload.nonce to server
-						this.net.billing.postNonce(this.runtime.token, payload, this.meander.profile.billingFreq, billingInfo)
-						    .then((response) => {
-									this.meander.profile.loadingStatus = ProfileStatus.Nothing;
-									if (response.error) {
-										this.meander.profile.loadingStatus = ProfileStatus.Error;
-										// set billing error
-										this.meander.profile.billingError = `Oops. An Error occured. ${response.error.message}`;
-										this.updateDOM();
-									} else {
-										// Checkout successful
-										this.meander.profile.billingError = null;
-										this.meander.profile.billingAt = ProfileBillingAt.CheckoutThankYou;
-										this.updateDOM();
-										if (this.runtime.token) {
-											this.net.profile.setBadges(this.runtime.token, ['supporter', 'earlyadopter']).then((resp) => {
-												this.meander.profile.badges = ['supporter', 'earlyadopter'];
-												this.updateDOM();
-											});
-										}
-									}
-								}, (paymentNetError) => {
-									this.meander.profile.loadingStatus = ProfileStatus.Nothing;
-									this.meander.profile.billingError = paymentNetError;
-									this.updateDOM();
-								});
-		 			} else {
-						this.sessionExpired();
-					}
-				});
-			} else {
-				// TODO: set error message
 			}
 		};
 		this.verifyEmail = (searchLink: string) => {

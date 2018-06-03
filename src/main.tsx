@@ -1,5 +1,5 @@
 import { render } from 'inferno';
-import { FatState, Meander, PlayerState, Project, ProjectMap, State } from './data';
+import { Cart, FatState, Meander, PlayerState, Project, ProjectMap, State } from './data';
 import { Debug, Events, GridGeneratorDOM, Refresher, UpdateAction } from './dom';
 import { Net, Runtime } from './engine';
 import './fills.css';
@@ -31,12 +31,15 @@ class Main {
 	private state: FatState;
 	private runtime: Runtime;
 	private meander: Meander;
+	private cart: Cart;
 	private net: Net;
 	private player: PlayerState | null;
 	// private framer: Framer;
 	private events: Events;
 	private container: HTMLElement;
 	constructor() {
+		// initializes the shopping cart
+		this.cart = new Cart();
 		// starts a new project
 		this.projects = new ProjectMap();
 		this.state = this.projects.current.fatState;
@@ -67,13 +70,14 @@ class Main {
 			this.setStateAndDOM.bind(this),
 			this.updateDOM.bind(this),
 			this.setMeander.bind(this),
+			this.setCart.bind(this),
 			this.setProjects.bind(this),
 			this.setPlayer.bind(this),
 			this.setPlayerAndDOM.bind(this),
 			this.setInitialPlayerState.bind(this),
 			this.newProject.bind(this)
 		);
-		this.events = new Events(this.runtime, this.state, this.meander, this.net, this.projects, this.player, refresher);
+		this.events = new Events(this.runtime, this.state, this.meander, this.cart, this.net, this.projects, this.player, refresher);
 		// @ts-ignore
 		this.debug = new Debug(process.env.NODE_ENV === 'development', this.runtime, this.events, this.state);
 		//                     ^ false on production
@@ -81,6 +85,10 @@ class Main {
 	public setMeander(m: Meander): void {
 		this.meander = m;
 		this.events.updateMeander(this.meander);
+	}
+	public setCart(c: Cart): void {
+		this.cart = c;
+		this.events.updateCart(this.cart);
 	}
 	public setRuntime(rt: Runtime): void {
 		this.runtime = rt;
@@ -157,6 +165,7 @@ class Main {
 		render(
 			<GridGeneratorDOM
 				state={this.state.current}
+				cart={this.cart}
 				projects={this.projects}
 				runtime={this.runtime}
 				events={this.events}

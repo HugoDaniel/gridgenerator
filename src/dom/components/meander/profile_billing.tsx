@@ -1,4 +1,3 @@
-import braintree from 'braintree-web-drop-in';
 import { Component, linkEvent } from 'inferno';
 // @ts-ignore
 import badge_earlyadopter from '../../../assets/icons/profile-earlyadopter.svg';

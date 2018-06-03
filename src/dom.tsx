@@ -1,5 +1,5 @@
 import { Component, linkEvent } from 'inferno';
-import { Meander, MeanderCourse, PlayerState, Project, ProjectMap, State, ToolsMenuId, UIShapeEditorMode, UIState } from './data';
+import { Cart, Meander, MeanderCourse, PlayerState, Project, ProjectMap, State, ToolsMenuId, UIShapeEditorMode, UIState } from './data';
 import { UpdateAction } from './dom/common';
 import { addMouse, addTouch, removeMouse, removeTouch } from './dom/common';
 import { Editor, IEditorProps } from './dom/components/editor';
@@ -18,6 +18,7 @@ import { IPatternProps, Pattern } from './dom/components/pattern';
 
 export interface IGridGeneratorDOMProps {
 	state: Readonly<State>;
+	cart: Cart;
 	projects: ProjectMap;
 	events: Events;
 	runtime: Runtime;
@@ -101,6 +102,7 @@ export class GridGeneratorDOM extends Component<IGridGeneratorDOMProps, any> {
 		const project: Project = this.props.projects.current;
 		const events: Events = this.props.events;
 		const runtime: Runtime = this.props.runtime;
+		const cart: Cart = this.props.cart;
 		// next varZ's are set according to the editor/project stack state
 		let editorZ = 'z-0';
 		let sceneZ = 'z-1';
@@ -171,6 +173,8 @@ export class GridGeneratorDOM extends Component<IGridGeneratorDOMProps, any> {
 			exportEditorEvents: events.exportEvents,
 			publishEditor: state.ui.publishEditor,
 			publishEditorEvents: events.publishEvents,
+			productEditor: cart,
+			productEvents: events.productEvents,
 			shapeSize: editorSize,
 			colorPickerEvents: events.colorPickerEvents,
 			runtime,
@@ -219,8 +223,7 @@ export class GridGeneratorDOM extends Component<IGridGeneratorDOMProps, any> {
 			projects: this.props.projects.list(),
 			currentProject: this.props.projects.current,
 			playerState: this.props.player,
-			playerEvents: this.props.events.playerEvents,
-			isGobyAvailable: this.props.runtime.isGobyAvailable
+			playerEvents: this.props.events.playerEvents
 		};
 		const cursor = this.selectCursor(this.props, inProj);
 		/*

@@ -1,5 +1,6 @@
 import { IColorCanvasMovementDetail } from './movement/color_canvas';
-export type MovementDetail = IColorCanvasMovementDetail | null;
+import { IProductMovementDetail } from './movement/product';
+export type MovementDetail = IColorCanvasMovementDetail | IProductMovementDetail | null;
 
 export class Movement {
 	private _startX: number;

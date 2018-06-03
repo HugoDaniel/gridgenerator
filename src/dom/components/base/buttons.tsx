@@ -22,6 +22,33 @@ export const Button = (props: IButtonProps) =>
 		{props.label}
 	</button>;
 
+export interface IAmmountBtnProps {
+	className?: string;
+	value: number;
+	onInc: (arg: any) => void;
+	onDec: (arg: any) => void;
+	min: number;
+	max: number;
+	arg: any;
+}
+export const AmmountBtn = (props: IAmmountBtnProps) => {
+	return (
+		<div className="AmmountBtn flex items-center justify-center">
+			<button
+				className="dec bg-white ttu f7 pa2 link b--black-10 ba pointer dim"
+				disabled={props.min === props.value}
+				onClick={linkEvent(props.arg, props.onDec)}
+				>-</button>
+			<div className="bg-white ammount ttu pa2 f7 b--black-10 bt bb">{props.value}</div>
+			<button
+				className="inc bg-white ttu f7 pa2 link b--black-10 ba pointer dim"
+				onClick={linkEvent(props.arg, props.onInc)}
+				disabled={props.max === props.value}
+			>+</button>
+		</div>
+	);
+};
+
 export interface ITextButtonProps extends IButtonProps {
 	width?: number;
 	fgColor?: string;

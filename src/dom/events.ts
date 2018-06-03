@@ -1,4 +1,4 @@
-import { FatState, Meander, MeanderCourse, PlayerState, ProjectMap, State, UIShapeEditorMode, UIState } from '../data';
+import { Cart, FatState, Meander, MeanderCourse, PlayerState, ProjectMap, State, UIShapeEditorMode, UIState } from '../data';
 import { PatternHit } from '../data/state/ui/clip_pattern';
 import { Net, Runtime, WebGLContext } from '../engine';
 import { addMouse, addTouch, IEventHandler, removeMouse, removeTouch, UpdateAction } from './common';
@@ -12,6 +12,7 @@ import { ExportEvents } from './events/export_events';
 import { HUDEvents } from './events/hud_events';
 import { MeanderEvents } from './events/meander_events';
 import { PlayerEvents } from './events/player_events';
+import { ProductEvents } from './events/product_events';
 import { ProjectEvents } from './events/project_events';
 import { PublishEvents } from './events/publish_events';
 import { RecorderEvents } from './events/recorder_events';
@@ -26,6 +27,7 @@ export class Events {
 	public net: Net;
 	public projects: ProjectMap;
 	public meander: Meander;
+	public cart: Cart;
 	public player: PlayerState | null;
 	public onMouseDown: (e: MouseEvent) => void;
 	public onMouseMove: (e: MouseEvent) => void;
@@ -45,6 +47,7 @@ export class Events {
 	public projectEvents: ProjectEvents;
 	public playerEvents: PlayerEvents | null;
 	public meanderEvents: MeanderEvents;
+	public productEvents: ProductEvents;
 	// should updates:
 	public shouldUpdateHUD: (lastProps: IHUDProps, nextProps: IHUDProps) => boolean;
 	public shouldUpdateScene: (lastProps: ISceneProps, nextProps: ISceneProps) => boolean;
@@ -52,12 +55,13 @@ export class Events {
 	public shouldUpdateEditor: (lastProps: IEditorProps, nextProps: IEditorProps) => boolean;
 	public shouldUpdatePattern: (lastProps: IPatternProps, nextProps: IPatternProps) => boolean;
 
-	constructor(rt: Runtime, s: FatState, m: Meander, net: Net, proj: ProjectMap, player: PlayerState | null, refresher: Refresher) {
+	constructor(rt: Runtime, s: FatState, m: Meander, cart: Cart, net: Net, proj: ProjectMap, player: PlayerState | null, refresher: Refresher) {
 		this.runtime = rt;
 		this.state = s;
 		this.meander = m;
 		this.net = net;
 		this.projects = proj;
+		this.cart = cart;
 		this.refresher = refresher;
 		this.player = player;
 		this.onMouseDown = (e: MouseEvent) => {
@@ -147,6 +151,7 @@ export class Events {
 		this.exportEvents = new ExportEvents(rt, s, refresher);
 		this.projectEvents  = new ProjectEvents(rt, s, this.net, this.projects, refresher, this.sceneEvents.reset);
 		this.publishEvents = new PublishEvents(rt, s, this.net, refresher, this.projects);
+		this.productEvents = new ProductEvents(rt, s, this.cart, this.net, refresher, this.projects);
 		this.hudEvents = new HUDEvents(rt, s, refresher, this.sceneEvents.openCols, this.sceneEvents.closeCols, this.sceneEvents.onRedraw);
 		this.meanderEvents = new MeanderEvents(rt, m, this.net, refresher,
 			this.projectEvents.beforeLogin,
@@ -189,9 +194,13 @@ export class Events {
 	public updateNet(n: Net): void {
 		this.net = n;
 		this.meanderEvents.net = n;
+		this.productEvents.net = n;
 	}
 	public updateMeander(m: Meander): void {
 		this.meanderEvents.meander = m;
+	}
+	public updateCart(c: Cart): void {
+		this.productEvents.cart = c;
 	}
 	public updateProjects(p: ProjectMap): void {
 		this.projects = p;
@@ -212,6 +221,7 @@ export class Events {
 			this.playerEvents.runtime = rt;
 		}
 		this.meanderEvents.runtime = rt;
+		this.productEvents.runtime = rt;
 	}
 	public updateState(state: FatState): void {
 		this.state = state;
@@ -223,6 +233,7 @@ export class Events {
 		this.exportEvents.state = state;
 		this.publishEvents.state = state;
 		this.projectEvents.state = state;
+		this.productEvents.state = state;
 	}
 	public updatePlayer(p: PlayerState): void {
 		if (!this.playerEvents) {
@@ -263,6 +274,8 @@ export class Events {
 			return this.publishEvents;
 		} else if (isAt === UIState.Export) {
 			return this.exportEvents;
+		} else if (isAt === UIState.Product) {
+			return this.productEvents;
 		} else if (isAt === UIState.PatternAdjustEnd || isAt === UIState.PatternAdjustStart) {
 			return this.hudEvents;
 		}

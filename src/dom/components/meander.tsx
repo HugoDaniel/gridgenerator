@@ -18,7 +18,6 @@ export interface IMeanderProps {
 	className?: string;
 	projects: StoredProject[];
 	currentProject: Project;
-	isGobyAvailable: boolean;
 	meander: Meander;
 	menu: Menu<MainMenuId>;
 	isMenuHidden: boolean;
@@ -54,12 +53,7 @@ function selectCourse(props: IMeanderProps) {
 					profileName={props.meander.profile.name}
 					profileCreated={props.meander.profile.created}
 					profileForm={props.meander.profile.form}
-					onPaymentFreqChange={props.events.onProfilePaymentFreqChange}
-					onBillingDone={props.events.onBillingDone}
-					onBillingCheckout={props.events.onBillingCheckout}
-					onBillingExpand={props.events.onBillingExpand}
 					onProfileUpdate={props.events.onProfileUpdate}
-					onProfileHeroName={props.events.onProfileSuperHero}
 					profileIsLoading={props.meander.profile.loadingStatus === ProfileStatus.Loading}
 					profileHasError={props.meander.profile.loadingStatus === ProfileStatus.Error}
 					profileLoadingMsg={props.meander.profile.loadingStatusMsg}
@@ -70,7 +64,6 @@ function selectCourse(props: IMeanderProps) {
 					onProjectView={props.events.onProjectView}
 					onProjectNew={props.events.onProjectNew}
 					title={props.meander.profile.name || 'Profile'}
-					isGobyAvailable={props.isGobyAvailble}
 				/>
 			);
 		}

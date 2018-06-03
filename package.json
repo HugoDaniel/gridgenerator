@@ -24,8 +24,6 @@
   "author": "Hugo Daniel",
   "license": "EUPL-v1.2",
   "dependencies": {
-    "braintree-web-drop-in": "^1.10.0",
-    "goby": "^1.1.2",
     "inferno": "^5.0.5"
   },
   "devDependencies": {

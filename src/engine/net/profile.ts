@@ -28,16 +28,6 @@ export class NetProfile {
 		parentId,
 		parentPath`;
 	}
-	public async getAccountType(t: Token): Promise<{ email: string, billingId: ProfileBillingId, accountType: string, subscription: any }> {
-		return this.getData(this.hostname + '/payments/accountInfo', t)
-							 .then((resp) => resp.json().then((data) =>
-							 	Object.assign(
-									{},
-									{ billingId:
-										data.accountType === 'free' ? ProfileBillingId.Free
-																								: ProfileBillingId.Standard },
-									data)));
-	}
 	public async getProfile(t: Token) {
 		return this.graphql(`{ curProfile { id, name, badges, about, createdAt } }`, t);
 	}

@@ -2,6 +2,8 @@ export class DOMRects {
 	public shapeEditor: DOMRect | ClientRect | null;
 	public colorPicker: DOMRect | ClientRect | null;
 	public player: DOMRect | ClientRect | null;
+	public tshirtArea: DOMRect | ClientRect | null;
+	public posterArea: DOMRect | ClientRect | null;
 	public shapeEditorRect(): DOMRect | ClientRect {
 		const possibleElems = document.getElementsByClassName('ShapeGrid');
 		if (possibleElems.length < 1) {
@@ -19,6 +21,22 @@ export class DOMRects {
 		const playerElem = possibleElems[0];
 		this.player = playerElem.getBoundingClientRect();
 		return this.player;
+	}
+	public posterAreaRect(): DOMRect | ClientRect {
+		const areaElem = document.getElementById('posterDrawArea');
+		if (!areaElem) {
+			throw new Error('Cannot get bounding rect: #drawArea element not found');
+		}
+		this.posterArea = areaElem.getBoundingClientRect();
+		return this.posterArea;
+	}
+	public tshirtAreaRect(): DOMRect | ClientRect {
+		const areaElem = document.getElementById('tshirtDrawArea');
+		if (!areaElem) {
+			throw new Error('Cannot get bounding rect: #drawArea element not found');
+		}
+		this.tshirtArea = areaElem.getBoundingClientRect();
+		return this.tshirtArea;
 	}
 	public colorPickerRect(): DOMRect | ClientRect {
 		const possibleElems = document.getElementsByClassName('ColorCanvas');

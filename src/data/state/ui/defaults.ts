@@ -5,6 +5,8 @@ import picker_lightness_icon from '../../../assets/icons/picker-lightness.svg';
 // @ts-ignore
 import picker_saturation_icon from '../../../assets/icons/picker-saturation.svg';
 // @ts-ignore
+import shirt_icon from '../../../assets/icons/shirt.svg';
+// @ts-ignore
 import tools_artists_icon from '../../../assets/icons/tools-artists.svg';
 // @ts-ignore
 import tools_delete_icon from '../../../assets/icons/tools-eraser.svg';
@@ -23,12 +25,14 @@ import { MenuEntry } from './menu';
 
 export const enum FeaturesMenuId {
 	Export = 'export',
-	Publish = 'publish'
+	Publish = 'publish',
+	Product = 'product'
 }
 
 export const DefaultFeaturesMenu: Map<FeaturesMenuId, MenuEntry> = new Map([
 	[ FeaturesMenuId.Export,  new MenuEntry('Export')],
-	[ FeaturesMenuId.Publish, new MenuEntry('Publish')]
+	[ FeaturesMenuId.Publish, new MenuEntry('Publish')],
+	[ FeaturesMenuId.Product, new MenuEntry('Make product', shirt_icon)]
 ]);
 
 export const enum MainMenuId {

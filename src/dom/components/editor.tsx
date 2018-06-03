@@ -1,16 +1,18 @@
 import { linkEvent } from 'inferno';
-import { FeaturesMenuId, Project, Template, UIExportEditor, UIFillEditor, UIPublishEditor, UIShapeEditor, UIShapeEditorMode, UIState } from '../../data';
+import { Cart, FeaturesMenuId, Project, Template, UIExportEditor, UIFillEditor, UIPublishEditor, UIShapeEditor, UIShapeEditorMode, UIState } from '../../data';
 import { Runtime, RuntimeMediaSize } from '../../engine';
 import { UpdateAction } from '../common';
 import { ColorPickerEvents } from '../events/color_picker_events';
 import { ExportEvents } from '../events/export_events';
 import { HUDEvents } from '../events/hud_events';
+import { ProductEvents } from '../events/product_events';
 import { PublishEvents } from '../events/publish_events';
 import { ShapeEditorEvents } from '../events/shape_editor_events';
 import { Button } from './base/buttons';
 import { NewCloseBtn } from './base/new_close';
 import { ColorPicker, IColorPickerProps } from './editor/color_picker';
 import { Export, IExportProps } from './editor/export';
+import { IProductProps, Product } from './editor/product';
 import { IPublishProps, Publish } from './editor/publish';
 import { IPublishPreviewProps, PublishPreview } from './editor/publish/preview';
 import { IShapeEditorProps, ShapeEditor } from './editor/shape_editor';
@@ -30,6 +32,8 @@ export interface IEditorProps {
 	exportEditorEvents: ExportEvents;
 	publishEditor: UIPublishEditor;
 	publishEditorEvents: PublishEvents;
+	productEditor: Cart;
+	productEvents: ProductEvents;
 	shapeSize: number;
 	at: UIState;
 	hudEvents: HUDEvents;
@@ -48,7 +52,7 @@ export interface IEditorProps {
 	onFeaturesMenu: (feature: string, e: Event) => void;
 	onPricing: (e: any) => void;
 }
-function selectEditor(props: IEditorProps, colorPickerProps: IColorPickerProps, shapeEditorProps: IShapeEditorProps, templateProps: ITemplatePickerProps, exportProps: IExportProps, publishProps: IPublishProps) {
+function selectEditor(props: IEditorProps, colorPickerProps: IColorPickerProps, shapeEditorProps: IShapeEditorProps, templateProps: ITemplatePickerProps, exportProps: IExportProps, publishProps: IPublishProps, productProps: IProductProps) {
 	switch (props.at) {
 		case UIState.ShapeEditor:
 			switch (props.shapeEditor.editorMode) {
@@ -74,6 +78,10 @@ function selectEditor(props: IEditorProps, colorPickerProps: IColorPickerProps, 
 		case UIState.PublishPreview:
 			return (
 				<PublishPreview project={props.project} onExit={props.onPublishSuccess} height={props.height} />
+			);
+		case UIState.Product:
+			return (
+				<Product onComponentDidMount={productProps.events.onProductInit} {...productProps} />
 			);
 		default:
 			return <div />;
@@ -132,10 +140,17 @@ export const Editor = (props: IEditorProps) => {
 		onExit: props.onExitFeatures,
 		isPaidAccount: props.isPaidAccount
 	};
+	const productProps: IProductProps = {
+		className: '',
+		data: props.productEditor,
+		events: props.productEvents,
+		height: props.height,
+		onExit: props.onExitFeatures
+	};
 	const isFillEditor = props.at === UIState.FillEditor;
 	return (
 		<div className={`Editor ${props.className || ''}`}>
-			{selectEditor(props, colorPickerProps, shapeEditorProps, templatePickerProps, exportProps, publishProps)}
+			{selectEditor(props, colorPickerProps, shapeEditorProps, templatePickerProps, exportProps, publishProps, productProps)}
 			{ props.at === UIState.FillEditor || props.at === UIState.ShapeEditor ?
 			<div
 				className={`w-100 flex items-center justify-center editormw-ns fixed bottom-1`}

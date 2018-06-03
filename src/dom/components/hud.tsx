@@ -102,6 +102,7 @@ export const HUD = (props: IHUDProps) => {
 												|| props.ui.at === UIState.Export
 												|| props.ui.at === UIState.Publish
 												|| props.ui.at === UIState.PublishPreview
+												|| props.ui.at === UIState.Product
 	};
 	const fillsMenuProps: IFillsMenuProps = {
 		menu: props.ui.fillsMenu,
@@ -117,6 +118,7 @@ export const HUD = (props: IHUDProps) => {
 												|| props.ui.at === UIState.Export
 												|| props.ui.at === UIState.Publish
 												|| props.ui.at === UIState.PublishPreview
+												|| props.ui.at === UIState.Product
 	};
 	const deleteMenuProps: IDeleteMenuProps = {
 		onClearAll: props.onClearAll,
@@ -129,7 +131,7 @@ export const HUD = (props: IHUDProps) => {
 		size: 255
 	};
 	const featuresMenuProps: IFeaturesMenuProps = {
-		className: `center w4 h2 ma0 pa0 flex items-center justify-center transition-o ${props.ui.at === UIState.Project ? 'o-100' : 'o-0'}`,
+		className: `center h2 ma0 pa0 flex items-center justify-center transition-o ${props.ui.at === UIState.Project ? 'o-100' : 'o-0'}`,
 		menu: props.ui.featuresMenu,
 		onAction: props.onFeaturesMenu,
 		canUseFeatures: props.isLoggedIn,

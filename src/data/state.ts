@@ -9,7 +9,7 @@ import { UI, UIReviver } from './state/ui';
 import { ClipPattern, PatternHit } from './state/ui/clip_pattern';
 import { Viewport, ViewportReviver } from './state/viewport';
 export interface IStateSVGParts {
-	viewbox: number[];
+	viewbox: [number, number, number, number];
 	defs: string[];
 	layerUse: string[];
 }
@@ -214,7 +214,7 @@ export class State {
 			layerUse: this.renderSVGLayer(dim)
 		};
 	}
-	public createSVG(): { svg: string, viewbox: number[] } {
+	public createSVG(): { svg: string, viewbox: [number, number, number, number] } {
 		const parts = this.createSVGParts(
 			this.currentLayer.dimensions());
 		return {
