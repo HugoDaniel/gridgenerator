@@ -1,11 +1,24 @@
 export function getEventX(e: MouseEvent | TouchEvent): number {
-	return (e as TouchEvent).touches ? (e as TouchEvent).touches.item(0).clientX
-	: ((e as MouseEvent).clientX || (e as MouseEvent).layerX);
+	if ((e as TouchEvent).touches) {
+		const i = (e as TouchEvent).touches.item(0);
+		if (i) {
+			return i.clientX;
+		} else {
+			return -1;
+		}
+	}
+	return ((e as MouseEvent).clientX || (e as MouseEvent).layerX);
 }
 export function getEventY(e: MouseEvent | TouchEvent): number {
-	return (e as TouchEvent).touches
-	? (e as TouchEvent).touches.item(0).clientY
-	: ((e as MouseEvent).clientY || (e as MouseEvent).layerY);
+	if ((e as TouchEvent).touches) {
+		const i = (e as TouchEvent).touches.item(0);
+		if (i) {
+			return i.clientY;
+		} else {
+			return -1;
+		}
+	}
+	return ((e as MouseEvent).clientY || (e as MouseEvent).layerY);
 }
 export function downloadFile(fileContents: string, filename: string) {
 	const filetype = 'text/plain';

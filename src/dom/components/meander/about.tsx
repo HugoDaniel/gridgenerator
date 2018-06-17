@@ -1,7 +1,7 @@
 import { AboutMenuId, Menu } from '../../../data';
-import { AboutContact, IAboutContactProps } from './about_contact';
-import { AboutGridGenerator, IAboutGridGeneratorProps } from './about_gridgenerator';
-import { IMeanderMenuProps, MeanderMenu } from './menu';
+import { AboutContact } from './about_contact';
+import { AboutGridGenerator } from './about_gridgenerator';
+import { MeanderMenu } from './menu';
 import { IMeanderWrapperProps, MeanderWrapper } from './wrapper';
 export interface IMeanderAboutProps extends IMeanderWrapperProps {
 	sectionClassName: string;

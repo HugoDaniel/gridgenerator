@@ -1,7 +1,8 @@
 import { RGBColor, State } from '../../../../data';
 import { ClipSpace } from '../../../runtime/clipspace';
-import { TextureManager, UVCoord } from '../../../runtime/texture_manager';
-import { CanvasContext, ShaderBuffer, ShaderProgram, switchProgramTo, WebGLContext } from '../../context';
+import { UVCoord } from '../../../runtime/texture_atlas';
+import { TextureManager } from '../../../runtime/texture_manager';
+import { ShaderBuffer, ShaderProgram, switchProgramTo, WebGLContext } from '../../context';
 import { HelpersGL } from './helpersgl';
 import { Locations } from './locations';
 

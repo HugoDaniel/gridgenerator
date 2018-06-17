@@ -1,4 +1,6 @@
 import { linkEvent } from 'inferno';
+// @ts-ignore
+import cart_remove from '../../../../assets/icons/product-cart-remove.svg';
 import { CartProduct, ProductAt } from '../../../../data';
 import { ProductEvents } from '../../../events/product_events';
 import { AmmountBtn } from '../../base/buttons';
@@ -74,7 +76,9 @@ export const InCartProduct = (props: IInCartProductProps) => {
 					href="#"
 					className="link dim red f8 ttu ma0 pa0"
 					onClick={linkEvent(props.index, props.events.onCartRemove)}
-				>Remove</a>
+				>
+					<img className="w1 h1" src={cart_remove} alt="remove" />
+				</a>
 			</div>
 		</article>
 	);

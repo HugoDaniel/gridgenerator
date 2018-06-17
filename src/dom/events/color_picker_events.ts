@@ -1,6 +1,7 @@
 import { FatState, UIFillEditorColorMode, UIFillEditorMode, WheelMode } from '../../data';
 import { CanvasContext, ColorCanvasPainter, Runtime, toColorPickerCanvasCtx } from '../../engine';
 import { Movement } from '../../engine/runtime/movement';
+import { IColorCanvasMovementDetail } from '../../engine/runtime/movement/color_canvas';
 import { getEventX, getEventY, IEventHandler } from '../common';
 import { Refresher } from './refresher';
 
@@ -9,7 +10,7 @@ export class ColorPickerEvents implements IEventHandler {
 	public state: FatState;
 	public refresher: Refresher;
 	public onColorCanvasInit: (ctx: CanvasContext) => void;
-	public onColorCanvasUnmount: (ctx: CanvasContext) => void;
+	public onColorCanvasUnmount: (ctx: CanvasRenderingContext2D) => void;
 	public onStartMovement: (x: number, y: number) => void;
 	public onStopMovement: () => void;
 	public onMovement: (_x: number, _y: number) => void;
@@ -146,34 +147,37 @@ export class ColorPickerEvents implements IEventHandler {
 				const x = _x - rect.left;
 				const y = _y - rect.top;
 				const angle = Math.atan2(cy - y, cx - x) + Math.PI;
-				if (detail.in === WheelMode.WHEEL_HERING_MODE) {
-					if (!detail.angle) {
+				if ((detail as IColorCanvasMovementDetail).in === WheelMode.WHEEL_HERING_MODE) {
+					const detailAngle = (detail as IColorCanvasMovementDetail).angle;
+					if (!detailAngle) {
 						return new Error('No "angle" in movement detail in color picker');
 					}
-					this.state.colorPickerMoveWheel(angle - detail.angle);
+					this.state.colorPickerMoveWheel(angle - detailAngle);
 					// this.refresher.refreshStateOnly(this.state);
 					this.refresher.refreshStateAndDOM(this.state);
 					if (!this.runtime.colorPickerCtx) {
 						throw new Error('Canvas Ctx not present when moving color wheel');
 					}
 					ColorCanvasPainter.wheelMoving(this.runtime.colorPickerCtx, this.state.current);
-				} else if (detail.in === WheelMode.WHEEL_BRIGHTNESS_MODE
-					|| detail.in === WheelMode.WHEEL_SATURATION_MODE) {
+				} else if ((detail as IColorCanvasMovementDetail).in === WheelMode.WHEEL_BRIGHTNESS_MODE
+					|| (detail as IColorCanvasMovementDetail).in === WheelMode.WHEEL_SATURATION_MODE) {
 					if (!this.runtime.colorPickerCtx) {
 						throw new Error('Canvas Ctx not present when moving color wheel');
 					}
 					// get cur slice angle (thats the angle of the cur brightness)
-					if (!detail.startAngle) {
+					const detailStart = (detail as IColorCanvasMovementDetail).startAngle;
+					if (!detailStart) {
 						return new Error('No "startAngle" in movement detail in color picker');
 					}
-					const angleDiff = angle - detail.startAngle;
+					const angleDiff = angle - detailStart;
 					const angleRatio = (1.0 - (angleDiff / (2 * Math.PI))) % 1.0;
 					// ^ starts at 0.0 on the selected slice
 					// moves to 1.0 CCW, if moving CW it goes 1.0->0.0
-					if (!detail.initValue) {
+					const detailInit = (detail as IColorCanvasMovementDetail).initValue;
+					if (!detailInit) {
 						return new Error('No "initValue" in movement detail in color picker');
 					}
-					const adjusted = (angleRatio + detail.initValue) % 1;
+					const adjusted = (angleRatio + detailInit) % 1;
 					this.state.colorPickerMoveWheel(adjusted);
 					// this.refresher.refreshStateOnly(this.state);
 					this.refresher.refreshStateAndDOM(this.state);

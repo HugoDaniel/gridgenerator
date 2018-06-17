@@ -1,4 +1,4 @@
-import { MeanderProfile, ProfileBillingId } from '../../data';
+import { MeanderProfile } from '../../data';
 import { Token } from './token';
 
 export class NetProfile {

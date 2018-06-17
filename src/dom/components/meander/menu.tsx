@@ -3,7 +3,7 @@ import { Menu } from '../../../data';
 export interface IMeanderMenuProps<T> {
 	className?: string;
 	menu: Menu<T>;
-	onAction: (option: T) => void;
+	onAction: (option: T, e?: Event) => void;
 }
 export const MeanderMenu = (props: IMeanderMenuProps<any>) => {
 	return (

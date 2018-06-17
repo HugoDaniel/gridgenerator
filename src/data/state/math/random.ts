@@ -4,7 +4,7 @@ export class RandomArray {
 	private at: number;
 	constructor(len: number = 4096, values?: Uint32Array, at?: number) {
 		this.size = len;
-		this.values = values || crypto.getRandomValues(new Uint32Array(len));
+		this.values = values || crypto.getRandomValues(new Uint32Array(len)) as Uint32Array;
 		this.at = at || 0;
 	}
 	public pop(): number {
@@ -13,7 +13,7 @@ export class RandomArray {
 			return this.values[this.at];
 		}
 		// update
-		this.values = window.crypto.getRandomValues(this.values);
+		this.values = window.crypto.getRandomValues(this.values) as Uint32Array;
 		this.at = 1;
 		return this.values[0];
 	}
@@ -26,7 +26,7 @@ export class RandomArray {
 			rnd.at = rnd.at + 1;
 			return rnd;
 		} else {
-			rnd.values = window.crypto.getRandomValues(rnd.values);
+			rnd.values = window.crypto.getRandomValues(rnd.values) as Uint32Array;
 			rnd.at = 0;
 			return rnd;
 		}

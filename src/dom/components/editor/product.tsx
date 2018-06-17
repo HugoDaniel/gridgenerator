@@ -82,8 +82,8 @@ function renderAddress(props: IProductProps) {
 					<Button
 						id={props.data}
 						className="mh2"
-						label="Checkout"
-						onAction={props.events.onAddToCart}
+						label="Continue"
+						onAction={props.events.onShippingAddressDone}
 					/>
 				</div>
 			</section>
@@ -122,6 +122,20 @@ function renderConfirmation(props: IProductProps) {
 		</div>
 		);
 }
+function buildProducts(props: IProductProps) {
+	const result = props.data.inside.map((p, i) =>
+		<InCartProduct key={i} index={i} product={p} events={props.events} />
+	);
+	result.push(
+	<Button
+		className="mt3"
+		bg="transparent"
+		color="dark-gray"
+		label="Add New Product"
+		onAction={props.onExit}
+	/>);
+	return result;
+}
 function renderCart(props: IProductProps) {
 	return (
 	<div
@@ -133,19 +147,8 @@ function renderCart(props: IProductProps) {
 			<h2 className="">
 				In Cart
 			</h2>
-			<nav className="">
-				{props.data.inside.map((p, i) => {
-					return (
-						<InCartProduct index={i} product={p} events={props.events} />
-					);
-				})}
-				<Button
-					className="mt3"
-					bg="transparent"
-					color="dark-gray"
-					label="Add New Product"
-					onAction={props.onExit}
-				/>
+			<nav>
+				{buildProducts(props)}
 			</nav>
 			<hr className="mt4 w5 bb bw1 b--black-10" />
 			<TotalPrice products={props.data.inside} />
@@ -161,7 +164,7 @@ function renderCart(props: IProductProps) {
 					id={props.data}
 					className="mh2"
 					label="Checkout"
-					onAction={props.events.onAddToCart}
+					onAction={props.events.onCheckoutCart}
 				/>
 			</div>
 		</section>
@@ -217,7 +220,7 @@ function renderProduct(props: IProductProps) {
 					bg="transparent"
 					color="dark-gray"
 					label="View Cart"
-					onAction={props.onExit}
+					onAction={props.events.onViewCart}
 					/>
 				<Button
 					id={props.data}

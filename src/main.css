@@ -234,18 +234,18 @@ button:focus {
 	}
 }
 
-a [tooltip] {
+a [data-tooltip] {
 	visibility: collapse;
 	opacity: 0;
 	transition: opacity 300ms 300ms;
 }
-a:hover [tooltip] {
+a:hover [data-tooltip] {
 	visibility: visible;
 	margin-left: 8px;
 	opacity: 1;
 	transition: opacity 300ms 300ms;
 }
-[tooltip]::before {
+[data-tooltip]::before {
     content: "";
     position: absolute;
     top: -16px;
@@ -256,8 +256,8 @@ a:hover [tooltip] {
     border-color: rgba(0,0,0,0.7) transparent transparent     transparent;
     z-index: 100;
 }
-[tooltip]::after {
-    content: attr(tooltip);
+[data-tooltip]::after {
+    content: attr(data-tooltip);
     position: absolute;
     left:50%;
     top: -16px;

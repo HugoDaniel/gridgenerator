@@ -27,8 +27,8 @@ export const ShapePoint = (props: IShapePointProps) => {
 		return (
 			<g
 				key={genKey(props.pointAttribs, `isOtherEdge`)}
-				ontouchstart={linkEvent(props.pointAttribs, props.onAction)}
-				onClick={linkEvent(props.pointAttribs, props.onAction)}
+				ontouchstart={props.onAction ? linkEvent(props.pointAttribs, props.onAction) : props.onAction}
+				onClick={props.onAction ? linkEvent(props.pointAttribs, props.onAction) : props.onAction}
 				style={
 					{ transform: `translate(${props.pointAttribs.x - 10}px, ${props.pointAttribs.y - 10}px)`
 					, cursor: 'pointer'
@@ -67,7 +67,7 @@ export const ShapePoint = (props: IShapePointProps) => {
 	} else {
 		cx += 'light-gray-fill dark-gray-stroke o-10';
 	}
-	const _action = props.pointAttribs.isClickable
+	const _action = props.pointAttribs.isClickable && props.onAction
 		? linkEvent(props.pointAttribs, props.onAction)
 		: null;
 	const centerx = props.pointAttribs.x;

@@ -7,7 +7,7 @@ import { PlayerControls } from '../player/controls';
 import { IMeanderWrapperProps, MeanderWrapper } from './wrapper';
 export interface IProjectViewProps extends IMeanderWrapperProps {
 	className?: string;
-	project: StoredProject | undefined;
+	project: StoredProject | null;
 	playerState: PlayerState | null;
 	playerEvents: PlayerEvents | null;
 }

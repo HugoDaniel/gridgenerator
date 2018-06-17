@@ -23,10 +23,6 @@ const initPixelRatio = (canvas: HTMLCanvasElement, _context: CanvasContext | Web
 		// Make the canvas the same size
 		// ctx.canvas.width  = displayWidth;
 		// ctx.canvas.height = displayHeight;
-		if ((_context as CanvasContext).isOffscreen) {
-			return;
-		}
-		// ^ offscreen must be scaled when drawing
 		// 3D canvas must use gl.viewport to adjust clip space coords
 		canvas.style.width = `${oldWidth}px`;
 		canvas.style.height = `${oldHeight}px`;

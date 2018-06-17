@@ -185,7 +185,14 @@ class PathShape {
 	}
 	public static revive(o: { t: PathShapeInstanceReviver[], at: number}, t: Template) {
 		const result = new PathShape(t);
-		result.timeline = o.t.map((psir) => PathShapeInstance.revive(psir, t));
+		const timeline: PathShapeInstance[] = [];
+		for (let i = 0; i < o.t.length; i++) {
+			const psi = PathShapeInstance.revive(o.t[i], t);
+			if (psi) {
+				timeline.push(psi);
+			}
+		}
+		result.timeline = timeline;
 		result.at = o.at;
 		return result;
 	}
@@ -316,6 +323,7 @@ class PathShapeInstance {
 		} catch (e) {
 			// tslint:disable-next-line:no-console
 			console.error('Error trying to revive PathShapeInstace with Object:', o, 'AND TEMPLATE', t);
+			return null;
 		}
 	}
 	public static empty(t: Template): PathShapeInstance {

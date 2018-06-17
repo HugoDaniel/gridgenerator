@@ -14,7 +14,8 @@ function buildDefs(paths: Map<FillId, UIFillPath>) {
 	for (const entry of paths.entries() ) {
 		const path = entry[1];
 		const id = result.length;
-		const xlink = { 'xlink:href': `#${id}` };
+		const href = `#${id}`;
+		const xlink = { 'xlink:href': href, 'visibility': 'visible' };
 		result.push(
 			<defs key={`pathdef-${id}`}>
 				<path d={path.d} id={id} />
@@ -31,7 +32,7 @@ function buildPaths(selected: FillId, paths: Map<FillId, UIFillPath>, onAction: 
 	for (const [fillId, path] of paths.entries() ) {
 		const id = i++;
 		const xlink = { 'xlink:href': `#${id}` };
-		const action = linkEvent(fillId, onAction);
+		const action = onAction ? linkEvent(fillId, onAction) : onAction;
 		accum.push(
 			<g key={`pathuse-${id}`}>
 				<use className={'hover-orange-stroke pointer'}

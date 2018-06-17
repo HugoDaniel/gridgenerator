@@ -62,11 +62,11 @@ export const PublishPreview = (props: IPublishPreviewProps) => {
 						baseProfile={'basic'}
 						xmlns={'http://www.w3.org/2000/svg'}
 						{...xlink}
-						witdh={`${w}px`}
+						width={`${w}px`}
 						height={`${h}px`}
 						shape-rendering="crispEdges"
 						viewBox={`0 0 ${vbw} ${vbh}`}
-						dangerouslySetInnerHTML={ { __html: props.project.svg } }
+						dangerouslySetInnerHTML={ { __html: props.project.svg || '' } }
 					/>
 				</div>
 				<h2 className="mt4 mb3">
@@ -104,7 +104,7 @@ export const PublishPreview = (props: IPublishPreviewProps) => {
 						}
 					}}>
 						<img src={copy_icon} alt="Copy link Button" className="w2 h2 mr2" />
-						<input id="publish-url" className="input-reset bn sans-serif f6 bg-transparent h2 w5" readonly value={projectUrl} />
+						<input id="publish-url" className="input-reset bn sans-serif f6 bg-transparent h2 w5" value={projectUrl} />
 					</a>
 				</div>
 			</section>

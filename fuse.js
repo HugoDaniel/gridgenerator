@@ -7,58 +7,74 @@ const {
   WebIndexPlugin,
   QuantumPlugin,
 } = require('fuse-box');
+const { src, task, exec, context } = require("fuse-box/sparky");
 const transformInferno = require('ts-transform-inferno').default;
 const transformClasscat = require('ts-transform-classcat').default;
-let fuse, app;
-let isProduction = false;
-let isStaging = false;
+let fuse;
+
+context(class {
+  getConfig() {
+      return FuseBox.init({
+        homeDir: 'src',
+        hash: this.isProduction,
+        output: 'dist/$name.js',
+        experimentalFeatures: true,
+        cache: !this.isProduction,
+        sourceMaps: !this.isProduction,
+        transformers: {
+          before: [ transformInferno({ classwrap: true }) ],
+        },
+        plugins: [
+          EnvPlugin({
+            NODE_ENV: this.isProduction ? 'production' : 'development',
+            HOST: this.isProduction
+              ? 'https://gridgenerator.com'
+              : 'https://localhost:8080'
+          }),
+          CSSPlugin(),
+          CopyPlugin({ files: ['*.svg', '*.png']}),
+          WebIndexPlugin({
+            title: 'Grid Generator',
+            template: 'src/index.html'
+          }),
+          this.isProduction &&
+          QuantumPlugin({
+            bakeApiIntoBundle: 'client',
+            treeshake: true,
+            uglify: true
+          })
+        ]
+      });
+  }
+})
+const options = {
+
+};
+const clientOptions = {
+  ...options,
+  plugins: [
+
+  ]
+}
 
 Sparky.task('config', _ => {
-  fuse = new FuseBox({
-    homeDir: 'src',
-    hash: isProduction || isStaging,
-    output: 'dist/$name.js',
-    experimentalFeatures: true,
-    cache: !isProduction,
-    sourceMaps: !isProduction || isStaging,
-    transformers: {
-      before: [ transformInferno({ classwrap: true }) ],
-    },
-    plugins: [
-      EnvPlugin({
-				NODE_ENV: isProduction ? 'production' : isStaging ? 'staging' : 'development',
-				HOST: isProduction ? 'https://gridgenerator.com'
-				    : isStaging ? 'https://dev.gridgenerator.com'
-				    : 'https://localhost:8080'
-			}),
-      CSSPlugin(),
-      CopyPlugin({ files: ['*.svg', '*.png']}),
-      WebIndexPlugin({
-        title: 'Grid Generator',
-        template: 'src/index.html',
-      }),
-      (isProduction || isStaging) &&
-      QuantumPlugin({
-        bakeApiIntoBundle: 'app',
-        treeshake: true,
-        uglify: true
-      }),
-    ],
-  });
-  app = fuse.bundle('app').instructions('>main.tsx');
+  fuse = FuseBox.init(options);
+  fuse.dev();
 });
-Sparky.task('clean', _ => Sparky.src('dist/').clean('dist/'));
-Sparky.task('env', _ => (isProduction = true));
-Sparky.task('stage', _ => (isStaging = true));
-Sparky.task('dev', ['clean', 'config'], _ => {
-  fuse.dev({
-  		socketURI: "ws://localhost:4444",
-//		  httpOnly: false
-	});
-  app.hmr().watch();
+Sparky.task('clean', _ => Sparky.src('dist/').clean('dist/').exec());
+Sparky.task("client", () => {
+  fuse.options = clientOptions;
+  fuse
+     .bundle('client')
+     .target('browser@es6')
+     .watch('**')
+     .hmr()
+     .instructions('>main.tsx');
+});
+Sparky.task('dev', ['clean', 'config', 'client'], _ => {
   return fuse.run();
 });
-Sparky.task('prod', ['clean', 'env', 'config'], _ => {
+Sparky.task('prod', ['clean', 'config'], _ => {
   return fuse.run();
 });
 Sparky.task('staging', ['clean', 'stage', 'config'], _ => {

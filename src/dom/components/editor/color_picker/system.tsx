@@ -13,8 +13,6 @@ export function SystemPickerBtn(props: ISystemPickerBtnProps) {
 		<label
 			className={cx}
 			style={props.style || {}}
-			ariaLabel={'System eyedropper'}
-			for={'systempicker'}
 		>
 			<p
 				className={'f7 sans-serif white ttu ws-normal tc h3 w3 br-100 ma0 flex flex-column justify-center'}

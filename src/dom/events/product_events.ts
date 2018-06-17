@@ -1,4 +1,4 @@
-import { Cart, FatState, PosterType, ProductAt, ProjectMap, TShirtColor, TShirtSize, TShirtType, CartAt } from '../../data';
+import { Cart, CartAt, FatState, PosterType, ProductAt, ProjectMap, TShirtColor, TShirtSize, TShirtType } from '../../data';
 import { Net, Runtime } from '../../engine';
 import { Movement } from '../../engine/runtime/movement';
 import { IProductMovementDetail } from '../../engine/runtime/movement/product';
@@ -23,6 +23,10 @@ export class ProductEvents implements IEventHandler {
 	public onTShirtSizeChange: (s: TShirtSize) => void;
 	public onArtSizeChange: (e: Event) => void;
 	public onTShirtColorChange: (c: TShirtColor) => void;
+	public onViewCart: () => void;
+	public onCheckoutCart: () => void;
+	public onShippingAddressDone: () => void;
+	public onConfirmationDone: () => void;
 	public onProductInit: () => void;
 	// event handler:
 	public onMouseDown: (e: MouseEvent) => void;
@@ -85,6 +89,27 @@ export class ProductEvents implements IEventHandler {
 			this.refresher.refreshCartOnly(this.cart);
 			this.refresher.refreshDOMOnly();
 		};
+		this.onViewCart = () => {
+			this.cart.at = CartAt.InCart;
+			this.refresher.refreshCartOnly(this.cart);
+			this.refresher.refreshDOMOnly();
+		};
+		this.onCheckoutCart = () => {
+			this.cart.at = CartAt.ShippingAddress;
+			this.refresher.refreshCartOnly(this.cart);
+			this.refresher.refreshDOMOnly();
+		};
+		this.onShippingAddressDone = () => {
+			this.cart.at = CartAt.Confirmation;
+			this.refresher.refreshCartOnly(this.cart);
+			this.refresher.refreshDOMOnly();
+		};
+		this.onConfirmationDone = () => {
+			// TODO: Enter pay pal
+			this.cart.at = CartAt.Confirmation;
+			this.refresher.refreshCartOnly(this.cart);
+			this.refresher.refreshDOMOnly();
+		};
 		this.onProductInit = () => {
 			// render the current project into svg
 			const art = this.state.current.createSVG();
@@ -92,6 +117,7 @@ export class ProductEvents implements IEventHandler {
 			this.cart.product.withArt(art);
 			this.cart.product.init();
 			this.cart.product.setPrice(this.cart.prices);
+			this.cart.at = CartAt.Product;
 			this.refresher.refreshCartOnly(this.cart);
 			this.refresher.refreshDOMOnly();
 		};

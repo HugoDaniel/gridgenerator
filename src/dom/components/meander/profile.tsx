@@ -1,9 +1,8 @@
 
 import { IProfileForm, MeanderProfile, Menu, ProfileMenuId, Project, StoredProject } from '../../../data';
-import { ProfileBillingFreq } from '../../../data/meander/profile';
-import { IMeanderMenuProps, MeanderMenu } from './menu';
-import { IProfileMeProps, ProfileMe } from './profile_me';
-import { IProfileProjectsProps, ProfileProjects } from './profile_projects';
+import { MeanderMenu } from './menu';
+import { ProfileMe } from './profile_me';
+import { ProfileProjects } from './profile_projects';
 import { IMeanderWrapperProps, MeanderWrapper } from './wrapper';
 
 export interface IProfileSectionProps extends IMeanderWrapperProps {

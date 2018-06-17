@@ -33,7 +33,7 @@ function renderPts(pts: Vector2D[], clickablePts: VectorSet, selectedPts: Vector
 }
 
 function renderShapes(shapesD: string[], fills: string[]) {
-	const result: any[] = [];
+	const result: JSX.Element[] = [];
 	for (let i = 0; i < shapesD.length; i++) {
 		result.push(
 			<path
@@ -66,21 +66,22 @@ export class ShapeGrid extends Component<IShapeGridProps, any> {
 				style={props.style}
 				viewBox={`-${halfMargin} -${halfMargin} ${maxLen} ${maxLen}`}
 			>
+			{[
 				<rect
-					x={-halfMargin}
-					y={-halfMargin}
+				x={-halfMargin}
+				y={-halfMargin}
 					width={maxLen}
 					height={maxLen}
 					fill={ShapeGridColor2}
-				/>
-				{ renderShapes(props.shapeEditor.shapesD, props.shapeEditor.fills) }
-				<path d={props.shapeEditor.templatePath} stroke={ShapeGridColor0} fill={'transparent'} stroke-width={'1px'} stroke-dasharray={'4 4'} />
+					/>,
+				...renderShapes(props.shapeEditor.shapesD, props.shapeEditor.fills),
+				<path d={props.shapeEditor.templatePath} stroke={ShapeGridColor0} fill={'transparent'} stroke-width={'1px'} stroke-dasharray={'4 4'} />,
 				<path
 					d={props.shapeEditor.currentShape}
 					className={'current-shape-stroke orange-stroke gold-fill'}
 					stroke-width={'3'}
 					fill-opacity={'0.6'}
-				/>
+					/>,
 				<g className={'points'} $HasKeyedChildren>
 					{renderPts(
 						props.shapeEditor.allPts,
@@ -88,30 +89,27 @@ export class ShapeGrid extends Component<IShapeGridProps, any> {
 						props.shapeEditor.selectedPts,
 						props.onPointAction)
 					}
-				</g>
-				{
-					props.shapeEditor.currentEdge ?
+				</g>,
+				props.shapeEditor.currentEdge ?
 					<ShapePoint
-						pointAttribs={
+					pointAttribs={
 							{ x: props.shapeEditor.currentEdge.x
-							, y: props.shapeEditor.currentEdge.y
-							, isActive: true
-							, isCurrentEdge: true
+								, y: props.shapeEditor.currentEdge.y
+								, isActive: true
+								, isCurrentEdge: true
 							}}
 							onAction={null}
-					/> : <g className={'no-edge1'} />
-				}
-				{
-					props.shapeEditor.otherEdge ?
+					/> : <g className={'no-edge1'} />,
+				props.shapeEditor.otherEdge ?
 					<ShapePoint
-						pointAttribs={
-							{ x: props.shapeEditor.otherEdge.x
+					pointAttribs={
+						{ x: props.shapeEditor.otherEdge.x
 							, y: props.shapeEditor.otherEdge.y
 							, isOtherEdge: true
-							}}
+						}}
 						onAction={props.onPointAction}
 					/> : <g className={'no-edge2'} />
-				}
+			]}
 			</svg>
 		);
 	}

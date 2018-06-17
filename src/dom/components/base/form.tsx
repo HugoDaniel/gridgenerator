@@ -42,7 +42,6 @@ export class TextArea extends Component<any, any> {
 			<textarea
 				id={this.props.id || null}
 				className={this.props.className || ''}
-				type={this.props.type || 'text'}
 				value={this.state.inputValue || this.props.value}
 				defaultValue={this.props.defaultValue || ''}
 				onInput={linkEvent(this, this.handleText)}

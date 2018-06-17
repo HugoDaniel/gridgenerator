@@ -1,5 +1,5 @@
 import { isArray } from 'inferno-shared';
-import { AboutMenuId, getCountry, IProfileForm, MainMenuId, Meander, MeanderCourse, MeanderLogin, MeanderView, PlayerState, ProfileBillingAt, ProfileBillingFreq, ProfileBillingId, ProfileMenuId, ProfileStatus, Project, RecoverState, State, StoredProject, VerifyingState } from '../../data';
+import { AboutMenuId, getCountry, IProfileForm, MainMenuId, Meander, MeanderCourse, MeanderLogin, MeanderView, PlayerState, ProfileMenuId, Project, RecoverState, State, StoredProject, VerifyingState } from '../../data';
 import { Net, Runtime, Token } from '../../engine';
 import { Loading } from '../../engine/runtime/loading';
 import { Refresher } from './refresher';
@@ -44,7 +44,6 @@ export class MeanderEvents {
 	public onProfileSubmenuAction: (optionId: ProfileMenuId, e: Event) => void;
 	public onProfileUpdate: (e: Event) => void;
 	public onProfileProjects: () => void;
-	public onProfilePaymentFreqChange: (op: ProfileBillingFreq) => void;
 	public blurProject: () => void;
 	public onMenuAction: (id: MainMenuId, e: Event) => void;
 	public fromRoute: () => void;
@@ -302,6 +301,7 @@ export class MeanderEvents {
 							const stored = proj.toStored();
 							if (!stored) {
 								// TODO: set error message
+								// tslint:disable-next-line:no-console
 								console.log('ERROR, could not convert project to stored', proj);
 								return;
 							}

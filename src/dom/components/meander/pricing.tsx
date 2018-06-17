@@ -1,11 +1,11 @@
 // @ts-ignore
-import pricing_basic from '../../../assets/icons/pricing-feather.svg';
+import pricing_basic from '../../../assets/icons/pricing-features.svg';
+// @ts-ignore
+import pricing_enterprise from '../../../assets/icons/pricing-integration.svg';
+// @ts-ignore
+import pricing_standard from '../../../assets/icons/pricing-money.svg';
 // @ts-ignore
 import pricing_ok from '../../../assets/icons/pricing-ok.svg';
-// @ts-ignore
-import pricing_enterprise from '../../../assets/icons/pricing-pen.svg';
-// @ts-ignore
-import pricing_standard from '../../../assets/icons/pricing-pencil.svg';
 import { Button } from '../base/buttons';
 import { IPricingCardProps, PricingCard } from './pricing_card';
 import { IMeanderWrapperProps, MeanderWrapper } from './wrapper';
@@ -14,7 +14,6 @@ export interface IMeanderPricingProps extends IMeanderWrapperProps {
 	titleClassName: string;
 	textClassName: string;
 	subtitleClassName: string;
-	onBuyAction: () => void;
 }
 const PricingItem = (props) =>
 	<li className="list-item f7 h2 flex items-center justify-left mv1">
@@ -34,53 +33,50 @@ export function MeanderPricing(props: IMeanderPricingProps) {
 				onClick={(e: Event) => e.stopImmediatePropagation()}
 			>
 				<div className={props.sectionClassName}>
-					<h1 className={props.titleClassName}>Do more with Grid Generator</h1>
-					<h2 className={props.subtitleClassName}>Here are our plans</h2>
+					<h1 className={props.titleClassName}>Do it with Grid Generator</h1>
+					<h2 className={props.subtitleClassName}>Business related information</h2>
 					<div className="contact-social flex flex-wrap">
 						<PricingCard
 							className={cardCx}
 							imgUrl={pricing_basic}
-							name="Basic"
-							title1="Free"
-							subtitle1="Forever"
-							desc="Our initial plan for all users. You can export your works as long as you share them under a Free Cultural Works compatible license."
+							name="Features"
+							title1="Free & 100% Open Source"
+							subtitle1="No monthly subscription. No extra/hidden costs."
+							desc="The Grid Generator app is tailored to encourage you to share your works under Free Cultural Works compatible licenses and remix other works from the community."
 							>
 							<ul className="list pl1">
 								<PricingItem>Infinite Grid</PricingItem>
+								<PricingItem>Automatic tile patterns</PricingItem>
 								<PricingItem>Replay your works</PricingItem>
-								<PricingItem>3 Shape Templates</PricingItem>
-								<PricingItem>Share with Free Cultural Works compatible licenses (CC0, BY, BY-SA)</PricingItem>
-								<PricingItem>Export as SVG after sharing</PricingItem>
+								<PricingItem>3 Shape Templates (more to come)</PricingItem>
+								<PricingItem>Share & Remix with Free Cultural Works compatible licenses (CC0, BY, BY-SA)</PricingItem>
+								<PricingItem>Export as SVG</PricingItem>
 							</ul>
 						</PricingCard>
 						<PricingCard
 							className={cardCx}
 							imgUrl={pricing_standard}
-							name="Standard"
-							title1="€15"
-							subtitle1="Per month when billed yearly (€18 when billed monthly)"
-							desc="Fine tune how your work is shared. Export freely without restrictions."
+							name="Money"
+							title1="How to support this project"
+							subtitle1="Use it to make your customized products"
+							desc="Create your shapes and patterns and turn them into products. When you buy a poster or t-shirt you are helping me develop the app further by removing bugs and create new features."
 							>
 							<ul className="list pl1">
-								<PricingItem><b>Everything in Basic</b></PricingItem>
-								<PricingItem>Share with any Creative Commons License</PricingItem>
-								<PricingItem>Export as SVG without having to share</PricingItem>
+								<PricingItem><b>Buy customized products with your shapes and patterns</b></PricingItem>
+								<PricingItem>Order your custom T-Shirts</PricingItem>
+								<PricingItem>Order custom Posters</PricingItem>
 							</ul>
-							<Button
-								label="Upgrade now"
-								onAction={props.onBuyAction}
-							/>
 						</PricingCard>
 						<PricingCard
 							className={cardCx}
 							imgUrl={pricing_enterprise}
-							name="Enterprise"
-							title1="Contact us"
+							name="Integration"
+							title1="Adapt to your business"
 							subtitle1="Monthly rates + setup fee"
-							desc="Customized solution for your business. Allow your clients to create shapes and patterns that fit into your products. Contact us for details."
+							desc="Customized solution for your business. Allow your clients to create shapes and patterns that fit into your products. Send an e-mail for further details."
 						>
 							<ul className="list pl1">
-								<PricingItem><b>Everything in Standard</b></PricingItem>
+								<PricingItem><b>Adapt the tool to your desire</b></PricingItem>
 								<PricingItem>Use your domain</PricingItem>
 								<PricingItem>Advanced training for your end users and admins</PricingItem>
 							</ul>

@@ -3,7 +3,7 @@ import { Button } from '../base/buttons';
 import { IMeanderWrapperProps, MeanderWrapper } from './wrapper';
 export interface IMeanderVerifyProps extends IMeanderWrapperProps {
 	state: VerifyingState;
-	user: string;
+	user: string | null;
 }
 function verifyState(props: IMeanderVerifyProps) {
 	const pcx = 'f6 tc';

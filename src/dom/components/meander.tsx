@@ -69,7 +69,7 @@ function selectCourse(props: IMeanderProps) {
 		}
 		break;
 		case MeanderCourse.Pricing:
-		return ( <MeanderPricing {...defaultProps} onBuyAction={props.events.onEnterBilling} /> );
+		return ( <MeanderPricing {...defaultProps} /> );
 		case MeanderCourse.Collective:
 		return ( <MeanderCollective {...defaultProps} collective={props.meander.collective} /> );
 		case MeanderCourse.About:
@@ -107,6 +107,7 @@ function selectCourse(props: IMeanderProps) {
 				onRecover={props.events.resetPassword}
 				isLoading={props.meander.recover.isLoading}
 				errorMsg={props.meander.recover.error}
+				onExit={props.events.gotoLogin}
 			/>
 		);
 		case MeanderCourse.ViewProject:

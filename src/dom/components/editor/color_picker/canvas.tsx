@@ -2,8 +2,8 @@ import { CanvasContext } from '../../../../engine';
 import Canvas from '../../base/canvas';
 
 export interface IColorCanvasProps {
-	onCanvasInit?(context: CanvasContext, actions: object, offscreenId: number): void;
-	onCanvasUnmount?(context: CanvasContext, actions: object): void;
+	onCanvasInit?(context: CanvasContext): void;
+	onCanvasUnmount?(context: CanvasRenderingContext2D): void;
 	size: number;
 	className?: string;
 	style?: object;
