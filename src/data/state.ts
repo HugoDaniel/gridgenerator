@@ -214,9 +214,10 @@ export class State {
 			layerUse: this.renderSVGLayer(dim)
 		};
 	}
-	public createSVG(): { svg: string, viewbox: [number, number, number, number] } {
+	/** Creates a single SVG (no pattern or repetitions). Uses the layer pattern */
+	public createSingleSVG(): { svg: string, viewbox: [number, number, number, number] } {
 		const parts = this.createSVGParts(
-			this.currentLayer.dimensions());
+			this.currentLayer.dimensions(true));
 		return {
 			viewbox: parts.viewbox,
 			svg: `
@@ -227,6 +228,32 @@ export class State {
 		${parts.layerUse.join('\n')}
 		</g>`
 		};
+	}
+	public createSVG(hreps: number = 1, vreps: number = 1): { svg: string, viewbox: [number, number, number, number] } {
+		const parts = this.createSVGParts(
+			this.currentLayer.dimensions(true));
+		const view = parts.viewbox;
+		const width = view[2];
+		const height = view[3];
+		let uses = '';
+		for (let v = 0; v < vreps; v++) {
+			for (let h = 0; h < hreps; h++) {
+				uses +=
+				`<g transform="translate(${h * width} ${v * height})">
+				${parts.layerUse.join('\n')}
+				</g>
+				`;
+			}
+		}
+		return ({
+			viewbox: [0, 0, hreps * width, vreps * height],
+			svg: `
+			<defs>
+				${parts.defs.join('\n')}
+			</defs>
+			${uses}
+			`
+		});
 	}
 	public resetUI() {
 		this._ui = new UI(this.currentLayer, this._shapes, this._fills);

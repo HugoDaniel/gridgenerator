@@ -85,7 +85,7 @@ export class UI {
 		this.isZooming = false;
 		this.fillEditor = new UIFillEditor(shape, fills);
 		this.shapeEditor = new UIShapeEditor();
-		this.exportEditor = new UIExportEditor(null, '', 0);
+		this.exportEditor = new UIExportEditor(null);
 		this.publishEditor = new UIPublishEditor();
 		this.toolsSubmenus = new ToolsSubmenus();
 		this.patterns = new Map();
@@ -246,8 +246,8 @@ export class UI {
 			return UIState.Project;
 		}
 	}
-	private initExport(dim: IGridDimension, shapeOutline: string, shapeRes: number) {
-		this.exportEditor = new UIExportEditor(dim, shapeOutline, shapeRes);
+	private initExport(dim: IGridDimension) {
+		this.exportEditor = new UIExportEditor(dim);
 		return this;
 	}
 	private initPublish() {
@@ -270,7 +270,7 @@ export class UI {
 	}
 	private initFeature(feature: FeaturesMenuId | string, dim: IGridDimension, shapeOutline: string, shapeRes: number) {
 		switch (feature) {
-			case FeaturesMenuId.Export: return this.initExport(dim, shapeOutline, shapeRes);
+			case FeaturesMenuId.Export: return this.initExport(dim);
 			case FeaturesMenuId.Publish: return this.initPublish();
 			default: return this;
 		}

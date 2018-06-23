@@ -7,7 +7,7 @@ export class Input extends Component<any, any> {
 	public handleText(that, e: Event) {
 		const t = e.target as HTMLInputElement;
 		that.setState({ inputValue: (t.value ? t.value : '') });
-		if (this.props.onInput) {
+		if (this && this.props.onInput) {
 			this.props.onInput(t.value);
 		}
 	}

@@ -124,7 +124,7 @@ export class Grid {
 		}
 		return result;
 	}
-	public dimensions(): IGridDimension {
+	public dimensions(usePattern: boolean = false): IGridDimension {
 		const result = {
 			width: undefined,
 			height: undefined,
@@ -133,45 +133,55 @@ export class Grid {
 			minX: undefined,
 			minY: undefined
 		} as { width: undefined | number, height: undefined | number, maxX: undefined | number, maxY: undefined | number, minX: undefined | number, minY: undefined | number };
-		const elems = [];
-		for (const [gridElem, [x, y]] of this._canvas.entries()) {
-			if (x === undefined || y === undefined) {
-				continue;
-			}
-			if (result.maxX === undefined || x > result.maxX) {
-				result.maxX = x;
-			}
-			if (result.maxY === undefined || y > result.maxY) {
-				result.maxY = y;
-			}
-			if (result.minX === undefined || x < result.minX) {
-				result.minX = x;
-			}
-			if (result.minY === undefined || y < result.minY) {
-				result.minY = y;
-			}
-		}
-		if (result.maxX === undefined || result.maxY === undefined || result.minY === undefined || result.minX === undefined) {
-			return { width: 0, height: 0, maxX: 0, maxY: 0, minX: 0, minY: 0 };
-		} else {
-			let w = 1;
-			if (result.maxX !== result.minX) {
-				w = Math.abs(result.maxX - result.minX) + 1;
-			}
-			let h = 1;
-			if (result.maxY !== result.minY) {
-				h = Math.abs(result.maxY - result.minY) + 1;
-			}
-			result.width = w;
-			result.height = h;
-			return({
-				maxX: result.maxX,
-				minX: result.minX,
-				maxY: result.maxY,
-				minY: result.minY,
-				width: w,
-				height: h
+		if (usePattern && this.pattern) {
+			return ({
+				minX: this.pattern.startX,
+				maxX: this.pattern.endX,
+				minY: this.pattern.startY,
+				maxY: this.pattern.endY,
+				width: this.pattern.width,
+				height: this.pattern.height
 			});
+		} else {
+			for (const [_, [x, y]] of this._canvas.entries()) {
+				if (x === undefined || y === undefined) {
+					continue;
+				}
+				if (result.maxX === undefined || x > result.maxX) {
+					result.maxX = x;
+				}
+				if (result.maxY === undefined || y > result.maxY) {
+					result.maxY = y;
+				}
+				if (result.minX === undefined || x < result.minX) {
+					result.minX = x;
+				}
+				if (result.minY === undefined || y < result.minY) {
+					result.minY = y;
+				}
+			}
+			if (result.maxX === undefined || result.maxY === undefined || result.minY === undefined || result.minX === undefined) {
+				return { width: 0, height: 0, maxX: 0, maxY: 0, minX: 0, minY: 0 };
+			} else {
+				let w = 1;
+				if (result.maxX !== result.minX) {
+					w = Math.abs(result.maxX - result.minX) + 1;
+				}
+				let h = 1;
+				if (result.maxY !== result.minY) {
+					h = Math.abs(result.maxY - result.minY) + 1;
+				}
+				result.width = w;
+				result.height = h;
+				return({
+					maxX: result.maxX,
+					minX: result.minX,
+					maxY: result.maxY,
+					minY: result.minY,
+					width: w,
+					height: h
+				});
+			}
 		}
 	}
 	/** returns the layer xy coordinates for the grid element under (absX,absY) */

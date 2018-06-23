@@ -20,7 +20,8 @@
 		"outDir": "./built",
     "types": [
 			"inferno",
-			"inferno-shared"
+			"inferno-shared",
+			"node"
 		],
 		"lib": [
 			"es6",

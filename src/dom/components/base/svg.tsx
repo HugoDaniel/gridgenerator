@@ -1,6 +1,6 @@
 export interface ISVGProps {
 	className?: string;
-	style?: string;
+	style?: object;
 	margin?: number;
 	zoom?: number;
 	size: number;
@@ -24,5 +24,29 @@ export const SVG = (props: ISVGProps) => {
 		>
 			{props.children}
 		</svg>
+	);
+};
+
+export interface IArtSVGProps {
+	className?: string;
+	style?: object;
+	svg: string;
+	viewbox: [number, number, number, number];
+	asImage?: boolean;
+}
+
+export const ArtSVG = (props: IArtSVGProps) => {
+	const xlinkns = { 'xmlns:xlink': 'http://www.w3.org/1999/xlink' };
+	const shapeRendering = { 'shape-rendering': 'crispEdges' };
+	return (
+		<svg
+			className={props.className}
+			version="1.1" xmlns="http://www.w3.org/2000/svg" x="0px" y="0px"
+			style={props.style}
+			viewBox={props.viewbox.join(' ')}
+			{...xlinkns}
+			{...shapeRendering}
+			dangerouslySetInnerHTML={ { __html: props.svg } }
+		/>
 	);
 };

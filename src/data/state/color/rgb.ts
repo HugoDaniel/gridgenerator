@@ -33,6 +33,7 @@ export class RGBColor {
 	}
 	public toString(): string {
 		return `rgba(${this.r},${this.g},${this.b},${this.a})`;
+		// return RGBColor.toHex(this);
 	}
 	public static toHex(c: RGBColor): string {
 		return (

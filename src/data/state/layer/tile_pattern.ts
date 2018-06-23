@@ -16,6 +16,12 @@ export class TilePattern {
 		this.endX = ex;
 		this.endY = ey;
 	}
+	get width() {
+		return Math.abs(this.endX - this.startX);
+	}
+	get height() {
+		return Math.abs(this.endY - this.startY);
+	}
 	public toJSON() {
 		return {
 			sx: this.startX,

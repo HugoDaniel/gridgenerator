@@ -9,4 +9,6 @@ export { ClipSpace } from './engine/runtime/clipspace';
 export { Loading } from './engine/runtime/loading';
 export { Net } from './engine/net';
 export { NetLogin } from './engine/net/login';
+export { NetProduct } from './engine/net/product';
+export { NetExport } from './engine/net/export';
 export { Token } from './engine/net/token';

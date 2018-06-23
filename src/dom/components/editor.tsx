@@ -69,7 +69,7 @@ function selectEditor(props: IEditorProps, colorPickerProps: IColorPickerProps, 
 			);
 		case UIState.Export:
 			return (
-				<Export {...exportProps} height={props.height} />
+				<Export {...exportProps} height={props.height} onComponentDidMount={exportProps.events.onExportInit} />
 			);
 		case UIState.Publish:
 			return (

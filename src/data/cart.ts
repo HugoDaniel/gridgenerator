@@ -1,3 +1,4 @@
+import { CartAddress } from './cart/address';
 import { CartProduct, ProductAt } from './cart/product';
 export enum CartAt { Product = 100, InCart, ShippingAddress, Confirmation }
 export interface IPrices {
@@ -13,6 +14,7 @@ export class Cart {
 	public product: CartProduct;
 	public prices: IPrices;
 	public inside: CartProduct[];
+	public address: CartAddress;
 	constructor() {
 		this.at = CartAt.Product;
 		this.product = new CartProduct();
@@ -25,6 +27,7 @@ export class Cart {
 			posterA2: 10,
 			posterA3: 8
 		};
+		this.address = new CartAddress();
 	}
 	/**
 	 * Adds the current product to cart, places it in the "inside" array attribute

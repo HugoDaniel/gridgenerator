@@ -148,7 +148,7 @@ export class Events {
 		this.shapeEditorEvents = new ShapeEditorEvents(rt, s, refresher);
 		this.recorderEvents = new RecorderEvents(rt, s, refresher);
 		this.sceneEvents = new SceneEvents(rt, s, refresher);
-		this.exportEvents = new ExportEvents(rt, s, refresher);
+		this.exportEvents = new ExportEvents(rt, s, this.net, this.projects, refresher);
 		this.projectEvents  = new ProjectEvents(rt, s, this.net, this.projects, refresher, this.sceneEvents.reset);
 		this.publishEvents = new PublishEvents(rt, s, this.net, refresher, this.projects);
 		this.productEvents = new ProductEvents(rt, s, this.cart, this.net, refresher, this.projects);
@@ -195,6 +195,7 @@ export class Events {
 		this.net = n;
 		this.meanderEvents.net = n;
 		this.productEvents.net = n;
+		this.exportEvents.net = n;
 	}
 	public updateMeander(m: Meander): void {
 		this.meanderEvents.meander = m;
@@ -206,6 +207,7 @@ export class Events {
 		this.projects = p;
 		this.projectEvents.projects = p;
 		this.publishEvents.projects = p;
+		this.exportEvents.projects = p;
 	}
 	public updateRuntime(rt: Runtime): void {
 		this.runtime = rt;

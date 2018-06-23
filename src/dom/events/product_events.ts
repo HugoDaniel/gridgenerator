@@ -24,6 +24,7 @@ export class ProductEvents implements IEventHandler {
 	public onArtSizeChange: (e: Event) => void;
 	public onTShirtColorChange: (c: TShirtColor) => void;
 	public onViewCart: () => void;
+	public onChangeCountry: () => void;
 	public onCheckoutCart: () => void;
 	public onShippingAddressDone: () => void;
 	public onConfirmationDone: () => void;
@@ -95,17 +96,80 @@ export class ProductEvents implements IEventHandler {
 			this.refresher.refreshDOMOnly();
 		};
 		this.onCheckoutCart = () => {
-			this.cart.at = CartAt.ShippingAddress;
-			this.refresher.refreshCartOnly(this.cart);
-			this.refresher.refreshDOMOnly();
+			// fetch countries
+			this.net.product.getCountryLst().then((v) => {
+				this.cart.at = CartAt.ShippingAddress;
+				this.cart.address.countries = v.countries;
+				this.refresher.refreshCartOnly(this.cart);
+				this.refresher.refreshDOMOnly();
+			}, (fail) => {
+				console.log('COULD NOT GET COUNTRIES', fail);
+			});
+		};
+		this.onChangeCountry = () => {
+			const countryElem = document.getElementById('address-country') as HTMLSelectElement;
+			if (!countryElem) {
+				// error
+			} else {
+				this.cart.address.country = countryElem.value;
+				// get list of states
+				this.cart.address.states = null;
+				for (let i = 0; i < this.cart.address.countries.length; i++) {
+					const c = this.cart.address.countries[i];
+					if (c.code === countryElem.value && c.states !== null) {
+						this.cart.address.states = c.states;
+					}
+				}
+				this.refresher.refreshCartOnly(this.cart);
+				this.refresher.refreshDOMOnly();
+			}
 		};
 		this.onShippingAddressDone = () => {
+			// update address
+			const nameElem = document.getElementById('address-name') as HTMLInputElement;
+			if (!nameElem) {
+				// error
+			} else {
+				this.cart.address.name = nameElem.value;
+			}
+			const countryElem = document.getElementById('address-country') as HTMLSelectElement;
+			if (!countryElem) {
+				// error
+			} else {
+				this.cart.address.country = countryElem.value;
+			}
+			const stateElem = document.getElementById('address-state') as HTMLSelectElement;
+			if (!stateElem) {
+				// error
+			} else {
+				this.cart.address.state = stateElem.value;
+			}
+			const addressElem = document.getElementById('address-address') as HTMLInputElement;
+			if (!addressElem) {
+				// error
+			} else {
+				this.cart.address.address = addressElem.value;
+			}
+			const postalElem = document.getElementById('address-postal') as HTMLInputElement;
+			if (!postalElem) {
+				// error
+			} else {
+				this.cart.address.postalCode = postalElem.value;
+			}
+			const cityElem = document.getElementById('address-city') as HTMLInputElement;
+			if (!cityElem) {
+				// error
+			} else {
+				this.cart.address.city = cityElem.value;
+			}
+			// console.log(this.cart.address);
+			// move on to confirmation
 			this.cart.at = CartAt.Confirmation;
 			this.refresher.refreshCartOnly(this.cart);
 			this.refresher.refreshDOMOnly();
 		};
 		this.onConfirmationDone = () => {
-			// TODO: Enter pay pal
+			// TODO: Enter paypal
 			this.cart.at = CartAt.Confirmation;
 			this.refresher.refreshCartOnly(this.cart);
 			this.refresher.refreshDOMOnly();

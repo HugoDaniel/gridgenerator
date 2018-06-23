@@ -6,6 +6,7 @@ import shirt_icon from '../../../assets/icons/product-shirt.svg';
 import { Cart, CartAt, CartProduct, ProductAt } from '../../../data';
 import { ProductEvents } from '../../events/product_events';
 import { Button } from '../base/buttons';
+import { Input } from '../base/form';
 import { IInCartProductProps, InCartProduct } from './product/in_cart_product';
 import { IPosterProps, Poster } from './product/poster';
 import { ITotalPriceProps, TotalPrice } from './product/total';
@@ -59,6 +60,8 @@ function selectProductComponent(props: IProductProps) {
 	}
 }
 function renderAddress(props: IProductProps) {
+	const inputcx = 'input-reset f6 ba b--black-20 br1 pa2 mb2 ml2 db w5';
+	const labelcx = 'f6 b pa2 db tl';
 	return (
 		<div
 			style={{ height: props.height }}
@@ -69,6 +72,51 @@ function renderAddress(props: IProductProps) {
 				<h2 className="">
 					Shipping Address
 				</h2>
+				<div className="form">
+					<label className={labelcx}>
+						Name
+					</label>
+					<Input className={inputcx} type="text" name="address-name" id="address-name" required value={props.data.address ? props.data.address.name : ''} />
+					<label className={labelcx}>
+						Country
+					</label>
+					<select className={inputcx} id="address-country" onChange={props.events.onChangeCountry}>
+						{ props.data.address.countries.map( (c) =>
+							<option value={c.code} selected={c.code === props.data.address.country}>{c.name}</option>
+						)}
+					</select>
+					<label className={labelcx}>
+						Address <span className="f6 gray">(Street, house number, building number, apt...)</span>
+					</label>
+					<Input className={inputcx} type="text" name="address-address" id="address-address" required value={props.data.address ? props.data.address.address : ''} />
+					<div className="flex">
+						<div>
+							<label className={labelcx}>
+								Postal Code
+							</label>
+							<Input className={inputcx} type="text" name="address-postal" id="address-postal" required value={props.data.address ? props.data.address.postalCode : ''} />
+						</div>
+						<div>
+							<label className={labelcx}>
+								City
+							</label>
+							<Input className={inputcx} type="text" name="address-city" id="address-city" required value={props.data.address ? props.data.address.city : ''} />
+						</div>
+					</div>
+					<label className={labelcx}>
+						State / Province / Region
+					</label>
+					{ props.data.address.states ?
+					<select className={inputcx} id="address-state">
+						{ props.data.address.states.map( (s) =>
+							<option value={s.code} selected={s.code === props.data.address.state}>{s.name}</option>
+						)}
+					</select>
+					:
+					<Input className={inputcx} type="text" name="address-state" id="address-state" required value={props.data.address ? props.data.address.state : ''} />
+					}
+
+				</div>
 				<hr className="mt4 w5 bb bw1 b--black-10" />
 				<TotalPrice products={props.data.inside} />
 				<div className="mt4 flex items-center justify-center">

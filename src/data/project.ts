@@ -1,25 +1,7 @@
+import murmur from 'murmur-32';
 import { FatState, FatStateReviver } from './fat';
 import { IStateSVGParts, State, StateReviver } from './state';
-/*
-  id            SERIAL PRIMARY KEY,
-  title         TEXT NOT NULL CHECK (char_length(title) < 80),
-  description   TEXT CHECK (char_length(description) < 1024),
-  legal         gg.license,
-  initial_state json,
-  final_state   json,
-  fat_state     json,
-  state_version INTEGER,
-  updated_at    TIMESTAMPTZ,
-  is_published  BOOLEAN,
-  published_at  TIMESTAMPTZ,
-  views         SERIAL,
-  plays         SERIAL,
-  action        gg.child_action,
-  created_at    TIMESTAMPTZ NOT NULL DEFAULT NOW(),
-  parent_id     INTEGER REFERENCES gg.work,
-  parent_path   LTREE
 
-*/
 export enum ProjectLicense {
 	CC0 = 'CC0',
 	BY = 'BY',
@@ -35,10 +17,7 @@ export function canRemix(l: ProjectLicense) {
 		l !== ProjectLicense.BYNCND);
 }
 export function canDownload(l: ProjectLicense) {
-	return (
-		l !== ProjectLicense.BYNC &&
-		l !== ProjectLicense.BYNCND &&
-		l !== ProjectLicense.BYNCSA);
+	return (l !== ProjectLicense.BYNCND);
 }
 export function canChangeLicense(l: ProjectLicense) {
 	return (
@@ -91,6 +70,14 @@ export interface ProjectReviver {
 	createdAt: string | null;
 	parentId: number | null;
 	parentPath: string | null;
+}
+export interface IProjectExport {
+	id: number | null;
+	initialState: string; // StateReviver JSON
+	fatState: string;     // FatStateReviver JSON
+	svg: string | null;
+	svgViewBox: number[] | null;
+	hash: number;
 }
 export class Project {
 	public id: number | null;
@@ -266,7 +253,23 @@ export class ProjectMap {
 			// set the svg and the svg viewbox
 			proj.createSVG();
 			// return it;
-			return proj;
+			resolve(proj);
+		});
+	}
+	public exportCurrent(): Promise<IProjectExport> {
+		return new Promise((resolve, reject) => {
+			const c = this.current;
+			const { svg, viewbox } = c.fatState.current.createSVG();
+			const dv = new DataView(murmur(svg), 0);
+			const exported: IProjectExport = {
+				id: c.id,
+				initialState: JSON.stringify(c.initialState.toJSON()),
+				fatState: JSON.stringify(c.fatState.toJSON()),
+				svg,
+				svgViewBox: viewbox,
+				hash: dv.getUint32(0)
+			};
+			resolve(exported);
 		});
 	}
 	public publishCurrent(p: StoredProject) {

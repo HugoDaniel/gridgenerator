@@ -1,3 +1,4 @@
+require('dotenv').config();
 const {
   FuseBox,
   Sparky,
@@ -10,8 +11,7 @@ const {
 const { src, task, exec, context } = require("fuse-box/sparky");
 const transformInferno = require('ts-transform-inferno').default;
 const transformClasscat = require('ts-transform-classcat').default;
-let fuse;
-
+console.log(process.env);
 context(class {
   getConfig() {
       return FuseBox.init({
@@ -26,13 +26,15 @@ context(class {
         },
         plugins: [
           EnvPlugin({
+            PAYPAL_ENV: process.env.PAYPAL_ENV,
+            PAYPAL_CLIENTID: process.env.PAYPAL_CLIENTID,
             NODE_ENV: this.isProduction ? 'production' : 'development',
             HOST: this.isProduction
               ? 'https://gridgenerator.com'
               : 'https://localhost:8080'
           }),
           CSSPlugin(),
-          CopyPlugin({ files: ['*.svg', '*.png']}),
+          CopyPlugin({ files: ['*.svg', '*.png', 'countries.json']}),
           WebIndexPlugin({
             title: 'Grid Generator',
             template: 'src/index.html'
@@ -46,37 +48,71 @@ context(class {
         ]
       });
   }
-})
-const options = {
-
-};
-const clientOptions = {
-  ...options,
-  plugins: [
-
-  ]
-}
-
-Sparky.task('config', _ => {
-  fuse = FuseBox.init(options);
-  fuse.dev();
 });
-Sparky.task('clean', _ => Sparky.src('dist/').clean('dist/').exec());
-Sparky.task("client", () => {
-  fuse.options = clientOptions;
+
+task('clean', _ => Sparky.src('dist/').clean('dist/').exec());
+task('env', (ctx) => {
+  ctx.isProduction = true;
+});
+task('client', async (ctx) => {
+  const fuse = ctx.getConfig();
   fuse
-     .bundle('client')
-     .target('browser@es6')
+     .bundle('client/bundle')
+     .target('browser@esnext')
      .watch('**')
      .hmr()
      .instructions('>main.tsx');
+  await fuse.run();
 });
-Sparky.task('dev', ['clean', 'config', 'client'], _ => {
-  return fuse.run();
+task('data', async (ctx) => {
+  const fuse = ctx.getConfig();
+  fuse
+     .bundle('converter/data')
+     .target('browser@esnext')
+     .instructions('>data.ts');
+  await fuse.run();
+})
+task('server', async (ctx) => {
+  const fuse = ctx.getConfig();
+  fuse
+     .bundle('server/bundle')
+     .watch('**')
+     .target('server@esnext')
+     .instructions('> [server/server.tsx]')
+     .completed(proc => {
+        proc.require({
+           close: ({ FuseBox }) => FuseBox.import(FuseBox.mainFile).shutdown()
+        });
+     });
+  await fuse.run();
 });
-Sparky.task('prod', ['clean', 'config'], _ => {
-  return fuse.run();
+task('converter', async (ctx) => {
+  const fuse = ctx.getConfig();
+  fuse
+     .bundle('converter/index')
+     .target('server@esnext')
+     .instructions('> [server/converter.ts]')
+     .completed(proc => {
+        proc.require({
+           close: ({ FuseBox }) => FuseBox.import(FuseBox.mainFile).shutdown()
+        });
+     });
+  await fuse.run();
 });
-Sparky.task('staging', ['clean', 'stage', 'config'], _ => {
-  return fuse.run();
+task('dev', ['clean', 'client', 'server'], async (ctx) => {
+  const fuse = ctx.getConfig();
+  fuse.dev({
+    proxy: {
+        '/auth/google': {
+            target: 'http://localhost:3333/', 
+            changeOrigin: false
+            /*
+            pathRewrite: {
+                '^/api': '/', 
+            },*/
+        }
+    }
+  });
+  await fuse.run();
 });
+task('prod', ['clean', 'env', 'client']);

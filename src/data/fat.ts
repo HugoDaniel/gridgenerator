@@ -775,14 +775,35 @@ export class FatState {
 	//#endregion
 
 	//#region Features
+	public exportImagePreview(): FatState {
+		const repetitions = this._state.ui.exportEditor.patternSize;
+		this._state.ui.exportEditor.setPreview(
+			this._state.createSVG(repetitions, repetitions)
+		);
+		this.mod('exportImagePreview', null);
+		return this;
+	}
+	public exportChangeTo(exportAt: number): FatState {
+		this._state.ui.exportEditor.at = exportAt;
+		this.mod('exportChangeTo', [exportAt]);
+		return this;
+	}
 	public exportFormatChange(fmt: number): FatState {
 		this._state.ui.exportEditor.format = fmt;
 		this.mod('exportFormatChange', [fmt]);
 		return this;
 	}
 	public exportSizeChange(size: number): FatState {
-		this._state.ui.exportEditor.sqSize = size;
+		this._state.ui.exportEditor.size = size;
 		this.mod('exportSizeChange', [size]);
+		return this;
+	}
+	public exportPatternChange(patternSize: number): FatState {
+		this._state.ui.exportEditor.setPreview(
+			this._state.createSVG(patternSize, patternSize)
+		);
+		this._state.ui.exportEditor.patternSize = patternSize;
+		this.mod('exportPatternChange', [patternSize]);
 		return this;
 	}
 	public publishEnterLicense(title: string | null, desc: string | null): FatState {

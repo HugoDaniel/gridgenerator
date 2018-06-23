@@ -1,5 +1,7 @@
 import { NetBilling } from './net/billing';
+import { NetExport } from './net/export';
 import { NetLogin } from './net/login';
+import { NetProduct } from './net/product';
 import { NetProfile } from './net/profile';
 import { NetPublish } from './net/publish';
 import { Token } from './net/token';
@@ -13,6 +15,8 @@ export class Net {
 	public profile: NetProfile;
 	public publish: NetPublish;
 	public billing: NetBilling;
+	public product: NetProduct;
+	public export: NetExport;
 	public readonly hostname: string;
 	public graphql: (queryStr: string, token?: Token) => Promise<any>;
 	public postData: (url: string, data: object, token?: Token) => Promise<any>;
@@ -43,6 +47,8 @@ export class Net {
 		this.profile = new NetProfile(this.hostname, this.graphql, this.getData);
 		this.publish = new NetPublish(this.graphql);
 		this.billing = new NetBilling(this.hostname, this.getData, this.postData);
+		this.product = new NetProduct(this.hostname, this.getData, this.postData);
+		this.export = new NetExport(this.hostname, this.getData, this.postData);
 	}
 	public static isUnauthorized(error) {
 		return error === 'Unauthorized';

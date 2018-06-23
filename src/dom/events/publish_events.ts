@@ -38,7 +38,7 @@ export class PublishEvents implements IEventHandler {
 			const desc = form.desc;
 			let title = form.title;
 			if (!title) {
-				title = 'TEST1';
+				title = 'Untitled';
 				// TODO: set publish error state & msg
 				// return;
 			}
@@ -47,7 +47,7 @@ export class PublishEvents implements IEventHandler {
 				return;
 			}
 			const license = this.state.current.ui.publishEditor.license;
-			// prepare cur proj. to be published
+			// set the title, description, license, render an svg and dup the state:
 			this.projects.prepareToPublish(this.state.current as State, this.state, title, desc, license);
 			// set publish state to loading
 			this.state.publishStartLoading();
@@ -69,7 +69,7 @@ export class PublishEvents implements IEventHandler {
 						}
 					}
 				}, (fail) => {
-					console.log('GOT ERROR', fail);
+					// console.log('GOT ERROR', fail);
 					this.state.publishError(Net.graphqlErrorMsg(fail));
 					this.refresher.refreshStateAndDOM(this.state);
 				}

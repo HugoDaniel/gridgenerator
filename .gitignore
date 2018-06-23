@@ -33,3 +33,5 @@ deploy.sh
 prod.sh
 decls/
 TODO
+.env
+SALES

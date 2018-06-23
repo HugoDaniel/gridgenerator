@@ -81,12 +81,16 @@ export class FillMap {
 		this.colors.editorSelectColorId(fillId);
 	}
 	// returns the string representation of the fillId
-	public getFill(fillId: FillId): string {
+	public getFill(fillId: FillId, useHex: boolean = false): string {
 		const obj = this.getFillObj(fillId);
 		if (obj === undefined) {
 			return ColorMap.NoColor;
 		}
-		return obj.toString();
+		if (useHex) {
+			return RGBColor.toHex(obj);
+		} else {
+			return obj.toString();
+		}
 	}
 	/** Transforms a Map of (d string, fillId) to a Map of (d string, fill string) */
 	public getShapeFills(fills: Map<string, number>): Map<string, string> {
@@ -131,7 +135,7 @@ export class FillMap {
 	private buildSVGSymbol(res: number, shapeId: number, shapeFillSetId: number, pathFills: Map<string, FillId>): string {
 		let paths = '';
 		for (const [d, fillId] of pathFills) {
-			paths += `\t<path d="${d}" fill="${this.getFill(fillId)}" />\n`;
+			paths += `\t<path d="${d}" fill="${this.getFill(fillId, true)}" />\n`;
 		}
 		return (
 			`

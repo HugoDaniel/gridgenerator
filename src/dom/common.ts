@@ -58,6 +58,24 @@ export function svgInit(className: string, size: number, zoom: number, margin: n
 		}
 	);
 }
+export function loadScript(src, id?: string): Promise<{}> {
+	const tag = document.createElement('script');
+	if (id) {
+		const elem = document.getElementById(id);
+		if (elem) {
+			return Promise.resolve({});
+		}
+		tag.id = id;
+	}
+	tag.async = false;
+	tag.src = src;
+	const p = new Promise((resolve, reject) => {
+		tag.onload = resolve;
+		tag.onerror = reject;
+	});
+	document.getElementsByTagName('body')[0].appendChild(tag);
+	return p;
+}
 export const doNothing = (e: Event) => e.stopPropagation();
 
 export interface JustClickI {
