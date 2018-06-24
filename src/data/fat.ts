@@ -775,12 +775,13 @@ export class FatState {
 	//#endregion
 
 	//#region Features
-	public exportImagePreview(): FatState {
+	public exportImagePreview(canExport: boolean): FatState {
 		const repetitions = this._state.ui.exportEditor.patternSize;
 		this._state.ui.exportEditor.setPreview(
 			this._state.createSVG(repetitions, repetitions)
 		);
-		this.mod('exportImagePreview', null);
+		this._state.ui.exportEditor.needsPayment = !canExport;
+		this.mod('exportImagePreview', [canExport]);
 		return this;
 	}
 	public exportChangeTo(exportAt: number): FatState {

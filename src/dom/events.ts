@@ -148,11 +148,13 @@ export class Events {
 		this.shapeEditorEvents = new ShapeEditorEvents(rt, s, refresher);
 		this.recorderEvents = new RecorderEvents(rt, s, refresher);
 		this.sceneEvents = new SceneEvents(rt, s, refresher);
-		this.exportEvents = new ExportEvents(rt, s, this.net, this.projects, refresher);
 		this.projectEvents  = new ProjectEvents(rt, s, this.net, this.projects, refresher, this.sceneEvents.reset);
 		this.publishEvents = new PublishEvents(rt, s, this.net, refresher, this.projects);
 		this.productEvents = new ProductEvents(rt, s, this.cart, this.net, refresher, this.projects);
 		this.hudEvents = new HUDEvents(rt, s, refresher, this.sceneEvents.openCols, this.sceneEvents.closeCols, this.sceneEvents.onRedraw);
+		this.exportEvents = new ExportEvents(rt, s, this.net, this.projects, refresher,
+			this.hudEvents.onExitFeatures
+		);
 		this.meanderEvents = new MeanderEvents(rt, m, this.net, refresher,
 			this.projectEvents.beforeLogin,
 			this.projectEvents.afterLogin,

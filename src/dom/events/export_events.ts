@@ -3,6 +3,7 @@ import { Net, Runtime } from '../../engine';
 import { Movement } from '../../engine/runtime/movement';
 import { downloadFile, IEventHandler, loadScript } from '../common';
 import { Refresher } from './refresher';
+import { ExportEditorFormat } from '../../data/state/ui/export';
 declare let paypal: any;
 export class ExportEvents implements IEventHandler {
 	public runtime: Runtime;
@@ -18,6 +19,7 @@ export class ExportEvents implements IEventHandler {
 	public onChangeToImage: (e: Event) => void;
 	public onChangeToVideo: (e: Event) => void;
 	public loadPaypal: () => void;
+	public onExitFeatures: (onDone?: () => void) => void;
 	// event handler:
 	public onMouseDown: (e: MouseEvent) => void;
 	public onMouseMove: (e: MouseEvent) => void;
@@ -26,15 +28,16 @@ export class ExportEvents implements IEventHandler {
 	public onTouchMove: (e: TouchEvent) => void;
 	public onTouchEnd: (e: TouchEvent) => void;
 	public onTouchCancel: (e: TouchEvent) => void;
-	constructor(rt: Runtime, s: FatState, n: Net, p: ProjectMap, refresher: Refresher) {
+	constructor(rt: Runtime, s: FatState, n: Net, p: ProjectMap, refresher: Refresher, onExit: (onDone?: () => void) => void) {
 		this.runtime = rt;
 		this.state = s;
 		this.refresher = refresher;
 		this.net = n;
 		this.projects = p;
+		this.onExitFeatures = onExit;
 		this.loadPaypal = () => {
 			if (!this.runtime.token) {
-				// GOTO LOGIN
+				// TODO: GOTO LOGIN
 			} else {
 				loadScript('https://www.paypalobjects.com/api/checkout.js', 'gg-paypal-checkout').then(() => {
 					if (paypal) {
@@ -62,32 +65,55 @@ export class ExportEvents implements IEventHandler {
 								return actions.payment.execute().then((payment) => {
 									// The payment is complete!
 									// You can now show a confirmation message to the customer
-									console.log('PAYMENT DONE', payment, 'THIS:', this, 'DATA', data);
-									this.projects.exportCurrent().then((proj) =>
-										this.net.export.postExportPayment(this.runtime.token, payment, proj)
-									);
+									this.projects.exportCurrent().then((proj) => {
+										if (this.runtime.token) {
+											this.net.export.postExportPayment(this.runtime.token, payment, proj).then((_) => {
+												// TODO: SET THANK YOU PAGE!
+												this.state.exportImagePreview(true);
+												this.refresher.refreshStateAndDOM(this.state);
+											}, (fail) => {
+												// tslint:disable-next-line:no-console
+												console.log('ERROR CONTACTING SERVER AFTER PAYMENT', fail);
+												// TODO: render error
+											});
+										} else {
+											// TODO: render error
+										}
+									});
 								});
 							},
-							onCancel(data, actions) {
-								/*
-								 * Buyer cancelled the payment
-								 */
+							onCancel: (data, actions) => {
+								this.onExitFeatures();
 							},
-							onError(err) {
-								/*
-								 * An error occurred during the transaction
-								 */
+							onError: (err) => {
+								// TODO: render error
+								this.onExitFeatures();
 							}
 						}, '#paypal-button');
 					}
 				}, (error) => {
+					// tslint:disable-next-line:no-console
 					console.log('ERROR LOADING PAYPAL', error);
 				});
 			}
 		};
 		this.onExportInit = () => {
-			this.state.exportImagePreview();
-			this.refresher.refreshStateAndDOM(this.state);
+			// check if the current project can be exported (if it was paid etc)
+			if (this.runtime.token) {
+				loadScript('https://www.paypalobjects.com/api/checkout.js', 'gg-paypal-checkout');
+				this.projects.getHash().then((hash) => {
+					if (!this.runtime.token) {
+						// TODO: Set error
+					} else {
+						this.net.export.postCanExport(this.runtime.token, hash).then((response) => {
+							this.state.exportImagePreview(response.canExport);
+							this.refresher.refreshStateAndDOM(this.state);
+						});
+					}
+				});
+				// set loading
+				this.refresher.refreshStateAndDOM(this.state);
+			}
 		};
 		this.onChangeToImage = (e: Event) => {
 			e.preventDefault();
@@ -125,10 +151,31 @@ export class ExportEvents implements IEventHandler {
 				e.preventDefault();
 			}
 			const res = this.state.current.ui.exportEditor.calcres();
-			if (this.state.current.ui.exportEditor.dim) {
-				const svg = this.state.current.renderSVG(this.state.current.ui.exportEditor.dim, res.width, res.height);
-				const fname = 'GridGenerator.svg';
-				downloadFile(svg, fname);
+			const exportEditor = this.state.current.ui.exportEditor;
+			if (exportEditor.at === ExportAt.Image) {
+				if (exportEditor.format === ExportEditorFormat.PNG) {
+					// RENDER PNG
+					this.projects.getHash().then((hash) => {
+						if (this.runtime.token) {
+							this.net.export.postExportPNG(
+								this.runtime.token, hash, exportEditor.calcres(), exportEditor.patternSize
+							).then((exported) => {
+								console.log('GOT RESPONSE', exported);
+							}, (error) => {
+								console.log('GOT ERROR', error);
+							});
+						} else {
+							// TODO: show error / redirect to login
+						}
+					});
+				} else if (exportEditor.dim) {
+					// RENDER SVG
+					const svg = this.state.current.renderSVG(exportEditor.dim, res.width, res.height);
+					const fname = 'GridGenerator.svg';
+					downloadFile(svg, fname);
+				}
+			} else {
+				// RENDER ANIM
 			}
 		};
 		this.onMouseDown = (e) => {

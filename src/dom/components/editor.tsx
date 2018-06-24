@@ -128,10 +128,7 @@ export const Editor = (props: IEditorProps) => {
 		className: '',
 		data: props.exportEditor,
 		events: props.exportEditorEvents,
-		onExit: props.onExitFeatures,
-		isPaidAccount: props.isPaidAccount,
-		onPublish: linkEvent(FeaturesMenuId.Publish, props.onFeaturesMenu),
-		onPricing: props.onPricing
+		onExit: props.onExitFeatures
 	};
 	const publishProps: IPublishProps = {
 		className: '',

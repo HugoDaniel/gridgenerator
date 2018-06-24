@@ -256,6 +256,14 @@ export class ProjectMap {
 			resolve(proj);
 		});
 	}
+	public getHash(): Promise<number> {
+		return new Promise((resolve, reject) => {
+			const c = this.current;
+			const { svg, viewbox } = c.fatState.current.createSVG();
+			const dv = new DataView(murmur(svg), 0);
+			resolve(dv.getInt32(0));
+		});
+	}
 	public exportCurrent(): Promise<IProjectExport> {
 		return new Promise((resolve, reject) => {
 			const c = this.current;
@@ -267,7 +275,7 @@ export class ProjectMap {
 				fatState: JSON.stringify(c.fatState.toJSON()),
 				svg,
 				svgViewBox: viewbox,
-				hash: dv.getUint32(0)
+				hash: dv.getInt32(0)
 			};
 			resolve(exported);
 		});

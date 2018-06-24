@@ -11,7 +11,6 @@ const {
 const { src, task, exec, context } = require("fuse-box/sparky");
 const transformInferno = require('ts-transform-inferno').default;
 const transformClasscat = require('ts-transform-classcat').default;
-console.log(process.env);
 context(class {
   getConfig() {
       return FuseBox.init({

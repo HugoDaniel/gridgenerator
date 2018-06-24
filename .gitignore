@@ -32,6 +32,7 @@ package-lock.json
 deploy.sh
 prod.sh
 decls/
+tmp/
 TODO
 .env
 SALES
