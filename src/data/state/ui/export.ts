@@ -1,6 +1,6 @@
 import { IGridDimension } from '../layer/grid';
 import { resolution } from '../math/aspect';
-export enum ExportAt { Image = 1, Video }
+export enum ExportAt { Image = 1, Video, Preparing, Done, Error }
 export enum ExportEditorFormat { SVG = 1, PNG, GIF, MP4 }
 export enum ExportEditorMode { All = 1, Shapes }
 export enum ExportSize { FullHD = 1080, HDReady = 720, UHD = 3840  }
@@ -17,6 +17,8 @@ export class UIExportEditor {
 	public patternSize: number;
 	public imgPreview: string | null;
 	public imgViewbox: [number, number, number, number] | null;
+	public fname: string | null;
+	public error: string | null;
 	// shape exporter:
 	public shapes: string[];
 	public shapeFills: string[];
@@ -31,6 +33,7 @@ export class UIExportEditor {
 		this.needsPayment = true;
 		this.isLoading = true;
 		this.patternSize = 1;
+		this.fname = null;
 	}
 	public setPreview(art: { svg: string, viewbox: [number, number, number, number] }) {
 		this.imgPreview = art.svg;

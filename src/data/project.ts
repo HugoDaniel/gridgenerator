@@ -270,10 +270,15 @@ export class ProjectMap {
 		});
 	}
 	public getHash(): Promise<number> {
+		console.log('getting hash');
 		return new Promise((resolve, reject) => {
 			const c = this.current;
-			const { svg, viewbox } = c.fatState.current.createSVG();
+			console.log('GOT CURRENT PROJECT')
+			const { svg } = c.fatState.current.createSVG();
+			console.log('GOT SVG')
 			const dv = new DataView(murmur(svg), 0);
+			console.log('GOT DV')
+			console.log('GOT HASH');
 			resolve(dv.getInt32(0));
 		});
 	}

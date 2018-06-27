@@ -776,6 +776,23 @@ export class FatState {
 	//#endregion
 
 	//#region Features
+	public exportPrepare(): FatState {
+		this._state.ui.exportEditor.at = ExportAt.Preparing;
+		this.mod('exportPrepare', null);
+		return this;
+	}
+	public exportDone(fname): FatState {
+		this._state.ui.exportEditor.at = ExportAt.Done;
+		this._state.ui.exportEditor.fname = fname;
+		this.mod('exportPrepare', [fname]);
+		return this;
+	}
+	public exportError(error): FatState {
+		this._state.ui.exportEditor.at = ExportAt.Error;
+		this._state.ui.exportEditor.error = error;
+		this.mod('exportError', [error]);
+		return this;
+	}
 	public exportImagePreview(canExport: boolean): FatState {
 		const repetitions = this._state.ui.exportEditor.patternSize;
 		this._state.ui.exportEditor.setPreview(
@@ -783,6 +800,7 @@ export class FatState {
 		);
 		this._state.ui.exportEditor.isLoading = false;
 		this._state.ui.exportEditor.needsPayment = !canExport;
+		this._state.ui.exportEditor.at = ExportAt.Image;
 		this.mod('exportImagePreview', [canExport]);
 		return this;
 	}

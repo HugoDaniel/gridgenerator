@@ -9,6 +9,7 @@ import { ExportEvents } from '../../events/export_events';
 import { PlayerEvents } from '../../events/player_events';
 import { Button } from '../base/buttons';
 import { ExportAnimation, IExportAnimationProps } from './export/animation';
+import { ExportDone, IExportDoneProps } from './export/done';
 import { ExportImage, IExportImageProps } from './export/image';
 import { ExportPayment, IExportPaymentProps } from './export/payment';
 export interface IExportProps {
@@ -30,6 +31,10 @@ function selectProductComponent(props: IExportProps) {
 		return (
 			<ExportAnimation data={props.data} events={props.events} playerEvents={props.playerEvents} playerData={props.playerData} />
 		);
+		case ExportAt.Done:
+		return (
+			<ExportDone data={props.data} events={props.events} />
+		)
 		default:
 		return (
 			renderPayment(props)
@@ -83,7 +88,7 @@ function renderExport(props: IExportProps) {
 				/>
 				<Button
 					className="mh2"
-					label="Export"
+					label={props.data.at === ExportAt.Done ? 'Download It' : 'Export'}
 					onAction={props.events.onExport}
 				/>
 			</div>
@@ -100,9 +105,12 @@ function renderLoading(props: IExportProps) {
 		>
 			<section className="w-100 flex flex-column items-center justify-center">
 				<h2 className="">
-					Loading
+					{ props.data.at === ExportAt.Preparing ? 'Preparing file' : 'Loading' }
 				</h2>
-				<p className="">Please wait</p>
+				<p className="">
+					{ props.data.at === ExportAt.Preparing ? 'Please wait (takes a couple of minutes)'
+					: 'Please wait' }
+				</p>
 				<div className="mt4 flex items-center justify-center">
 				<Button
 					className="mh2"
@@ -117,7 +125,7 @@ function renderLoading(props: IExportProps) {
 	);
 }
 export const Export = (props: IExportProps) => {
-	if (props.data.isLoading) {
+	if (props.data.isLoading || props.data.at === ExportAt.Preparing) {
 		return renderLoading(props);
 	} else
 	if (props.data.needsPayment) {

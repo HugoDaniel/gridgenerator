@@ -9,12 +9,13 @@ const converter = createConverter();
 
 const exec = util.promisify(require('child_process').exec);
 
-async function ffmpeg(src, dest) {
-	const cmd = `ffmpeg -framerate 7 -i ${src}/%04d.png -c:v libx264 -r 30 -pix_fmt yuv420p ${dest}`;
-	console.log('RUNNING CMD', cmd);
+async function ffmpegToMP4(src, dest) {
+	const cmd = `ffmpeg -y -framerate 7 -i ${src}/%04d.png -c:v libx264 -r 30 -pix_fmt yuv420p ${dest}`;
 	const { stdout, stderr } = await exec(cmd);
-  console.log('stdout:', stdout);
-  console.log('stderr:', stderr);
+}
+async function ffmpegToGIF(src, dest) {
+	const cmd = `ffmpeg -y -i ${src} -vf scale=300:-1 -gifflags +transdiff -y ${dest}`;
+	const { stdout, stderr } = await exec(cmd);
 }
 // Create a new express application instance
 const app: express.Application = express();
@@ -31,7 +32,65 @@ const writePNG = (dest, data) => {
 		});
 	});
 };
+async function convertAnimation(req): Promise<{ mp4: string, gif: string }> {
+	// 1. TODO: Validate data in req
+	const { width, height } = req.body.dimensions;
+	const data: IProjectExport = req.body.data;
+	const userId = req.body.userId;
+	const mp4FileName = `${userId}_${req.body.hash}.mp4`;
+	const gifFileName = `${userId}_${req.body.hash}.gif`;
+	const mp4File = `${dir}/${mp4FileName}`;
+	const gifFile = `${dir}/${gifFileName}`;
+	// check if the files already exist
+	if (fs.existsSync(mp4File) && fs.existsSync(gifFile)) {
+		// dont need to process, just return the intended file
+		return ({ mp4: mp4FileName, gif: gifFileName });
+	}
+	// check if parts directory exists
+	const partsDir = `${dir}/parts_${userId}_${req.body.hash}`;
+	if (!fs.existsSync(partsDir)) {
+		fs.mkdirSync(partsDir);
+	}
+	// revive the art state:
+	const initialState = State.revive(JSON.parse(data.initialState));
+	const fatState = FatState.revive(JSON.parse(data.fatState), initialState);
+	// prepare the actions for the video
+	const fas = new FatActionSets();
+	const actions = fas.sitePlayerActions;
+	fatState.restoreTo(0, State.revive(JSON.parse(data.initialState)));
+	// create the SVG's for each frame:
+	const frames = [];
+	while (fatState.version !== fatState.maxVersion) {
+		const { svg, viewbox } = fatState.current.createSVG();
+		frames.push(`
+		<svg width="${width}" height="${height}" viewBox="${viewbox.join(' ')}" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+		${svg}
+		</svg>`);
+		fatState.fastRestoreFwd(actions);
+	}
+	const pngFrames = [];
+	for (let i = 0; i < frames.length; i++) {
+		pngFrames.push(
+			await converter.convert(frames[i])
+		);
+	}
+	Promise.all(pngFrames.map((result, i) =>
+		writePNG(`${partsDir}/${('0000' + i).substr(-4, 4)}.png`, result)
+	)).then((files) => {
+		// console.log('GOT FILES', files);
+		ffmpegToMP4(partsDir, mp4File).then((_mp4) =>
+			ffmpegToGIF(mp4File, gifFile).then((_gif) => {
+				const result = { mp4: mp4FileName, gif: gifFileName };
+				return result;
+			})
+		);
+	}, (fail) => {
+		throw new Error(fail);
+	});
+}
+	/*
 
+	*/
 app.use(bodyParser.urlencoded({
   extended: true
 }));
@@ -43,22 +102,6 @@ const init = () => {
 		fs.mkdirSync(dir);
 	}
 };
-/*
-const server = http.createServer((req, res) => {
-        if (req.method === 'POST') {
-                let body = '';
-                req.on('data', (chunk) => {
-                        body += chunk.toString(); // convert Buffer to string
-                });
-                req.on('end', () => {
-                        // console.log(body);
-                        converter.convert(body).then((result) => {
-                                res.end(result, 'binary');
-                        }, (fail) => console.log('FAIL', fail));
-                });
-        }
-});
-*/
 
 // Serve the application at the given port
 let server = app.listen(port, () => {
@@ -75,9 +118,10 @@ let server = app.listen(port, () => {
 			${req.body.svg}
 			</svg>`;
 		converter.convert(svg).then((result) => {
-			writePNG(`${dir}/${userId}_${width}x${height}_${req.body.hash}.png`, result).then((file) => {
+			const pngFileName = `${userId}_${width}x${height}_${req.body.hash}.png`;
+			writePNG(`${dir}/${pngFileName}`, result).then((file) => {
 				res.setHeader('Content-Type', 'application/json');
-				res.send(JSON.stringify({ file }));
+				res.send(JSON.stringify({ file: pngFileName }));
 				res.end();
 			}, (error) => {
 				console.log('ERROR IN FILE', error);
@@ -85,49 +129,25 @@ let server = app.listen(port, () => {
 		});
 	});
 	app.post('/convert/mp4', async function(req, res) {
-		// 1. TODO: Validate data in req
-		const { width, height } = req.body.dimensions;
-		const data: IProjectExport = req.body.data;
-		const userId = req.body.userId;
-		// check if parts directory exists
-		const partsDir = `${dir}/parts_${userId}_${req.body.hash}`;
-		if (!fs.existsSync(partsDir)) {
-			fs.mkdirSync(partsDir);
-		}
-		// revive the art state:
-		const initialState = State.revive(JSON.parse(data.initialState));
-		const fatState = FatState.revive(JSON.parse(data.fatState), initialState);
-		// prepare the actions for the video
-		const fas = new FatActionSets();
-		const actions = fas.sitePlayerActions;
-		fatState.restoreTo(0, State.revive(JSON.parse(data.initialState)));
-		// create the SVG's for each frame:
-		const frames = [];
-		while (fatState.version !== fatState.maxVersion) {
-			const { svg, viewbox } = fatState.current.createSVG();
-			frames.push(`
-			<svg width="${width}" height="${height}" viewBox="${viewbox.join(' ')}" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
-			${svg}
-			</svg>`);
-			fatState.fastRestoreFwd(actions);
-		}
-		console.log('GOT FRAMES', frames.length);
-		const pngFrames = [];
-		for (let i = 0; i < frames.length; i++) {
-			pngFrames.push(
-				await converter.convert(frames[i])
-			);
-		}
-		console.log('GOT PNGS', pngFrames.length);
-		Promise.all(pngFrames.map((result, i) =>
-			writePNG(`${partsDir}/${('0000' + i).substr(-4, 4)}.png`, result)
-		)).then((files) => {
-			// console.log('GOT FILES', files);
-			ffmpeg(partsDir, `${dir}/${userId}_${req.body.hash}.mp4`).then((result) => {
-				res.setHeader('Content-Type', 'application/json');
-				res.send(JSON.stringify({ file: `${userId}_${req.body.hash}.mp4` }));
-				res.end();
-			});
+		convertAnimation(req).then((result) => {
+			res.setHeader('Content-Type', 'application/json');
+			res.send(JSON.stringify({ file: result.mp4 }));
+			res.end();
+		}, (error) => {
+			res.setHeader('Content-Type', 'application/json');
+			res.send(JSON.stringify({ error }));
+			res.end();
+		});
+	});
+	app.post('/convert/gif', async function(req, res) {
+		convertAnimation(req).then((result) => {
+			res.setHeader('Content-Type', 'application/json');
+			res.send(JSON.stringify({ file: result.gif }));
+			res.end();
+		}, (error) => {
+			res.setHeader('Content-Type', 'application/json');
+			res.send(JSON.stringify({ error }));
+			res.end();
 		});
 	});
 });

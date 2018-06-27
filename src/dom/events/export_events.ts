@@ -19,6 +19,10 @@ export class ExportEvents implements IEventHandler {
 	public onChangeToVideo: (e: Event) => void;
 	public loadPaypal: () => void;
 	public onExitFeatures: (onDone?: () => void) => void;
+	public prepareFile: () => void;
+	public doneFile: (fname: string) => void;
+	public downloadFile: () => void;
+	public onError: (error: string) => void;
 	// event handler:
 	public onMouseDown: (e: MouseEvent) => void;
 	public onMouseMove: (e: MouseEvent) => void;
@@ -99,23 +103,28 @@ export class ExportEvents implements IEventHandler {
 		this.onExportInit = () => {
 			loadScript('https://www.paypalobjects.com/api/checkout.js', 'gg-paypal-checkout');
 			// initialize player
+			/* const ps = new PlayerState(proj);
 			console.log('INITIALIZING PLAYER');
 			this.projects.prepareToPlay(this.state.current, this.state).then((proj) => {
-				const ps = new PlayerState(proj);
 				ps.canvasWidth = Math.min(this.runtime.device.width, 128);
 				ps.canvasHeight = Math.min(128, this.runtime.device.height);
 				this.refresher.refreshPlayerInitialState(ps, this.projects.current.initialState);
+				*/
 				// check if the current project can be exported (if it was paid etc)
-				this.projects.getHash().then((hash) => {
-					if (!this.runtime.token) {
-						// TODO: set error
-					} else {
-						this.net.export.postCanExport(this.runtime.token, hash).then((response) => {
-							this.state.exportImagePreview(response.canExport);
-							this.refresher.refreshStateAndDOM(this.state);
-						});
-					}
-				});
+			console.log('initializing export');
+			this.projects.getHash().then((hash) => {
+				console.log('export hash');
+				if (!this.runtime.token) {
+					// TODO: set error
+					console.log('export ERROR no token');
+				} else {
+					console.log('export checking with server');
+					this.net.export.postCanExport(this.runtime.token, hash).then((response) => {
+						console.log('export can export');
+						this.state.exportImagePreview(response.canExport);
+						this.refresher.refreshStateAndDOM(this.state);
+					});
+				}
 			});
 			// set loading
 			this.refresher.refreshStateAndDOM(this.state);
@@ -155,10 +164,18 @@ export class ExportEvents implements IEventHandler {
 			if (e) {
 				e.preventDefault();
 			}
-			const res = this.state.current.ui.exportEditor.calcres();
 			const exportEditor = this.state.current.ui.exportEditor;
+			if (exportEditor.at === ExportAt.Done && this.runtime.token && exportEditor.fname) {
+				this.net.export.getExportFile(
+					this.runtime.token,
+					exportEditor.fname
+				);
+				return;
+			}
+			const res = exportEditor.calcres();
 			if (exportEditor.at === ExportAt.Image) {
 				if (exportEditor.format === ExportEditorFormat.PNG) {
+					this.prepareFile();
 					// RENDER PNG
 					this.projects.getHash().then((hash) => {
 						if (this.runtime.token) {
@@ -181,6 +198,7 @@ export class ExportEvents implements IEventHandler {
 				}
 			} else {
 				// RENDER ANIM
+				this.prepareFile();
 				if (exportEditor.format === ExportEditorFormat.MP4) {
 					this.projects.getHash().then((hash) => {
 						if (this.runtime.token) {
@@ -188,6 +206,7 @@ export class ExportEvents implements IEventHandler {
 								this.runtime.token, hash, exportEditor.calcres()
 							).then((exported) => {
 								console.log('GOT RESPONSE', exported);
+								this.doneFile(exported.file);
 							}, (error) => {
 								console.log('GOT ERROR', error);
 							});
@@ -199,6 +218,18 @@ export class ExportEvents implements IEventHandler {
 					// RENDER GIF
 				}
 			}
+		};
+		this.doneFile = (fname) => {
+			this.state.exportDone(fname);
+			this.refresher.refreshStateAndDOM(this.state);
+		};
+		this.onError = (error) => {
+			this.state.exportError(error);
+			this.refresher.refreshStateAndDOM(this.state);
+		};
+		this.prepareFile = () => {
+			this.state.exportPrepare();
+			this.refresher.refreshStateAndDOM(this.state);
 		};
 		this.onMouseDown = (e) => {
 			return;
