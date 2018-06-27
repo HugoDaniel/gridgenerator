@@ -16,8 +16,10 @@ export class PlayerState {
 	public readonly proj: Project;
 	constructor(proj: Project) {
 		if (!proj.svg || !proj.svgViewBox) {
+			console.log('NO PLAYER STATE')
 			throw new Error('Cannot create player state');
 		}
+		console.log('PLAYER STATE')
 		this.state = proj.fatState;
 		this.thumbnailSvg = proj.svg;
 		this.isPlaying = false;

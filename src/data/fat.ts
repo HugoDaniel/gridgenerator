@@ -14,6 +14,7 @@ import { ClipPattern } from './state/ui/clip_pattern';
 import { UICursor } from './state/ui/cursor';
 import { ToolsMenuId, UIFillEditorColorMode } from './state/ui/defaults';
 import { UIFillEditor, UIFillEditorMode } from './state/ui/fill_editor';
+import { ExportAt, ExportEditorFormat, ExportSize } from './state/ui/export';
 
 export interface FatStateReviver {
 	m: ModificationReviver[];
@@ -780,12 +781,19 @@ export class FatState {
 		this._state.ui.exportEditor.setPreview(
 			this._state.createSVG(repetitions, repetitions)
 		);
+		this._state.ui.exportEditor.isLoading = false;
 		this._state.ui.exportEditor.needsPayment = !canExport;
 		this.mod('exportImagePreview', [canExport]);
 		return this;
 	}
 	public exportChangeTo(exportAt: number): FatState {
 		this._state.ui.exportEditor.at = exportAt;
+		if (exportAt === ExportAt.Video) {
+			this._state.ui.exportEditor.format = ExportEditorFormat.MP4;
+			this._state.ui.exportEditor.size = ExportSize.FullHD;
+		} else {
+			this._state.ui.exportEditor.format = ExportEditorFormat.SVG;
+		}
 		this.mod('exportChangeTo', [exportAt]);
 		return this;
 	}

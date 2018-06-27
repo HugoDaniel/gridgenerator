@@ -175,6 +175,8 @@ export class GridGeneratorDOM extends Component<IGridGeneratorDOMProps, any> {
 			publishEditorEvents: events.publishEvents,
 			productEditor: cart,
 			productEvents: events.productEvents,
+			playerData: this.props.player,
+			playerEvents: this.props.events.playerEvents,
 			shapeSize: editorSize,
 			colorPickerEvents: events.colorPickerEvents,
 			runtime,

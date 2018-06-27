@@ -19,8 +19,11 @@ export class NetExport {
 		       .then((response) => response.json());
 	}
 	public async postExportPNG(t: Token, hash: number, res: { width: number, height: number, offsetX: number, offsetY: number }, pattern: number) {
-		console.log('EXPORINT RES', res);
 		return this.postData(this.hostname + '/products/convert/png', { hash, res, pattern }, t)
 		       .then((response) => response.json());
+	}
+	public async postExportMP4(t: Token, hash: number, res: { width: number, height: number, offsetX: number, offsetY: number }) {
+		return this.postData(this.hostname + '/products/convert/mp4', { hash, res }, t)
+					.then((response) => response.json());
 	}
 }

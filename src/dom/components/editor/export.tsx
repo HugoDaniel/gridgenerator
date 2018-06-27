@@ -3,9 +3,10 @@ import { LinkedEvent, linkEvent } from 'inferno';
 import export_animation from '../../../assets/icons/export-animation.svg';
 // @ts-ignore
 import export_image from '../../../assets/icons/export-image.svg';
-import { ExportEditorFormat, UIExportEditor } from '../../../data';
+import { ExportEditorFormat, PlayerState, UIExportEditor } from '../../../data';
 import { ExportAt } from '../../../data';
 import { ExportEvents } from '../../events/export_events';
+import { PlayerEvents } from '../../events/player_events';
 import { Button } from '../base/buttons';
 import { ExportAnimation, IExportAnimationProps } from './export/animation';
 import { ExportImage, IExportImageProps } from './export/image';
@@ -14,6 +15,8 @@ export interface IExportProps {
 	className?: string;
 	events: ExportEvents;
 	data: UIExportEditor;
+	playerEvents: PlayerEvents;
+	playerData: PlayerState | null;
 	height?: number;
 	onExit: () => void;
 }
@@ -25,7 +28,7 @@ function selectProductComponent(props: IExportProps) {
 		);
 		case ExportAt.Video:
 		return (
-			<ExportAnimation />
+			<ExportAnimation data={props.data} events={props.events} playerEvents={props.playerEvents} playerData={props.playerData} />
 		);
 		default:
 		return (
@@ -88,7 +91,35 @@ function renderExport(props: IExportProps) {
 	</div>
 	);
 }
+function renderLoading(props: IExportProps) {
+	return (
+		<div
+			style={{ height: props.height }}
+			className={`ExportLoading ${props.className || ''}
+			flex justify-center items-center editormw editor-shadow sans-serif h-100`}
+		>
+			<section className="w-100 flex flex-column items-center justify-center">
+				<h2 className="">
+					Loading
+				</h2>
+				<p className="">Please wait</p>
+				<div className="mt4 flex items-center justify-center">
+				<Button
+					className="mh2"
+					bg="transparent"
+					color="dark-gray"
+					label="Cancel"
+					onAction={props.onExit}
+				/>
+				</div>
+			</section>
+		</div>
+	);
+}
 export const Export = (props: IExportProps) => {
+	if (props.data.isLoading) {
+		return renderLoading(props);
+	} else
 	if (props.data.needsPayment) {
 		return renderPayment(props);
 	} else {

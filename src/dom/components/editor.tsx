@@ -1,10 +1,11 @@
 import { linkEvent } from 'inferno';
-import { Cart, FeaturesMenuId, Project, Template, UIExportEditor, UIFillEditor, UIPublishEditor, UIShapeEditor, UIShapeEditorMode, UIState } from '../../data';
+import { Cart, FeaturesMenuId, PlayerState, Project, Template, UIExportEditor, UIFillEditor, UIPublishEditor, UIShapeEditor, UIShapeEditorMode, UIState } from '../../data';
 import { Runtime, RuntimeMediaSize } from '../../engine';
 import { UpdateAction } from '../common';
 import { ColorPickerEvents } from '../events/color_picker_events';
 import { ExportEvents } from '../events/export_events';
 import { HUDEvents } from '../events/hud_events';
+import { PlayerEvents } from '../events/player_events';
 import { ProductEvents } from '../events/product_events';
 import { PublishEvents } from '../events/publish_events';
 import { ShapeEditorEvents } from '../events/shape_editor_events';
@@ -32,6 +33,8 @@ export interface IEditorProps {
 	exportEditorEvents: ExportEvents;
 	publishEditor: UIPublishEditor;
 	publishEditorEvents: PublishEvents;
+	playerData: PlayerState | null;
+	playerEvents: PlayerEvents;
 	productEditor: Cart;
 	productEvents: ProductEvents;
 	shapeSize: number;
@@ -128,6 +131,8 @@ export const Editor = (props: IEditorProps) => {
 		className: '',
 		data: props.exportEditor,
 		events: props.exportEditorEvents,
+		playerData: props.playerData,
+		playerEvents: props.playerEvents,
 		onExit: props.onExitFeatures
 	};
 	const publishProps: IPublishProps = {

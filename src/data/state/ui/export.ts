@@ -13,6 +13,7 @@ export class UIExportEditor {
 	public mode: ExportEditorMode;
 	public size: ExportSize;
 	public needsPayment: boolean;
+	public isLoading: boolean;
 	public patternSize: number;
 	public imgPreview: string | null;
 	public imgViewbox: [number, number, number, number] | null;
@@ -28,6 +29,7 @@ export class UIExportEditor {
 		this.mode = ExportEditorMode.All;
 		this.dim = dim;
 		this.needsPayment = true;
+		this.isLoading = true;
 		this.patternSize = 1;
 	}
 	public setPreview(art: { svg: string, viewbox: [number, number, number, number] }) {

@@ -236,6 +236,19 @@ export class ProjectMap {
 		this.current.title = this.current.title += ' Update';
 		this.current.isPublished = false;
 	}
+	public prepareToPlay(state: Readonly<State>, fat: FatState): Promise<Project> {
+		return new Promise((resolve, reject) => {
+			if (this.current) {
+				const dup = new Project(State.revive(this.current.initialState.toJSON()));
+				dup.finalState = State.revive(state.toJSON());
+				dup.fatState = FatState.revive(fat.toJSON(), dup.finalState);
+				dup.createSVG();
+				resolve(dup);
+			} else {
+				reject('No current project');
+			}
+		});
+	}
 	public prepareToPublish(state: State, fat: FatState, title: string, desc: string | null, license: string) {
 		return new Promise((resolve, reject) => {
 			// Updates current project with:
