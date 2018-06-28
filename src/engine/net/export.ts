@@ -58,4 +58,8 @@ export class NetExport {
 		return this.postData(this.hostname + '/products/convert/mp4', { hash, res }, t)
 					.then((response) => response.json());
 	}
+	public async postExportGIF(t: Token, hash: number, res: { width: number, height: number, offsetX: number, offsetY: number }) {
+		return this.postData(this.hostname + '/products/convert/gif', { hash, res }, t)
+					.then((response) => response.json());
+	}
 }

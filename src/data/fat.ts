@@ -197,6 +197,7 @@ export class FatState {
 		// Initialize the resoration process
 		this._restoring = true;
 		// Apply to actions until the desired version is reached
+		console.log('REPLAYING', curVersion, this.maxVersion);
 		do {
 			const mod = mods[curVersion];
 			if (!mod) {
@@ -204,11 +205,14 @@ export class FatState {
 				return;
 			}
 			if (!mod.args) {
+				console.log('MOD', mod.actionName);
 				this[mod.actionName]();
 			} else {
+				console.log('MOD', mod.actionName);
 				this[mod.actionName](...mod.args);
 			}
 			if (set.has(mod.actionName)) {
+				console.log('ACTION NOT ADDED', mod.actionName);
 				break;
 			}
 			curVersion++;
@@ -784,7 +788,7 @@ export class FatState {
 	public exportDone(fname): FatState {
 		this._state.ui.exportEditor.at = ExportAt.Done;
 		this._state.ui.exportEditor.fname = fname;
-		this.mod('exportPrepare', [fname]);
+		this.mod('exportDone', [fname]);
 		return this;
 	}
 	public exportError(error): FatState {

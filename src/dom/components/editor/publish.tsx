@@ -80,26 +80,35 @@ function renderMetadata(props: IPublishProps) {
 		events.enterLicense = nop;
 		events.onExit = nop;
 	}
+	const subtitleCx = 'mv1';
 	return (
 		<section className="w-100 flex flex-column items-center justify-center">
-		<h2 className="mt0">
-			Title
+		<h2 className="mv0">
+			Publish
 		</h2>
-		<div className="flex items-center justify-center gray">
-			<Input id="publish-title" className={inputcx} placeholder="Name of this project" defaultValue={props.data.title} value={props.data.title} disabled={isLoading}/>
-		</div>
-		<h2 className="">
-			Description
-		</h2>
-		<div className="flex items-center justify-center gray">
-			<TextArea id="publish-desc" className={inputcx + ' h3 h4-ns'} defaultValue={props.data.desc} value={props.data.desc} disabled={isLoading} />
-		</div>
-		<h2 className="">
-			License
-		</h2>
-		<div className="flex flex-column items-center justify-center gray">
-			<LicenseImg license={props.data.license} onAction={events.enterLicense} />
-			<LicenseDesc className="f7 dark-gray mw5 mt2 tj pa0" license={props.data.license} />
+		<h3 className="mv0 f5">
+			And share with your friends
+		</h3>
+		<div className="mt3 w-100 bt bb bg-white flex flex-column items-center justify-center">
+			<h4 className={`mt4 mb1`}>
+				Title
+			</h4>
+			<div className="flex items-center justify-center gray">
+				<Input id="publish-title" className={inputcx} placeholder="Name of this project" defaultValue={props.data.title} value={props.data.title} disabled={isLoading}/>
+			</div>
+			<h4 className={subtitleCx}>
+				Description
+			</h4>
+			<div className="flex items-center justify-center gray">
+				<TextArea id="publish-desc" className={inputcx + ' h3 h4-ns'} defaultValue={props.data.desc} value={props.data.desc} disabled={isLoading} />
+			</div>
+			<h4 className={subtitleCx}>
+				License
+			</h4>
+			<div className="flex flex-column items-center justify-center gray">
+				<LicenseImg license={props.data.license} onAction={events.enterLicense} />
+				<LicenseDesc className="f7 dark-gray mw5 mt2 tj pa0" license={props.data.license} />
+			</div>
 		</div>
 		<div className="mt4 w5 flex items-center justify-center">
 			<Button
@@ -113,7 +122,7 @@ function renderMetadata(props: IPublishProps) {
 			<Button
 				id={props.data}
 				className="mh2"
-				label={`Publish as ${props.data.license}`}
+				label={`Publish`}
 				disabled={isLoading}
 				onAction={events.onPublish}
 			/>

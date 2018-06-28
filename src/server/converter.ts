@@ -41,9 +41,11 @@ async function convertAnimation(req): Promise<{ mp4: string, gif: string }> {
 	const gifFileName = `${userId}_${req.body.hash}.gif`;
 	const mp4File = `${dir}/${mp4FileName}`;
 	const gifFile = `${dir}/${gifFileName}`;
+	console.log('1 Convertin animation');
 	// check if the files already exist
 	if (fs.existsSync(mp4File) && fs.existsSync(gifFile)) {
 		// dont need to process, just return the intended file
+		console.log('EXISTS');
 		return ({ mp4: mp4FileName, gif: gifFileName });
 	}
 	// check if parts directory exists
@@ -51,13 +53,16 @@ async function convertAnimation(req): Promise<{ mp4: string, gif: string }> {
 	if (!fs.existsSync(partsDir)) {
 		fs.mkdirSync(partsDir);
 	}
+	console.log('2 tmp dir created');
 	// revive the art state:
 	const initialState = State.revive(JSON.parse(data.initialState));
 	const fatState = FatState.revive(JSON.parse(data.fatState), initialState);
+	console.log('3 parsed state', fatState.version, fatState.maxVersion);
 	// prepare the actions for the video
 	const fas = new FatActionSets();
 	const actions = fas.sitePlayerActions;
 	fatState.restoreTo(0, State.revive(JSON.parse(data.initialState)));
+	console.log('4 restored state', fatState.version, fatState.maxVersion);
 	// create the SVG's for each frame:
 	const frames = [];
 	while (fatState.version !== fatState.maxVersion) {
@@ -68,22 +73,29 @@ async function convertAnimation(req): Promise<{ mp4: string, gif: string }> {
 		</svg>`);
 		fatState.fastRestoreFwd(actions);
 	}
+	console.log('5 got ' + frames.length + ' frames');
 	const pngFrames = [];
 	for (let i = 0; i < frames.length; i++) {
-		pngFrames.push(
-			await converter.convert(frames[i])
-		);
+		const frame = await converter.convert(frames[i]);
+		pngFrames.push( frame );
 	}
+	console.log('6 converted frames to PNG', pngFrames.length);
 	Promise.all(pngFrames.map((result, i) =>
 		writePNG(`${partsDir}/${('0000' + i).substr(-4, 4)}.png`, result)
 	)).then((files) => {
+		console.log('7 wrote PNG frames to DISK');
 		// console.log('GOT FILES', files);
-		ffmpegToMP4(partsDir, mp4File).then((_mp4) =>
-			ffmpegToGIF(mp4File, gifFile).then((_gif) => {
+		ffmpegToMP4(partsDir, mp4File).then(() =>
+			ffmpegToGIF(mp4File, gifFile).then(() => {
 				const result = { mp4: mp4FileName, gif: gifFileName };
+				console.log('8 Called FFMPEG', result);
 				return result;
+			}, (gifError) => {
+				console.log('GIF ERROR', gifError);
 			})
-		);
+		, (mp4Error) => {
+			console.log('MP4 ERROR', mp4Error);
+		});
 	}, (fail) => {
 		throw new Error(fail);
 	});
@@ -94,7 +106,7 @@ async function convertAnimation(req): Promise<{ mp4: string, gif: string }> {
 app.use(bodyParser.urlencoded({
   extended: true
 }));
-app.use(bodyParser.json());
+app.use(express.json({limit: '128mb'}));
 app.use('/static', express.static(path.resolve(dir)));
 
 const init = () => {
@@ -130,6 +142,7 @@ let server = app.listen(port, () => {
 	});
 	app.post('/convert/mp4', async function(req, res) {
 		convertAnimation(req).then((result) => {
+			console.log('9 GOT MP4', result);
 			res.setHeader('Content-Type', 'application/json');
 			res.send(JSON.stringify({ file: result.mp4 }));
 			res.end();

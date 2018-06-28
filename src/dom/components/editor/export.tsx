@@ -33,8 +33,8 @@ function selectProductComponent(props: IExportProps) {
 		);
 		case ExportAt.Done:
 		return (
-			<ExportDone data={props.data} events={props.events} />
-		)
+			<ExportDone data={props.data} events={props.events} height={props.height} />
+		);
 		default:
 		return (
 			renderPayment(props)
@@ -83,7 +83,7 @@ function renderExport(props: IExportProps) {
 					className="mh2"
 					bg="transparent"
 					color="dark-gray"
-					label="Cancel"
+					label={props.data.at === ExportAt.Done ? 'Done' : 'Cancel'}
 					onAction={props.onExit}
 				/>
 				<Button

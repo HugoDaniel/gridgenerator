@@ -33,6 +33,7 @@ deploy.sh
 prod.sh
 decls/
 tmp/
+video/
 TODO
 .env
 SALES

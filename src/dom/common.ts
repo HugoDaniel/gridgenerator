@@ -70,7 +70,9 @@ export function loadScript(src, id?: string): Promise<{}> {
 	tag.async = false;
 	tag.src = src;
 	const p = new Promise((resolve, reject) => {
-		tag.onload = resolve;
+		tag.onload = () => {
+			setTimeout(1750, resolve);
+		};
 		tag.onerror = reject;
 	});
 	document.getElementsByTagName('body')[0].appendChild(tag);

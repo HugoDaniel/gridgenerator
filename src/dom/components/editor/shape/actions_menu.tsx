@@ -36,7 +36,7 @@ function renderBtn(index: number, shape: string, fill: string, isSelected: boole
 function renderShapes(shapes: string[], fill: string, selected: number, action: (i: number) => void, title: string, renderFirst: boolean) {
 	const result: any[] = [
 		<p
-			className={`f7 sans-serif ttu mv0 mh1 ${shapes.length > 1 ? '' : 'dn'}`}
+			className={`sans-serif ttu mh1 ${shapes.length > 1 ? 'f7 mv0' : 'f6 tc w-100'}`}
 			key={'shapes-actions-label'}
 			$HasVNodeChildren
 		>
@@ -56,14 +56,15 @@ function renderShapes(shapes: string[], fill: string, selected: number, action: 
 	return result;
 }
 export const ShapeActionsMenu = (props: IShapeActionsMenuProps) => {
-	const title =  props.title || 'Go Back To: ';
+	const title =  props.shapes.length > 1 ? (props.title || 'Go Back To: ') : 'Make your shape: connect the dots.';
+	console.log('ACTIONS MENU WITH', props.shapes.length);
 	return (
 		<nav
 			className={`ShapeActionsMenu ${props.className || ''} flex justify-start items-center w-100 bg-near-white overflow-hidden`}
 			style={props.style || {}}
 			$HasKeyedChildren
 		>
-		{renderShapes(
+		{ renderShapes(
 			props.shapes,
 			props.fill,
 			props.selected,

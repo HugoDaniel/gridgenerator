@@ -5,14 +5,14 @@ import { ExportEvents } from '../../../events/export_events';
 
 export interface IExportDoneProps {
 	className?: string;
+	height?: number;
 	events: ExportEvents;
 	data: UIExportEditor;
 }
-export const ExportDone = (props: IExportProps) =>
+export const ExportDone = (props: IExportDoneProps) =>
 	<div
-	style={{ height: props.height }}
-	className={`ExportDone ${props.className || ''}
-	flex justify-center items-center editormw editor-shadow sans-serif h-100`}
+		className={`ExportDone ${props.className || ''}
+		flex justify-center items-center editormw editor-shadow sans-serif h-100`}
 	>
 		<section className="w-100 flex flex-column items-center justify-center">
 			<h2 className="">

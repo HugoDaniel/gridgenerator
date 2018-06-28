@@ -182,7 +182,7 @@ export class ExportEvents implements IEventHandler {
 							this.net.export.postExportPNG(
 								this.runtime.token, hash, exportEditor.calcres(), exportEditor.patternSize
 							).then((exported) => {
-								console.log('GOT RESPONSE', exported);
+								this.doneFile(exported.file);
 							}, (error) => {
 								console.log('GOT ERROR', error);
 							});
@@ -205,7 +205,6 @@ export class ExportEvents implements IEventHandler {
 							this.net.export.postExportMP4(
 								this.runtime.token, hash, exportEditor.calcres()
 							).then((exported) => {
-								console.log('GOT RESPONSE', exported);
 								this.doneFile(exported.file);
 							}, (error) => {
 								console.log('GOT ERROR', error);
@@ -216,10 +215,24 @@ export class ExportEvents implements IEventHandler {
 					});
 				} else {
 					// RENDER GIF
+					this.projects.getHash().then((hash) => {
+						if (this.runtime.token) {
+							this.net.export.postExportGIF(
+								this.runtime.token, hash, exportEditor.calcres()
+							).then((exported) => {
+								this.doneFile(exported.file);
+							}, (error) => {
+								console.log('GOT ERROR', error);
+							});
+						} else {
+							// TODO: show error / redirect to login
+						}
+					});
 				}
 			}
 		};
 		this.doneFile = (fname) => {
+			console.log('DONE FILE', fname);
 			this.state.exportDone(fname);
 			this.refresher.refreshStateAndDOM(this.state);
 		};

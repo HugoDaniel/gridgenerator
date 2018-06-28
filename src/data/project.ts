@@ -1,4 +1,4 @@
-import murmur from 'murmur-32';
+import XXH from 'xxhashjs';
 import { FatState, FatStateReviver } from './fat';
 import { IStateSVGParts, State, StateReviver } from './state';
 
@@ -270,30 +270,26 @@ export class ProjectMap {
 		});
 	}
 	public getHash(): Promise<number> {
-		console.log('getting hash');
 		return new Promise((resolve, reject) => {
 			const c = this.current;
-			console.log('GOT CURRENT PROJECT')
 			const { svg } = c.fatState.current.createSVG();
-			console.log('GOT SVG')
-			const dv = new DataView(murmur(svg), 0);
-			console.log('GOT DV')
-			console.log('GOT HASH');
-			resolve(dv.getInt32(0));
+			let h;
+			h = parseInt(XXH.h32(svg, 0xBEEF).toString(16), 10);
+			console.log('GOT H', h);
+			resolve(h)
 		});
 	}
 	public exportCurrent(): Promise<IProjectExport> {
 		return new Promise((resolve, reject) => {
 			const c = this.current;
 			const { svg, viewbox } = c.fatState.current.createSVG();
-			const dv = new DataView(murmur(svg), 0);
 			const exported: IProjectExport = {
 				id: c.id,
 				initialState: JSON.stringify(c.initialState.toJSON()),
 				fatState: JSON.stringify(c.fatState.toJSON()),
 				svg,
 				svgViewBox: viewbox,
-				hash: dv.getInt32(0)
+				hash: parseInt(XXH.h32(svg, 0xBEEF).toString(16), 10)
 			};
 			resolve(exported);
 		});
