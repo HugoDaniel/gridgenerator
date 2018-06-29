@@ -85,17 +85,19 @@ async function convertAnimation(req): Promise<{ mp4: string, gif: string }> {
 	);
 	console.log('7 wrote PNG frames to DISK');
 	// console.log('GOT FILES', files);
-	await ffmpegToMP4(partsDir, mp4File).then(() =>
-		ffmpegToGIF(mp4File, gifFile).then(() => {
-			const result = { mp4: mp4FileName, gif: gifFileName };
-			console.log('8 Called FFMPEG', result);
-			return result;
+	await ffmpegToMP4(partsDir, mp4File);
+	await ffmpegToGIF(mp4File, gifFile);
+	const result = { mp4: mp4FileName, gif: gifFileName };
+	console.log('8 Called FFMPEG', result);
+	return result;
+	/*
 		}, (gifError) => {
 			console.log('GIF ERROR', gifError);
 		})
 	, (mp4Error) => {
 		console.log('MP4 ERROR', mp4Error);
 	});
+	*/
 }
 	/*
 
