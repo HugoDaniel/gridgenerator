@@ -30,10 +30,10 @@ export const ProjectCard = (props: IProjectCard) => {
 	const svg = `<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="110" height="60" shape-rendering="crispEdges" viewBox="0 0 ${vbw} ${vbh}">${props.project.svg}</svg>`;
 	const src = `data:image/svg+xml,${encodeURIComponent(svg)}`;
 	return (
-		<section className="ProjectCard tc pa3">
+		<section className="ProjectCard tc pa3 w4">
 			<a onClick={linkEvent(props.project.id, props.onView)} className="pointer link dim f6 gray">
 				<article className="hide-child relative ba b--black-20 mw5 center">
-					<img className="pa0 ma0" width={w} height={h} src={src} alt="Preview" />
+					<img className="pa0 ma0 h3" src={src} alt="Preview" />
 					<div className="pa2 bt b--black-20">
 						<div className="flex justify-between items-center">
 							<h1 class="truncate f7 ttu tl">{props.project.title}</h1>

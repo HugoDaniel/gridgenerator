@@ -46,7 +46,7 @@ export class MeanderEvents {
 	public onProfileProjects: () => void;
 	public blurProject: () => void;
 	public onMenuAction: (id: MainMenuId, e: Event) => void;
-	public fromRoute: () => void;
+	public fromRoute: () => void; // THE URL ROUTER
 	public gotoRoot: () => void;
 	public gotoLogin: () => void;
 	public gotoProjects: () => void;
@@ -109,7 +109,7 @@ export class MeanderEvents {
 			this.refresher.refreshNewProject(new Project(new State()));
 			this.gotoRoot();
 		};
-		// called after the webgl ctx is initialized
+		// initProject is called right after the webgl ctx is initialized
 		this.initProject = () => {
 			// unload removes the loading screen and adds the router event handler
 			const unload = () => {
@@ -235,8 +235,13 @@ export class MeanderEvents {
 			this.updateDOM();
 		};
 		this.onRouteRoot = () => {
-			this.unblurProject();
-			this.meander.course = MeanderCourse.Project;
+			// check if there is a user logged in
+			if (this.runtime.token && this.runtime.token.id) {
+				this.unblurProject();
+				this.meander.course = MeanderCourse.Project;
+			} else {
+				this.gotoLogin();
+			}
 		};
 		this.onRouteVerify = () => {
 			this.meander.course = MeanderCourse.Verify;

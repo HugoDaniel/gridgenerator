@@ -47,6 +47,7 @@ export class Debug {
 		this.initKeys();
 	}
 	private initKeys() {
+		/*
 		document.onkeyup = (e) => {
 			const tkeynum = 84;
 			const nkeynum = 78;
@@ -60,5 +61,6 @@ export class Debug {
 				this.events.meanderEvents.onProjectNew();
 			}
 		};
+		*/
 	}
 }

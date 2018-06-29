@@ -25,22 +25,18 @@ export const ProfileProjects = (props: IProfileProjectsProps) => {
 		? <h2 className={props.subtitleClassName}>Loading...</h2>
 		:
 		<div className="w-100">
+			<div className="flex items-center justify-center mv2 ">
+				<Button
+					className=""
+					label="New Project"
+					onAction={props.onProjectNew}
+				/>
+			</div>
 			<div className="h-100 flex flex-wrap flex-row items-start justify-center">
-				{[
-				<div
-					className="flex items-center justify-center mw5 pa3 ma3"
-					style={{ height: 190, width: 254 }}
-				>
-					<Button
-						className=""
-						label="New Project"
-						onAction={props.onProjectNew}
-					/>
-				</div>,
-				...props.projects.map((p) =>
+				{props.projects.map((p) =>
 					<ProjectCard project={p} onView={props.onProjectView} />
 				)
-				]}
+				}
 			</div>
 		</div>
 		}

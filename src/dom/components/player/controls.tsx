@@ -23,28 +23,30 @@ export interface IPlayerControls {
 	isAtEnd: boolean;
 }
 export const PlayerControls = (props: IPlayerControls) => {
-	const btncx = 'button-reset bg-transparent h2 w2 pa0 pointer bn flex dim mh1 mh2-ns mv0';
+	const btncx = 'button-reset bg-transparent pa0 pointer bn flex dim mh1 mh2-ns mv0';
+	const normalBtn = 'w2 h2 ' + btncx;
+	const bigBtn = 'w3 h3' + btncx;
 	const btnoff = ' o-30';
 	return (
-		<nav className={`PlayerControls ${props.className || ''}`}>
+		<nav className={`PlayerControls flex items-center justify-center ${props.className || ''}`}>
 			{ props.isPlaying ? [
-			<button className={btncx} onClick={props.onPause}>
+			<button className={bigBtn} onClick={props.onPause}>
 				<img src={pause_icon} alt="Pause" title="Pause animation" />
 			</button>
 			] : [
-			<button className={btncx} onClick={props.isAtStart ? null : props.onToBegin}>
+			<button className={normalBtn} onClick={props.isAtStart ? null : props.onToBegin}>
 				<img className={(props.isAtStart ? btnoff : '')} src={begin_icon} alt="To Start" title="Go to the start of the animation" />
 			</button>,
-			<button className={btncx} onClick={props.isAtStart ? null : props.onPrev}>
+			<button className={normalBtn} onClick={props.isAtStart ? null : props.onPrev}>
 				<img className={(props.isAtStart ? btnoff : '')} src={prev_icon} alt="Previous" title="Move one action backwards" />
 			</button>,
-			<button className={btncx} onClick={props.onPlay}>
+			<button className={bigBtn} onClick={props.onPlay}>
 				<img src={play_icon} alt="Play" title="play" />
 			</button>,
-			<button className={btncx} onClick={props.isAtEnd ? null : props.onNext}>
+			<button className={normalBtn} onClick={props.isAtEnd ? null : props.onNext}>
 				<img className={(props.isAtEnd ? btnoff : '')} src={next_icon} alt="Next" title="Move one action forward" />
 			</button>,
-			<button className={btncx} onClick={props.isAtEnd ? null : props.onToEnd}>
+			<button className={normalBtn} onClick={props.isAtEnd ? null : props.onToEnd}>
 				<img className={(props.isAtEnd ? btnoff : '')} src={end_icon} alt="To End" title="Move to the end" />
 			</button>
 			]

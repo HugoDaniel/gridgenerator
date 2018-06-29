@@ -31,8 +31,8 @@ export const enum FeaturesMenuId {
 
 export const DefaultFeaturesMenu: Map<FeaturesMenuId, MenuEntry> = new Map([
 	[ FeaturesMenuId.Export,  new MenuEntry('Export')],
-	[ FeaturesMenuId.Publish, new MenuEntry('Publish')],
-	[ FeaturesMenuId.Product, new MenuEntry('Make product', shirt_icon)]
+	[ FeaturesMenuId.Publish, new MenuEntry('Publish')]
+// [ FeaturesMenuId.Product, new MenuEntry('Make product', shirt_icon)]
 ]);
 
 export const enum MainMenuId {

@@ -36,11 +36,11 @@ context(class {
           CopyPlugin({ files: ['*.svg', '*.png', 'countries.json']}),
           WebIndexPlugin({
             title: 'Grid Generator',
-            template: 'src/index.html'
+            template: 'src/app.html'
           }),
           this.isProduction &&
           QuantumPlugin({
-            bakeApiIntoBundle: 'client',
+            bakeApiIntoBundle: 'client/bundle',
             treeshake: true,
             uglify: true
           })
@@ -55,13 +55,20 @@ task('env', (ctx) => {
 });
 task('client', async (ctx) => {
   const fuse = ctx.getConfig();
-  fuse
-     .bundle('client/bundle')
-     .target('browser@esnext')
-     .watch('**')
-     .hmr()
-     .instructions('>main.tsx');
-  await fuse.run();
+	if (ctx.isProduction) {
+		fuse
+			 .bundle('client/bundle')
+			 .target('browser@esnext')
+			 .instructions('>main.tsx');
+	} else {
+		fuse
+			 .bundle('client/bundle')
+			 .target('browser@esnext')
+			 .watch('**')
+			 .hmr()
+			 .instructions('>main.tsx');
+	}
+	await fuse.run();
 });
 task('data', async (ctx) => {
   const fuse = ctx.getConfig();

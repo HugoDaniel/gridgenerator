@@ -32,80 +32,70 @@ export const PublishPreview = (props: IPublishPreviewProps) => {
 	}
 	const xlink = { 'xmlns:xlink': 'http://www.w3.org/1999/xlink' };
 	const projectUrl = `https://gridgenerator.com/p/${props.project.id}`;
+	const subtitleCx = 'mv1';
 	return (
-		<div
-			style={{ height: props.height }}
-			className={`PublishPreview ${props.className || ''}
-			flex justify-center items-center editormw editor-shadow sans-serif h-100 overflow-auto`}
+		<div style={{ height: props.height }}
+			className={`PublishEditor ${props.className || ''}
+			flex justify-center items-center editormw editor-shadow sans-serif h-100`}
 		>
-			<section className="w-100 flex flex-column items-center justify-center pv5 mt4">
-				<h3 className="f5 mt4 mb0 w-80 tc">
-					Congratulations!<br/>
-					The project was published successfully
+			<section className="w-100 flex flex-column items-center justify-center">
+				<h2 className="mv0">
+					Congratulations
+				</h2>
+				<h3 className="mv0 f5">
+					Project now online
 				</h3>
-				<div className="mt3">
+				<div className="mt3 w-100 bt bb bg-white flex flex-column items-center justify-center">
+					<h4 className="mt4 mb2">
+						Access it on your "projects" menu
+					</h4>
+					<h4 className={`mt4 mb2`}>
+						Share it
+					</h4>
+					<div className="flex items-center justify-center gray">
+						<a
+							className="pointer link mh2"
+							href={`https://twitter.com/intent/tweet?text=${encodeURIComponent(projectUrl)}`}
+							target="_blank"
+						>
+							<img src={twitter_icon} className="h2 pointer" alt="Twitter" />
+						</a>
+						<a
+							className="pointer link mh2"
+							href={`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(projectUrl)}`}
+							target="_blank"
+						>
+							<img src={facebook_icon} className="h2 pointer" alt="Facebook" />
+						</a>
+					</div>
+					<h4 className="mt4 mb1">
+						Link
+					</h4>
+					<div className="flex items-center justify-center gray mb4">
+						<a className="pointer link flex items-center justify-center" onClick={(e) => {
+							e.preventDefault();
+							const urlLink = document.getElementById('publish-url') as HTMLInputElement;
+							urlLink.select();
+							try {
+								const successful = document.execCommand('copy');
+							} catch (err) {
+								// tslint:disable-next-line:no-console
+								console.error('Oops, unable to copy', err);
+							}
+						}}>
+							<p className={`Button b--black-10 pa2 link f7 br1 mr3 transition-o ba bg-light-gray pointer near-black dim o-100 ttu`}>Copy</p>
+							<input id="publish-url" className="input-reset bn sans-serif f6 bg-transparent h2 w5" value={projectUrl} />
+						</a>
+					</div>
+				</div>
+				<div className="mt4 w5 flex items-center justify-center">
 					<Button
 						className="mh2"
 						bg="green"
-						color="light-gray"
+						color="dark-gray"
 						label="Done"
 						onAction={props.onExit}
-					/>
-				</div>
-				<h2 className="mt4 mb4 dn">
-					Preview
-				</h2>
-				<div className="gray dn">
-					<svg
-						className="previewsvg"
-						version={'1.1'}
-						baseProfile={'basic'}
-						xmlns={'http://www.w3.org/2000/svg'}
-						{...xlink}
-						width={`${w}px`}
-						height={`${h}px`}
-						shape-rendering="crispEdges"
-						viewBox={`0 0 ${vbw} ${vbh}`}
-						dangerouslySetInnerHTML={ { __html: props.project.svg || '' } }
-					/>
-				</div>
-				<h2 className="mt4 mb3">
-					Share
-				</h2>
-				<div className="flex items-center justify-center gray">
-					<a
-						className="pointer link mh2"
-						href={`https://twitter.com/intent/tweet?text=${encodeURIComponent(projectUrl)}`}
-						target="_blank"
-					>
-						<img src={twitter_icon} className="h2 pointer" alt="Twitter" />
-					</a>
-					<a
-						className="pointer link mh2"
-						href={`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(projectUrl)}`}
-						target="_blank"
-					>
-						<img src={facebook_icon} className="h2 pointer" alt="Facebook" />
-					</a>
-				</div>
-				<h2 className="mt4 mb0">
-					Link
-				</h2>
-				<div className="flex items-center justify-center gray">
-					<a className="pointer link flex items-center justify-center" onClick={(e) => {
-						e.preventDefault();
-						const urlLink = document.getElementById('publish-url') as HTMLInputElement;
-						urlLink.select();
-						try {
-							const successful = document.execCommand('copy');
-						} catch (err) {
-							// tslint:disable-next-line:no-console
-							console.error('Oops, unable to copy', err);
-						}
-					}}>
-						<img src={copy_icon} alt="Copy link Button" className="w2 h2 mr2" />
-						<input id="publish-url" className="input-reset bn sans-serif f6 bg-transparent h2 w5" value={projectUrl} />
-					</a>
+						/>
 				</div>
 			</section>
 		</div>

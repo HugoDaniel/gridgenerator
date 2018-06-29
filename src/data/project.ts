@@ -274,8 +274,10 @@ export class ProjectMap {
 			const c = this.current;
 			const { svg } = c.fatState.current.createSVG();
 			let h;
-			h = parseInt(XXH.h32(svg, 0xBEEF).toString(16), 10);
-			console.log('GOT H', h);
+			const str = XXH.h32(svg, 0xBEEF).toString(10);
+			h = parseInt(str, 10);
+			console.log('GOT H', str, h);
+			// TODO: is NaN show error
 			resolve(h)
 		});
 	}
@@ -289,7 +291,7 @@ export class ProjectMap {
 				fatState: JSON.stringify(c.fatState.toJSON()),
 				svg,
 				svgViewBox: viewbox,
-				hash: parseInt(XXH.h32(svg, 0xBEEF).toString(16), 10)
+				hash: parseInt(XXH.h32(svg, 0xBEEF).toString(10), 10)
 			};
 			resolve(exported);
 		});

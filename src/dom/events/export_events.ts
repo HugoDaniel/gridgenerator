@@ -115,8 +115,15 @@ export class ExportEvents implements IEventHandler {
 			this.projects.getHash().then((hash) => {
 				console.log('export hash');
 				if (!this.runtime.token) {
-					// TODO: set error
-					console.log('export ERROR no token');
+					if (localStorage.jwt) {
+						this.runtime.token = localStorage.jwt;
+						this.refresher.refreshRuntimeOnly(this.runtime);
+						this.onExportInit();
+					} else {
+						// TODO: set error
+						console.log('export ERROR no token');
+						return;
+					}
 				} else {
 					console.log('export checking with server');
 					this.net.export.postCanExport(this.runtime.token, hash).then((response) => {
