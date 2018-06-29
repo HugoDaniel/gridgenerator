@@ -85,7 +85,7 @@ async function convertAnimation(req): Promise<{ mp4: string, gif: string }> {
 	);
 	console.log('7 wrote PNG frames to DISK');
 	// console.log('GOT FILES', files);
-	ffmpegToMP4(partsDir, mp4File).then(() =>
+	await ffmpegToMP4(partsDir, mp4File).then(() =>
 		ffmpegToGIF(mp4File, gifFile).then(() => {
 			const result = { mp4: mp4FileName, gif: gifFileName };
 			console.log('8 Called FFMPEG', result);
