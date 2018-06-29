@@ -42,7 +42,7 @@ context(class {
           QuantumPlugin({
             bakeApiIntoBundle: 'client/bundle',
             treeshake: true,
-            uglify: true
+            uglify: false
           })
         ]
       });

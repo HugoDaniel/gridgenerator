@@ -6,3 +6,4 @@ Steps to run it locally:
 2. `node fuse.js dev`
 3. enjoy :)
 
+(icons not included because of the license, perhaps in the near future)

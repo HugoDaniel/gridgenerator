@@ -36,4 +36,6 @@ tmp/
 video/
 TODO
 .env
+.env_sandbox
+.env_production
 SALES
