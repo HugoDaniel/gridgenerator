@@ -275,25 +275,27 @@ export class ProjectMap {
 			const { svg } = c.fatState.current.createSVG();
 			let h;
 			const str = XXH.h32(svg, 0xBEEF).toString(10);
-			h = parseInt(str, 10);
+			h = Math.floor(parseInt(str, 10) / 2);
 			console.log('GOT H', str, h);
 			// TODO: is NaN show error
-			resolve(h)
+			resolve(h);
 		});
 	}
 	public exportCurrent(): Promise<IProjectExport> {
 		return new Promise((resolve, reject) => {
 			const c = this.current;
 			const { svg, viewbox } = c.fatState.current.createSVG();
-			const exported: IProjectExport = {
-				id: c.id,
-				initialState: JSON.stringify(c.initialState.toJSON()),
-				fatState: JSON.stringify(c.fatState.toJSON()),
-				svg,
-				svgViewBox: viewbox,
-				hash: parseInt(XXH.h32(svg, 0xBEEF).toString(10), 10)
-			};
-			resolve(exported);
+			this.getHash().then((hash) => {
+				const exported: IProjectExport = {
+					id: c.id,
+					initialState: JSON.stringify(c.initialState.toJSON()),
+					fatState: JSON.stringify(c.fatState.toJSON()),
+					svg,
+					svgViewBox: viewbox,
+					hash
+				};
+				resolve(exported);
+			})
 		});
 	}
 	public publishCurrent(p: StoredProject) {

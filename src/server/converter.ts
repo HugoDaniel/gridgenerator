@@ -80,24 +80,21 @@ async function convertAnimation(req): Promise<{ mp4: string, gif: string }> {
 		pngFrames.push( frame );
 	}
 	console.log('6 converted frames to PNG', pngFrames.length);
-	Promise.all(pngFrames.map((result, i) =>
+	const files = await pngFrames.map((result, i) =>
 		writePNG(`${partsDir}/${('0000' + i).substr(-4, 4)}.png`, result)
-	)).then((files) => {
-		console.log('7 wrote PNG frames to DISK');
-		// console.log('GOT FILES', files);
-		ffmpegToMP4(partsDir, mp4File).then(() =>
-			ffmpegToGIF(mp4File, gifFile).then(() => {
-				const result = { mp4: mp4FileName, gif: gifFileName };
-				console.log('8 Called FFMPEG', result);
-				return result;
-			}, (gifError) => {
-				console.log('GIF ERROR', gifError);
-			})
-		, (mp4Error) => {
-			console.log('MP4 ERROR', mp4Error);
-		});
-	}, (fail) => {
-		throw new Error(fail);
+	);
+	console.log('7 wrote PNG frames to DISK');
+	// console.log('GOT FILES', files);
+	ffmpegToMP4(partsDir, mp4File).then(() =>
+		ffmpegToGIF(mp4File, gifFile).then(() => {
+			const result = { mp4: mp4FileName, gif: gifFileName };
+			console.log('8 Called FFMPEG', result);
+			return result;
+		}, (gifError) => {
+			console.log('GIF ERROR', gifError);
+		})
+	, (mp4Error) => {
+		console.log('MP4 ERROR', mp4Error);
 	});
 }
 	/*
