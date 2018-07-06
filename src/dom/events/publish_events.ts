@@ -52,16 +52,20 @@ export class PublishEvents implements IEventHandler {
 			// set publish state to loading
 			this.state.publishStartLoading();
 			this.refresher.refreshStateAndDOM(this.state);
+			// TODO: set loading
 			// send net req.
 			this.net.publish.publishProject(this.runtime.token, this.projects.current).then(
 				(response: IGraphQLResponse) => {
 					if (response.errors) {
 						this.state.publishError(Net.graphqlErrorMsg(response));
 						this.refresher.refreshStateAndDOM(this.state);
+						console.log('GOT ERROR PUBLISH DATA', response);
 						return;
 					} else {
+						console.log('GOT PUBLISHED DATA', response);
 						// update current project with id and creation times
 						if (response.data) {
+							console.log('VALID', response.data);
 							this.projects = this.projects.publishCurrent(response.data.newWork.work);
 							this.state.publishSuccess();
 							this.refresher.refreshProjectsOnly(this.projects);

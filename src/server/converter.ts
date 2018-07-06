@@ -22,6 +22,7 @@ const app: express.Application = express();
 // The port the express app will listen on
 const port: number = parseInt(process.env.PORT, 10) || 3000;
 const dir = './tmp';
+const publishDir = `${dir}/published`;
 const writePNG = (dest, data) => {
 	return new Promise((resolve, reject) => {
 		fs.writeFile(dest, data, function(err) {
@@ -32,6 +33,53 @@ const writePNG = (dest, data) => {
 		});
 	});
 };
+async function convertMp4(work, w, h, dest): Promise<{ mp4: string}> {
+	const data = work;
+	const mp4FileName = `${dest}/${work.id}.mp4`;
+	// console.log('CONVERTING MP4 TO', mp4FileName);
+	// check if parts directory exists
+	const partsDir = `${dir}/${work.id}_parts_lowres`;
+	if (!fs.existsSync(partsDir)) {
+		fs.mkdirSync(partsDir);
+	}
+	// revive the art state:
+	// console.log('PARSING INITIAL STATE');
+	const initialState = State.revive(data.initialState);
+	// console.log('PARSING fat STATE');
+	const fatState = FatState.revive(data.fatState, initialState);
+	// console.log('3 parsed state', fatState.version, fatState.maxVersion);
+	// prepare the actions for the video
+	const fas = new FatActionSets();
+	const actions = fas.sitePlayerActions;
+	fatState.restoreTo(0, State.revive(data.initialState));
+	// console.log('4 restored state', fatState.version, fatState.maxVersion);
+	// create the SVG's for each frame:
+	const frames = [];
+	while (fatState.version !== fatState.maxVersion) {
+		const { svg, viewbox } = fatState.current.createSVG();
+		frames.push(`
+		<svg width="${w}" height="${h}" viewBox="${viewbox.join(' ')}" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+			${svg}
+		</svg>`);
+		fatState.fastRestoreFwd(actions);
+	}
+	// console.log('5 got ' + frames.length + ' frames');
+	const pngFrames = [];
+	for (let i = 0; i < frames.length; i++) {
+		const frame = await converter.convert(frames[i]);
+		pngFrames.push( frame );
+	}
+	// console.log('6 converted frames to PNG', pngFrames.length);
+	const files = await pngFrames.map((pngData, i) =>
+		writePNG(`${partsDir}/${('0000' + i).substr(-4, 4)}.png`, pngData)
+	);
+	// console.log('7 wrote PNG frames to DISK');
+	// console.log('GOT FILES', files);
+	await ffmpegToMP4(partsDir, mp4FileName);
+	const result = { mp4: mp4FileName };
+	// console.log('8 Called FFMPEG', result);
+	return result;
+}
 async function convertAnimation(req): Promise<{ mp4: string, gif: string }> {
 	// 1. TODO: Validate data in req
 	const { width, height } = req.body.dimensions;
@@ -90,27 +138,43 @@ async function convertAnimation(req): Promise<{ mp4: string, gif: string }> {
 	const result = { mp4: mp4FileName, gif: gifFileName };
 	console.log('8 Called FFMPEG', result);
 	return result;
-	/*
-		}, (gifError) => {
-			console.log('GIF ERROR', gifError);
-		})
-	, (mp4Error) => {
-		console.log('MP4 ERROR', mp4Error);
-	});
-	*/
 }
-	/*
-
-	*/
+function convertImage(destFile, w, h, svgBody, viewbox) {
+	let svgviewbox;
+	if (viewbox.length === 4) {
+		svgviewbox = viewbox;
+	} else {
+		svgviewbox = [0, 0, viewbox[0], viewbox[1]];
+	}
+	console.log(`CONVERTING WITH ${w}*${h}, and viewbox`, svgviewbox);
+	const svg = `
+		<svg width="${w}" height="${h}" viewBox="${svgviewbox.join(' ')}" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+			${svgBody}
+		</svg>`;
+	return new Promise((resolve, reject) => {
+		converter.convert(svg).then((result) => {
+			writePNG(destFile, result).then((file) => {
+				resolve(result);
+			}, (error) => {
+				reject({ error, in: 'writePNG'});
+			});
+		}, (error) => {
+			reject({ error, in: 'convertImage'});
+		});
+	});
+}
 app.use(bodyParser.urlencoded({
   extended: true
 }));
-app.use(express.json({limit: '128mb'}));
+app.use(express.json({limit: '256mb'}));
 app.use('/static', express.static(path.resolve(dir)));
 
 const init = () => {
 	if (!fs.existsSync(dir)) {
 		fs.mkdirSync(dir);
+	}
+	if (!fs.existsSync(publishDir)) {
+		fs.mkdirSync(publishDir);
 	}
 };
 
@@ -161,6 +225,49 @@ let server = app.listen(port, () => {
 			res.send(JSON.stringify({ error }));
 			res.end();
 		});
+	});
+	app.post('/convert/publish', async function(req, res) {
+		let w = req.body.width;
+		let h = req.body.height;
+		const workId = req.body.id;
+		// 1. create a 800xh PNG
+		convertImage(`${publishDir}/${workId}.png`, w, h, req.body.svg, req.body.svgviewbox).then(
+			(imgData) => {
+				// image done, prepare the low res MP4
+				w = Math.ceil(w / 1.5);
+				h = Math.ceil(h / 1.5);
+				try {
+				convertMp4(req.body, w, h, publishDir).then((mp4Response) => {
+					res.setHeader('Content-Type', 'application/json');
+					res.send(JSON.stringify(mp4Response));
+					res.end();
+				}, (mp4Error) => {
+					res.setHeader('Content-Type', 'application/json');
+					res.send(JSON.stringify({ error: mp4Error, at: 'mp4' }));
+					res.end();
+				});
+			} catch(e) {
+				console.log('GOT MP4 CONVERT ERROR', e);
+			}
+			}, (imgError) => {
+				res.setHeader('Content-Type', 'application/json');
+				res.send(JSON.stringify({ error: imgError, at: 'png' }));
+				res.end();
+			}
+		);
+		// 2. create a 640xh MP4
+		// 3. respond with ok and url's
+		/*
+		convertAnimation(req).then((result) => {
+			res.setHeader('Content-Type', 'application/json');
+			res.send(JSON.stringify({ file: result.gif }));
+			res.end();
+		}, (error) => {
+			res.setHeader('Content-Type', 'application/json');
+			res.send(JSON.stringify({ error }));
+			res.end();
+		});
+		*/
 	});
 });
 

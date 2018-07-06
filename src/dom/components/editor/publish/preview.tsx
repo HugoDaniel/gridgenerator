@@ -32,6 +32,7 @@ export const PublishPreview = (props: IPublishPreviewProps) => {
 	}
 	const xlink = { 'xmlns:xlink': 'http://www.w3.org/1999/xlink' };
 	const projectUrl = `https://gridgenerator.com/p/${props.project.id}`;
+	const mp4Url = `https://gridgenerator.com/static/${props.project.id}.mp4`;
 	const subtitleCx = 'mv1';
 	return (
 		<div style={{ height: props.height }}
@@ -71,7 +72,7 @@ export const PublishPreview = (props: IPublishPreviewProps) => {
 					<h4 className="mt4 mb1">
 						Link
 					</h4>
-					<div className="flex items-center justify-center gray mb4">
+					<div className="flex flex-column items-center justify-center gray mb4">
 						<a className="pointer link flex items-center justify-center" onClick={(e) => {
 							e.preventDefault();
 							const urlLink = document.getElementById('publish-url') as HTMLInputElement;
@@ -85,6 +86,21 @@ export const PublishPreview = (props: IPublishPreviewProps) => {
 						}}>
 							<p className={`Button b--black-10 pa2 link f7 br1 mr3 transition-o ba bg-light-gray pointer near-black dim o-100 ttu`}>Copy</p>
 							<input id="publish-url" className="input-reset bn sans-serif f6 bg-transparent h2 w5" value={projectUrl} />
+						</a>
+						<p>or MP4:</p>
+						<a className="pointer link flex items-center justify-center" onClick={(e) => {
+							e.preventDefault();
+							const urlLink = document.getElementById('publish-mp4-url') as HTMLInputElement;
+							urlLink.select();
+							try {
+								const successful = document.execCommand('copy');
+							} catch (err) {
+								// tslint:disable-next-line:no-console
+								console.error('Oops, unable to copy', err);
+							}
+						}}>
+							<p className={`Button b--black-10 pa2 link f7 br1 mr3 transition-o ba bg-light-gray pointer near-black dim o-100 ttu`}>Copy</p>
+							<input id="publish-mp4-url" className="input-reset bn sans-serif f6 bg-transparent h2 w5" value={mp4Url} />
 						</a>
 					</div>
 				</div>

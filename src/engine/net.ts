@@ -45,7 +45,7 @@ export class Net {
 		};
 		this.login = new NetLogin(this.hostname, this.getData, this.postData);
 		this.profile = new NetProfile(this.hostname, this.graphql, this.getData);
-		this.publish = new NetPublish(this.graphql);
+		this.publish = new NetPublish(this.hostname, this.graphql, this.postData);
 		this.billing = new NetBilling(this.hostname, this.getData, this.postData);
 		this.product = new NetProduct(this.hostname, this.getData, this.postData);
 		this.export = new NetExport(this.hostname, this.getData, this.postData);
