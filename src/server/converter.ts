@@ -230,6 +230,7 @@ let server = app.listen(port, () => {
 		let w = req.body.width;
 		let h = req.body.height;
 		const workId = req.body.id;
+		console.log('PUBLISHING WORK', workId);
 		// 1. create a 800xh PNG
 		convertImage(`${publishDir}/${workId}.png`, w, h, req.body.svg, req.body.svgviewbox).then(
 			(imgData) => {
