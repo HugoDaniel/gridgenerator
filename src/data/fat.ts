@@ -13,8 +13,8 @@ import { UIState } from './state/ui';
 import { ClipPattern } from './state/ui/clip_pattern';
 import { UICursor } from './state/ui/cursor';
 import { ToolsMenuId, UIFillEditorColorMode } from './state/ui/defaults';
-import { UIFillEditor, UIFillEditorMode } from './state/ui/fill_editor';
 import { ExportAt, ExportEditorFormat, ExportSize } from './state/ui/export';
+import { UIFillEditor, UIFillEditorMode } from './state/ui/fill_editor';
 
 export interface FatStateReviver {
 	m: ModificationReviver[];
@@ -197,7 +197,6 @@ export class FatState {
 		// Initialize the resoration process
 		this._restoring = true;
 		// Apply to actions until the desired version is reached
-		console.log('REPLAYING', curVersion, this.maxVersion);
 		do {
 			const mod = mods[curVersion];
 			if (!mod) {
@@ -205,14 +204,11 @@ export class FatState {
 				return;
 			}
 			if (!mod.args) {
-				console.log('MOD', mod.actionName);
 				this[mod.actionName]();
 			} else {
-				console.log('MOD', mod.actionName);
 				this[mod.actionName](...mod.args);
 			}
 			if (set.has(mod.actionName)) {
-				console.log('ACTION NOT ADDED', mod.actionName);
 				break;
 			}
 			curVersion++;
@@ -279,6 +275,7 @@ export class FatState {
 			// get values from shape
 			const shape = this._state.selectedShape;
 			const fillIdString = this._state.fills.updateFromEditor(shape.selectedPathFillId);
+			console.log('UPDATED TO', fillIdString);
 			this._state.ui.updateSelectedFill(
 				this._state.fills.buildSVG(shape.resolution, shape.getSelectedFills()),
 				fillIdString);
@@ -328,6 +325,14 @@ export class FatState {
 	}
 	public colorPickerEnterCode(): FatState {
 		this._state.ui.fillEditor.editorMode = UIFillEditorMode.Code;
+		const fid = this._state.ui.fillEditor.selected;
+		const color = this._state.fills.getFillObj(fid);
+		if (!color) {
+			// tslint:disable-next-line:no-console
+			console.warn('Could not get the fill obj(color) for the selected fill id when entering Color Code');
+			return this;
+		}
+		this._state.ui.fillEditor.colorCode = color;
 		this.mod('colorPickerEnterCode', null);
 		return this;
 	}
@@ -705,8 +710,14 @@ export class FatState {
 	public shapeFillFigure(): FatState {
 		const fillIds = this._state.shapes.editor.fillIds;
 		const selectedFillId = fillIds[this._state.ui.shapeEditor.selectedShape];
+		const fillObj = this._state.fills.getFillObj(selectedFillId);
+		if (!fillObj) {
+			// tslint:disable-next-line:no-console
+			console.warn('No fill obj found for the selected fill id in shape editor');
+			return this;
+		}
 		this._state.fills.updateEditorWith(selectedFillId);
-		this._state.ui.fillEditorFromShapeEditor(fillIds);
+		this._state.ui.fillEditorFromShapeEditor(fillIds, fillObj);
 		this.mod('shapeFillFigure', null);
 		return this;
 	}

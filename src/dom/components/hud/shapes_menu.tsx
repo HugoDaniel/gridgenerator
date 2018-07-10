@@ -45,7 +45,7 @@ function buildBtns(props: IShapesMenuProps, selectedCx: string, notSelectedCx: s
 	result.push(
 		<NewCloseBtn
 			key={`shapesnewclosebtn-${rotated}`}
-			className={'w2 h2'}
+			className={'w2 h2 onboarding1-right'}
 			rotated={rotated}
 			big={false}
 			onAction={props.onNew}

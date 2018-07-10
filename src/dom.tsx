@@ -1,5 +1,5 @@
 import { Component, linkEvent } from 'inferno';
-import { Cart, Meander, MeanderCourse, PlayerState, Project, ProjectMap, State, ToolsMenuId, UIShapeEditorMode, UIState } from './data';
+import { Cart, Meander, MeanderCourse, Onboarding, PlayerState, Project, ProjectMap, State, ToolsMenuId, UIShapeEditorMode, UIState } from './data';
 import { UpdateAction } from './dom/common';
 import { addMouse, addTouch, removeMouse, removeTouch } from './dom/common';
 import { Editor, IEditorProps } from './dom/components/editor';
@@ -11,6 +11,7 @@ export { Events } from './dom/events';
 export { Debug } from './dom/debug';
 import { IMainMenuProps, MainMenu } from './dom/components/hud/main_menu';
 import { IMeanderProps, MeanderFull } from './dom/components/meander';
+import { OnboardingPanel } from './dom/components/onboarding';
 import { Runtime, RuntimeMediaSize } from './engine';
 export { Refresher } from './dom/events/refresher';
 export { UpdateAction } from './dom/common';
@@ -24,6 +25,7 @@ export interface IGridGeneratorDOMProps {
 	runtime: Runtime;
 	player: PlayerState | null;
 	meander: Meander;
+	onboarding: Onboarding;
 	action?: UpdateAction;
 }
 
@@ -103,6 +105,7 @@ export class GridGeneratorDOM extends Component<IGridGeneratorDOMProps, any> {
 		const events: Events = this.props.events;
 		const runtime: Runtime = this.props.runtime;
 		const cart: Cart = this.props.cart;
+		const onboarding: Onboarding = this.props.onboarding;
 		// next varZ's are set according to the editor/project stack state
 		let editorZ = 'z-0';
 		let sceneZ = 'z-1';
@@ -260,6 +263,7 @@ export class GridGeneratorDOM extends Component<IGridGeneratorDOMProps, any> {
 			}
 			<HUD {...hudProps}  onComponentShouldUpdate={this.props.events.shouldUpdateHUD as (lastProps: any, nextProps: any) => boolean} />
 			<Editor {...editorProps}  onComponentShouldUpdate={this.props.events.shouldUpdateEditor as (lastProps: any, nextProps: any) => boolean} />
+			<OnboardingPanel data={onboarding} />
 			<MeanderFull {...meanderProps}  onComponentShouldUpdate={this.props.events.shouldUpdateMeander as (lastProps: any, nextProps: any) => boolean} />
 		</div>
 		);

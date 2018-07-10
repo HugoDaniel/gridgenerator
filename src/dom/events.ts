@@ -1,4 +1,4 @@
-import { Cart, FatState, Meander, MeanderCourse, PlayerState, ProjectMap, State, UIShapeEditorMode, UIState } from '../data';
+import { Cart, FatState, Meander, MeanderCourse, Onboarding, PlayerState, ProjectMap, State, UIShapeEditorMode, UIState } from '../data';
 import { PatternHit } from '../data/state/ui/clip_pattern';
 import { Net, Runtime, WebGLContext } from '../engine';
 import { addMouse, addTouch, IEventHandler, removeMouse, removeTouch, UpdateAction } from './common';
@@ -11,6 +11,7 @@ import { ColorPickerEvents } from './events/color_picker_events';
 import { ExportEvents } from './events/export_events';
 import { HUDEvents } from './events/hud_events';
 import { MeanderEvents } from './events/meander_events';
+import { OnboardingEvents } from './events/onboarding_events';
 import { PlayerEvents } from './events/player_events';
 import { ProductEvents } from './events/product_events';
 import { ProjectEvents } from './events/project_events';
@@ -26,6 +27,7 @@ export class Events {
 	public refresher: Refresher;
 	public net: Net;
 	public projects: ProjectMap;
+	public onboarding: Onboarding;
 	public meander: Meander;
 	public cart: Cart;
 	public player: PlayerState | null;
@@ -48,6 +50,7 @@ export class Events {
 	public playerEvents: PlayerEvents | null;
 	public meanderEvents: MeanderEvents;
 	public productEvents: ProductEvents;
+	public onboardingEvents: OnboardingEvents;
 	// should updates:
 	public shouldUpdateHUD: (lastProps: IHUDProps, nextProps: IHUDProps) => boolean;
 	public shouldUpdateScene: (lastProps: ISceneProps, nextProps: ISceneProps) => boolean;
@@ -55,7 +58,7 @@ export class Events {
 	public shouldUpdateEditor: (lastProps: IEditorProps, nextProps: IEditorProps) => boolean;
 	public shouldUpdatePattern: (lastProps: IPatternProps, nextProps: IPatternProps) => boolean;
 
-	constructor(rt: Runtime, s: FatState, m: Meander, cart: Cart, net: Net, proj: ProjectMap, player: PlayerState | null, refresher: Refresher) {
+	constructor(rt: Runtime, s: FatState, m: Meander, cart: Cart, net: Net, proj: ProjectMap, onboarding: Onboarding, player: PlayerState | null, refresher: Refresher) {
 		this.runtime = rt;
 		this.state = s;
 		this.meander = m;
@@ -64,6 +67,7 @@ export class Events {
 		this.cart = cart;
 		this.refresher = refresher;
 		this.player = player;
+		this.onboarding = onboarding;
 		this.onMouseDown = (e: MouseEvent) => {
 			if (this.meander.course !== MeanderCourse.Project
 				|| this.state.current.ui.at === UIState.Publish || this.state.current.ui.at === UIState.Export) {
@@ -151,6 +155,7 @@ export class Events {
 		this.projectEvents  = new ProjectEvents(rt, s, this.net, this.projects, refresher, this.sceneEvents.reset);
 		this.publishEvents = new PublishEvents(rt, s, this.net, refresher, this.projects);
 		this.productEvents = new ProductEvents(rt, s, this.cart, this.net, refresher, this.projects);
+		this.onboardingEvents = new OnboardingEvents(rt, s, refresher, this.onboarding);
 		this.hudEvents = new HUDEvents(rt, s, refresher, this.sceneEvents.openCols, this.sceneEvents.closeCols, this.sceneEvents.onRedraw);
 		this.exportEvents = new ExportEvents(rt, s, this.net, this.projects, refresher,
 			this.hudEvents.onExitFeatures
@@ -193,6 +198,10 @@ export class Events {
 		this.updateRuntime(rt);
 		this.updateState(state);
 	}
+	public updateOnboarding(o: Onboarding): void {
+		this.onboarding = o;
+		this.onboardingEvents.onboarding = o;
+	}
 	public updateNet(n: Net): void {
 		this.net = n;
 		this.meanderEvents.net = n;
@@ -221,6 +230,7 @@ export class Events {
 		this.exportEvents.runtime = rt;
 		this.publishEvents.runtime = rt;
 		this.projectEvents.runtime = rt;
+		this.onboardingEvents.runtime = rt;
 		if (this.playerEvents) {
 			this.playerEvents.runtime = rt;
 		}
@@ -238,6 +248,7 @@ export class Events {
 		this.publishEvents.state = state;
 		this.projectEvents.state = state;
 		this.productEvents.state = state;
+		this.onboardingEvents.state = state;
 	}
 	public updatePlayer(p: PlayerState): void {
 		if (!this.playerEvents) {

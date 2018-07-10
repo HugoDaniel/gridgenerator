@@ -235,6 +235,9 @@ export class MeanderEvents {
 			this.updateDOM();
 		};
 		this.onRouteRoot = () => {
+			this.unblurProject();
+			this.meander.course = MeanderCourse.Project;
+/*
 			// check if there is a user logged in
 			if (this.runtime.token && this.runtime.token.id) {
 				this.unblurProject();
@@ -242,6 +245,7 @@ export class MeanderEvents {
 			} else {
 				this.gotoLogin();
 			}
+			*/
 		};
 		this.onRouteVerify = () => {
 			this.meander.course = MeanderCourse.Verify;

@@ -477,12 +477,21 @@ export const squareDiagTemplate: () => Template = () => new Template(4,
 		TemplateElement.line(512, 512, 0, 512), // 2: bh
 		TemplateElement.line(0, 512, 0, 0),     // 3: lv
 		// cross:
-		TemplateElement.line(256, 0, 256, 512), // 4: cv
-		TemplateElement.line(0, 256, 512, 256), // 5: ch
-		TemplateElement.line(128, 0, 128, 512), // 4: cv
-		TemplateElement.line(384, 0, 384, 512), // 5: ch
-		TemplateElement.line(0, 128, 512, 128), // 5: ch
-		TemplateElement.line(0, 384, 512, 384), // 5: ch
+		TemplateElement.line(256, 0, 256, 512),
+		TemplateElement.line(0, 256, 512, 256),
+		TemplateElement.line(128, 0, 128, 512),
+		TemplateElement.line(384, 0, 384, 512),
+		TemplateElement.line(0, 128, 512, 128),
+		TemplateElement.line(0, 384, 512, 384),
+		// subcrosses:
+		TemplateElement.line(64, 0, 64, 512),   // vertical 1
+		TemplateElement.line(192, 0, 192, 512), // vertical 2
+		TemplateElement.line(320, 0, 320, 512), // vertical 3
+		TemplateElement.line(448, 0, 448, 512), // vertical 4
+		TemplateElement.line(0, 64, 512, 64),   // horizont 1
+		TemplateElement.line(0, 192, 512, 192), // horizont 2
+		TemplateElement.line(0, 320, 512, 320), // horizont 3
+		TemplateElement.line(0, 448, 512, 448), // horizont 4
 		// diag1
 		TemplateElement.line(64, 0, 0, 64),
 		TemplateElement.line(128, 0, 0, 128),
@@ -525,7 +534,7 @@ export const squareDiagTemplate: () => Template = () => new Template(4,
 		// , TemplateElement.ellipse(256, 512, 100, 192, 0)
 		]);
 
-export const squareDefaultTemplate: () => Template = () => new Template(4, [
+export const squareBasicTemplate: () => Template = () => new Template(4, [
 	// square:
 	TemplateElement.line(0, 0, 512, 0),     // 0: th
 	TemplateElement.line(512, 0, 512, 512), // 1: rv

@@ -202,6 +202,7 @@ export class ColorPickerEvents implements IEventHandler {
 			this.refresher.refreshStateAndDOM(this.state);
 		};
 		this.onSaveCode = (hex: string) => {
+			console.log('SAVING COLOR CODE', hex);
 			this.state.colorPickerSaveCode(hex);
 			this.refresher.refreshStateAndDOM(this.state);
 			if (!this.runtime.colorPickerCtx) {

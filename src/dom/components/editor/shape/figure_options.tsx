@@ -13,8 +13,8 @@ export interface IFigureOptsProps {
 }
 
 function renderOpts(props: IFigureOptsProps) {
-	const btnCx = 'ba ma0 pa1 ph2 pointer dim flex justify-center items-center b--black-10 br1 mr3-ns';
-	const txtCx = 'f8 ttu pa0 ma0 pr2 pt1';
+	const btnCx = 'sans-serif ba ma0 pa1 ph2 pointer dim flex justify-center items-center b--black-10 br1 mr3-ns';
+	const txtCx = 'f8 ttu pa0 ma0 pr2';
 	return (
 		[
 			<button

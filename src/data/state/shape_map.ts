@@ -4,7 +4,7 @@ import { RandomArray } from './math/random';
 import { Vector2D } from './math/vector';
 import { Path, PathActionReviver, PathReviver } from './shape/path';
 import { IDupsNeeded, IUpdatedShapeCmds, Shape, ShapeFillSetId, ShapeReviver } from './shape/shape';
-import { squareDefaultTemplate, squareDiagTemplate, squareRoundTrisTemplate, Template, TemplateReviver, triHDefaultTemplate, triVDefaultTemplate } from './shape/template';
+import { squareBasicTemplate, squareDiagTemplate, squareRoundTrisTemplate, Template, TemplateReviver, triHDefaultTemplate, triVDefaultTemplate } from './shape/template';
 
 export type ShapeId = number;
 export interface ShapeMapReviver {
@@ -30,7 +30,7 @@ export class ShapeMap {
 	private _editorTemplate: Template;
 	constructor(type: GridType = GridType.Square, shapeId: number = 1, fillsForDefaultShape = [ColorDefaults.YELLOW, ColorDefaults.BLUE, ColorDefaults.GREEN]) {
 		this.templates = new Map();
-		this.templates.set(GridType.Square, [squareDefaultTemplate(), squareDiagTemplate(), squareRoundTrisTemplate()]);
+		this.templates.set(GridType.Square, [squareBasicTemplate(), squareDiagTemplate(), squareRoundTrisTemplate()]);
 		/* IN THE FUTURE:
 		this.templates.set(GridType.TriangleH, [triHDefaultTemplate()]);
 		this.templates.set(GridType.TriangleV, [triVDefaultTemplate()]);

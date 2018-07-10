@@ -49,6 +49,7 @@ export class UIFillEditor {
 		this.templateRes = shape.resolution;
 		this.mruColors = fills.colors.mruColors(8).slice(1);
 		const c = fills.getFillObj(this.selected);
+		console.log('FILL EDITOR, GOT FILL OBJ', this.selected, c);
 		if (!c) {
 			this.colorCode = new RGBColor(128, 128, 128, 1.0);
 		} else {

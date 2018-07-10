@@ -9,8 +9,14 @@ const converter = createConverter();
 
 const exec = util.promisify(require('child_process').exec);
 
-async function ffmpegToMP4(src, dest) {
-	const cmd = `ffmpeg -y -framerate 7 -i ${src}/%04d.png -c:v libx264 -r 30 -pix_fmt yuv420p ${dest}`;
+async function ffmpegToMP4(src: string, dest: string, maxDim: number, isWidthBiggest: boolean) {
+	let scale = '-vf scale='; // 640:-2';
+	if (isWidthBiggest) {
+		scale += `${maxDim}:-2`;
+	} else {
+		scale += `-2:${maxDim}`;
+	}
+	const cmd = `ffmpeg -y -framerate 7 -i ${src}/%04d.png -c:v libx264 -r 30 -pix_fmt yuv420p ${scale} ${dest}`;
 	const { stdout, stderr } = await exec(cmd);
 }
 async function ffmpegToGIF(src, dest) {
@@ -75,7 +81,14 @@ async function convertMp4(work, w, h, dest): Promise<{ mp4: string}> {
 	);
 	// console.log('7 wrote PNG frames to DISK');
 	// console.log('GOT FILES', files);
-	await ffmpegToMP4(partsDir, mp4FileName);
+	// prepare for video creation:
+	let maxDim = w;
+	let isWidthBiggest = true;
+	if (w < h) {
+		maxDim = h;
+		isWidthBiggest = false;
+	}
+	await ffmpegToMP4(partsDir, mp4FileName, maxDim, isWidthBiggest);
 	const result = { mp4: mp4FileName };
 	// console.log('8 Called FFMPEG', result);
 	return result;
@@ -133,7 +146,14 @@ async function convertAnimation(req): Promise<{ mp4: string, gif: string }> {
 	);
 	console.log('7 wrote PNG frames to DISK');
 	// console.log('GOT FILES', files);
-	await ffmpegToMP4(partsDir, mp4File);
+	// prepare info for video creation:
+	let maxDim = width;
+	let isWidthBiggest = true;
+	if (width < height) {
+		maxDim = height;
+		isWidthBiggest = false;
+	}
+	await ffmpegToMP4(partsDir, mp4File, maxDim, isWidthBiggest);
 	await ffmpegToGIF(mp4File, gifFile);
 	const result = { mp4: mp4FileName, gif: gifFileName };
 	console.log('8 Called FFMPEG', result);

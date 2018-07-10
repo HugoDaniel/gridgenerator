@@ -55,6 +55,7 @@ export const ColorPicker = (props: IColorPickerProps) => {
 		onCanvasUnmount: colorPickerEvents.onColorCanvasUnmount,
 		style: { width: `${canvasStyleSize}px`, height: `${canvasStyleSize}px` }
 	};
+	console.log('ENTERING COLOR PICKER WITH FILL EDITOR:', fillEditor);
 	const colorCodeProps: IColorCodeProps = {
 		style: { width: `${canvasStyleSize}px`, height: `${canvasStyleSize}px` },
 		color: fillEditor.colorCode,
@@ -115,7 +116,8 @@ export const ColorPicker = (props: IColorPickerProps) => {
 						className="center mt4-ns"
 					>
 						<ColorShapes {...colorShapesProps} />
-				</div> : <div />
+					</div>
+				: <div />
 				}
 				{ fillPaths[0].length > 1 ?
 					<FiguresMenu {...figMenuProps} /> : <div/>

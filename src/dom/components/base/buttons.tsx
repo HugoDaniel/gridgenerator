@@ -15,7 +15,7 @@ export interface IButtonProps {
 export const Button = (props: IButtonProps) =>
 	<button
 		{...noPropagation}
-		className={`Button b--black-10 pa2 link f7 br1 transition-o ba ${props.disabled ? 'bg-mid-gray light-gray o-0' : `bg-${props.bg || 'blue'} pointer ${props.color ? props.color : 'near-white'} dim o-100`} ttu ${props.className || ''}`}
+		className={`Button avenir b--black-10 pa2 link f7 br1 transition-o ba ${props.disabled ? 'bg-mid-gray light-gray o-0' : `bg-${props.bg || 'blue'} pointer ${props.color ? props.color : 'near-white'} dim o-100`} ttu ${props.className || ''}`}
 		onClick={props.disabled ? null : (props.id && props.onAction) ? linkEvent(props.id, props.onAction) : props.onAction}
 		disabled={props.disabled}
 	>

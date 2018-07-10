@@ -14,6 +14,7 @@ import { Menu, MenuEntry, MenuReviver } from './ui/menu';
 import { PublishAt, UIPublishEditor } from './ui/publish';
 import { UIShapeEditor, UIShapeEditorMode, UIShapeEditorReviver } from './ui/shape_editor';
 import { ToolsSubmenus, ToolsSubmenusReviver } from './ui/tools_submenus';
+import { RGBColor } from './color/rgb';
 export interface UIReviver {
 	a: string;
 	t: string;
@@ -342,9 +343,10 @@ export class UI {
 		return this;
 	}
 
-	public fillEditorFromShapeEditor(fillIds: number[]): UI {
+	public fillEditorFromShapeEditor(fillIds: number[], fillObj: RGBColor): UI {
 		// update the fill editor properties to match the contents
 		// present on the shape editor
+		this.fillEditor.colorCode = fillObj;
 		this.fillEditor.templatePath = this.shapeEditor.templateBase;
 		this.fillEditor.templateRes = this.shapeEditor.templateRes;
 		this.fillEditor.primaryActionTitle = 'Done';

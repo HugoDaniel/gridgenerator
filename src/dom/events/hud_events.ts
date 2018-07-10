@@ -87,6 +87,7 @@ export class HUDEvents implements IEventHandler {
 			// generate the shape fill set id, and the fill ids
 			const shapeFillSetId = this.state.current.newShapeFillSetId(this.runtime.rnd);
 			const fillIds = this.state.current.newFillIds(this.runtime.rnd, numFills);
+			console.log('[SHAPE]: NUM FILLS', numFills, 'FILL IDS:', fillIds);
 			// generate random colors
 			const colors: RGBColor[] = [];
 			for (let c = 0; c < numFills; c++) {

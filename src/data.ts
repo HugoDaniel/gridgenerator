@@ -41,3 +41,4 @@ export { PlayerState } from './data/player';
 export { Cart, CartAt, IPrices } from './data/cart';
 export { CartProduct, PosterType, ProductAt, PosterSizes, TShirtType, TShirtSize, TShirtColor } from './data/cart/product';
 export { getCountry, Country, Countries } from './data/meander/country';
+export { Onboarding, OnboardingAt } from './data/onboarding';

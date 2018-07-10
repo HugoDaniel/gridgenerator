@@ -46,15 +46,29 @@ export class ColorCode extends Component<any, any> {
 	}
 	public handleHex(that, e: Event) {
 		const target = e.target as HTMLInputElement;
-		const t = target.value;
+		let t = target.value;
+		const hasHash = t[0] === '#';
 		let c;
-		if (t.length === 6) {
+		if (t.length === 6 && !hasHash) {
 			c = RGBColor.fromHex(`#${t}`);
-		} else if (t.length === 7) {
+		} else if (t.length === 7 && hasHash) {
 			c = RGBColor.fromHex(t);
+		} else {
+			// 0 pad to the right until the correct length is found
+			const correctLen = 6;
+			let colorT = t;
+			do {
+				colorT = colorT + '0';
+			} while (colorT.length < correctLen);
+			// convert to color
+			if (hasHash) {
+				c = RGBColor.fromHex(colorT);
+			} else {
+				c = RGBColor.fromHex(`#${colorT}`);
+			}
 		}
 		if (c) {
-			that.setState({ r: c.r, g: c.g, b: c.b, t });
+			that.setState({ r: c.r, g: c.g, b: c.b, hex: t });
 		}
 	}
 	public componentWillReceiveProps(props) {
@@ -77,7 +91,7 @@ export class ColorCode extends Component<any, any> {
 						<div className="ml3 br-100 w2 h2" style={ { background: this.state.hex } } />
 					</div>
 				</div>
-				<Button id={this.state.hex} className="ml5 mt2" label="Done" onAction={props.onDone} />
+				<Button id={RGBColor.toHex(new RGBColor(this.state.r, this.state.g, this.state.b))} className="ml5 mt2" label="Done" onAction={props.onDone} />
 			</div>);
 	}
 }

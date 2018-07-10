@@ -622,11 +622,15 @@ export class Path {
 		this.svgs[this.selectedShape] = shape.toString();
 	}
 	public removeShape(shapeIndex: number) {
-		this.hidden.delete(shapeIndex);
-		this.fills.splice(shapeIndex, 1);
-		this.svgs.splice(shapeIndex, 1);
-		this.shapes.splice(shapeIndex, 1);
-		this.selectedShape = this.selectedShape - 1;
+		if (shapeIndex === -1) {
+			this.discardCurrent();
+		} else {
+			this.hidden.delete(shapeIndex);
+			this.fills.splice(shapeIndex, 1);
+			this.svgs.splice(shapeIndex, 1);
+			this.shapes.splice(shapeIndex, 1);
+			this.selectedShape = this.selectedShape - 1;
+		}
 	}
 	public curShapeIndex(): number {
 		return this.selectedShape;

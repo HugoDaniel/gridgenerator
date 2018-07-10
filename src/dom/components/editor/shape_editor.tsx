@@ -47,9 +47,10 @@ function chooseMenu(props: IShapeEditorProps) {
 					shapes: props.shapeEditor.ambiguities,
 					selected: -1,
 					fill: '#FFB700',
-					title: 'Other options: ',
+					title: 'Or did you want this instead ? ',
 					renderFirstShape: true,
-					onAction: props.onSolveAmbiguity
+					onAction: props.onSolveAmbiguity,
+					onDelete: props.onFigureDelete
 				};
 				return (
 					<ShapeActionsMenu {...shapeAmbiguitiesProps} />
@@ -61,7 +62,8 @@ function chooseMenu(props: IShapeEditorProps) {
 					shapes: props.shapeEditor.currentShapeActions,
 					selected: props.shapeEditor.selectedAction,
 					fill: '#FFB700',
-					onAction: props.onReverseAction
+					onAction: props.onReverseAction,
+					onDelete: props.onFigureDelete
 				};
 				return (
 					<ShapeActionsMenu {...shapeActionsMenuProps} />

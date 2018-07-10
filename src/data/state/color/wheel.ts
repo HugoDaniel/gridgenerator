@@ -301,6 +301,7 @@ export class Wheel {
 	}
 	private static _getHSL(r: number, g: number, b: number) {
 		const [h, s, l] = RGBColor.rgbToHsl(r, g, b);
+		// !ERROR: FIX THIS CONVERSION WHEN G and B are 0: console.log('hsl:', h, s, l);
 		return { light: l, hering: RGBColor.heringFromHue(h), sat: s };
 	}
 	private static _getColorHSLFromHex(hex: string) {
@@ -388,9 +389,9 @@ export class Wheel {
 	}
 	public fromHex(hex: string): Wheel {
 		// calculate hering, brightness and saturation from hex
-		const hsl = Wheel._getColorHSLFromHex(hex);
-		const angle = this._getAngleFor(hsl.hering);
-		return this.updateHering(angle, hsl.light, hsl.sat);
+		const { light, hering, sat } = Wheel._getColorHSLFromHex(hex);
+		const angle = this._getAngleFor(hering);
+		return this.updateHering(angle, light, sat);
 	}
 	public fromColor(c: RGBColor): Wheel {
 		// calculate hering, brightness and saturation from hex
