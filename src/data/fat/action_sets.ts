@@ -1,9 +1,9 @@
 export class FatActionSets {
-	public sitePlayerActions: Set<string>;
-	public undoActions: Set<string>;
-	constructor() {
-		this.sitePlayerActions = new Set([
-			/*
+  public sitePlayerActions: Set<string>;
+  public undoActions: Set<string>;
+  constructor() {
+    this.sitePlayerActions = new Set([
+      /*
 			'hudEnterNewShape',
 			'hudDiscardNewShape',
 			'hudSaveShape',
@@ -18,16 +18,16 @@ export class FatActionSets {
 			'shapeSolveAmbiguity',
 			'shapeDeleteFigure',
 			*/
-			'hudSaveUpdatedShape',
-			'scenePaint',
-			'sceneDelete'
-		]);
-		this.undoActions = new Set([
-			'hudEnterNewShape',
-			'hudEnterNewFill',
-			'hudClearAll',
-			'scenePaint',
-			'sceneDelete'
-		]);
-	}
+      'hudSaveUpdatedShape',
+      'scenePaint',
+      'sceneDelete'
+    ]);
+    this.undoActions = new Set([
+      'hudEnterNewShape',
+      'hudEnterNewFill',
+      'hudClearAll',
+      'scenePaint',
+      'sceneDelete'
+    ]);
+  }
 }
