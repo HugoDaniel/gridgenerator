@@ -157,7 +157,7 @@ export class HUDEvents implements IEventHandler {
 					this.state.current.shapes.getMaxNeededDups(shapeId)
 				);
 				// save the shape transformations and fill ids
-				this.state.hudSaveShape(type, shapeId, shapeFillSetId, rndIds);
+				this.state.hudSaveUpdatedShape(type, shapeId, shapeFillSetId, rndIds);
 				this.refresher.refreshStateOnly(this.state);
 				this.refresher.refreshRuntimeOnly(this.runtime);
 				this.shape2Texture(true);

@@ -255,8 +255,8 @@ let server = app.listen(port, () => {
 		convertImage(`${publishDir}/${workId}.png`, w, h, req.body.svg, req.body.svgviewbox).then(
 			(imgData) => {
 				// image done, prepare the low res MP4
-				w = Math.ceil(w / 1.5);
-				h = Math.ceil(h / 1.5);
+				w = Math.ceil(w / 1.6);
+				h = Math.ceil(h / 1.6);
 				try {
 				convertMp4(req.body, w, h, publishDir).then((mp4Response) => {
 					res.setHeader('Content-Type', 'application/json');
@@ -267,7 +267,7 @@ let server = app.listen(port, () => {
 					res.send(JSON.stringify({ error: mp4Error, at: 'mp4' }));
 					res.end();
 				});
-			} catch(e) {
+			} catch (e) {
 				console.log('GOT MP4 CONVERT ERROR', e);
 			}
 			}, (imgError) => {

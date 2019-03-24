@@ -38,6 +38,7 @@ export enum ProjectAction {
 export interface StoredProject {
 	id: number;
 	title: string;
+	localId: number;
 	description: string | null;
 	legal: ProjectLicense;
 	initialState: string; // StateReviver JSON
@@ -56,6 +57,7 @@ export interface StoredProject {
 export interface ProjectReviver {
 	id: number | null;
 	title: string | null;
+	localId: number;
 	description: string | null;
 	legal: ProjectLicense;
 	initialState: StateReviver;
@@ -81,6 +83,7 @@ export interface IProjectExport {
 }
 export class Project {
 	public id: number | null;
+	public localId: number; // used to save project in localStorage
 	public title: string | null;
 	public description: string | null;
 	public legal: ProjectLicense;
@@ -105,6 +108,14 @@ export class Project {
 		this.fatState = fat || new FatState(this.initialStateCopy);
 		this.isPublished = false;
 		this.canChangeLicense = canChangeLicense(this.legal);
+		// create the localId
+		let localId = 0;
+		let hasItem: string | null = null;
+		do {
+			localId = Math.floor(Math.random() * 16777216);
+			hasItem = localStorage.getItem(localId + '');
+		} while (hasItem !== null);
+		this.localId = localId;
 	}
 	public toStored(): StoredProject | null {
 		if (!this.id || !this.title || !this.legal || !this.action || !this.svg || !this.svgViewBox
@@ -115,6 +126,7 @@ export class Project {
 		return ({
 			id: this.id,
 			title: this.title,
+			localId: this.localId,
 			description: this.description,
 			legal: this.legal,
 			initialState: '',
@@ -165,6 +177,7 @@ export class Project {
 		return {
 			id: this.id,
 			title: this.title,
+			localId: this.localId,
 			description: this.description,
 			legal: this.legal,
 			initialState: this.initialState.toJSON(),
@@ -191,6 +204,7 @@ export class Project {
 		const result = new Project(State.revive(o.initialState), o.action, o.legal);
 		result.id = o.id;
 		result.title = o.title;
+		result.localId = o.localId;
 		result.description = o.description;
 		result.finalState = (o.finalState ? State.revive(o.finalState) : null);
 		result.fatState = FatState.revive(o.fatState, result.finalState || result.initialState);

@@ -26,10 +26,12 @@ import { MenuEntry } from './menu';
 export const enum FeaturesMenuId {
 	Export = 'export',
 	Publish = 'publish',
+	Save = 'save',
 	Product = 'product'
 }
 
 export const DefaultFeaturesMenu: Map<FeaturesMenuId, MenuEntry> = new Map([
+	[ FeaturesMenuId.Save,  new MenuEntry('Save')],
 	[ FeaturesMenuId.Export,  new MenuEntry('Export')],
 	[ FeaturesMenuId.Publish, new MenuEntry('Publish')]
 // [ FeaturesMenuId.Product, new MenuEntry('Make product', shirt_icon)]

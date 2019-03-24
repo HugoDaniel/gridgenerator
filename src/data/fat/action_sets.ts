@@ -18,6 +18,7 @@ export class FatActionSets {
 			'shapeSolveAmbiguity',
 			'shapeDeleteFigure',
 			*/
+			'hudSaveUpdatedShape',
 			'scenePaint',
 			'sceneDelete'
 		]);

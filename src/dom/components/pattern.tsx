@@ -32,7 +32,11 @@ export const Pattern = (props: IPatternProps) => {
 				fill="transparent"
 			/>
 			<circle cx={props.startPosX} cy={props.startPosY} r={l * 2} fill={color} />
+			<line x1={props.startPosX - l * 3} y1={props.startPosY - l * 3} x2={props.startPosX - l * 3} y2={props.startPosY} stroke={color} />
+			<line x1={props.startPosX - l * 3} y1={props.startPosY - l * 3} x2={props.startPosX} y2={props.startPosY - l * 3} stroke={color} />
 			<circle cx={props.endPosX} cy={props.endPosY} r={l * 2} fill={color} />
+			<line x1={props.endPosX + l * 3} y1={props.endPosY + l * 3} x2={props.endPosX + l * 3} y2={props.endPosY} stroke={color} />
+			<line x1={props.endPosX + l * 3} y1={props.endPosY + l * 3} x2={props.endPosX} y2={props.endPosY + l * 3} stroke={color} />
 		</svg>
 	);
 };

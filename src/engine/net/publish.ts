@@ -40,6 +40,7 @@ export class NetPublish {
 				}
 			}
 			`;
+			console.log('PUBLISHING WITH SIZE', query.length, 'bytes');
 			const work = {
 				title,
 				description: desc ? desc : null,

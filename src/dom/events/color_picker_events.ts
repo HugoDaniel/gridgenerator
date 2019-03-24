@@ -30,6 +30,11 @@ export class ColorPickerEvents implements IEventHandler {
 		this.runtime = rt;
 		this.state = s;
 		this.refresher = refresher;
+		const f = function() {
+			this.refresher.refreshRuntimeOnly(this.runtime);
+			return 0;
+		};
+		f();
 		this.onColorCanvasInit = (ctx) => {
 			const cpctx = toColorPickerCanvasCtx(ctx);
 			this.runtime.rects.colorPickerRect();

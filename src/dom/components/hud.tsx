@@ -47,16 +47,9 @@ export interface IHUDProps {
 	onSceneZoomOut: (e: Event) => void;
 	gotoLogin: () => void;
 }
-function currentToolSubmenu(props: IHUDProps) {
-	switch (props.ui.toolsMenu.selected) {
-		case ToolsMenuId.Zoom:
-		return <SubmenuZoom onZoomIn={props.onSceneZoomIn} onZoomOut={props.onSceneZoomOut} />;
-		default:
-			return <div className="NoSubmenu" />;
-	}
-}
 function currentToolMenu(id: ToolsMenuId, fillsProps: IFillsMenuProps, deleteProps: IDeleteMenuProps, zoomProps: IZoomMenuProps) {
 	switch (id) {
+		case ToolsMenuId.Grid:
 		case ToolsMenuId.Paint:
 		return <FillsMenu {...fillsProps} />;
 		case ToolsMenuId.Delete:

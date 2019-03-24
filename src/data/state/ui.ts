@@ -35,6 +35,7 @@ export const enum UIState {
 	ShapeEditor = 'ShapeEditor',
 	FillEditor = 'FillEditor',
 	Export = 'Export',
+	Save = 'Save',
 	Publish = 'Publish',
 	PublishPreview = 'PublishPreview',
 	PatternAdjustStart = 'PatternAdjustStart',
@@ -119,6 +120,8 @@ export class UI {
 				return UIState.FillEditor;
 				case 'Export':
 				return UIState.Export;
+				case 'Save':
+				return UIState.Save;
 				case 'Publish':
 				return UIState.Publish;
 				case 'PublishPreview':
@@ -241,6 +244,7 @@ export class UI {
 	private stateFromFeature(feature: FeaturesMenuId | string) {
 		switch (feature) {
 			case FeaturesMenuId.Export: return UIState.Export;
+			case FeaturesMenuId.Save: return UIState.Save;
 			case FeaturesMenuId.Publish: return UIState.Publish;
 			case FeaturesMenuId.Product: return UIState.Product;
 			default:

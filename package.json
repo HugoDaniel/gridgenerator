@@ -3,8 +3,26 @@
   "version": "1.0.0",
   "description": "A design web app for non-designers",
   "scripts": {
-    "test": "test",
-    "dev": "node fuse.js dev"
+    "start": "node fuse.js",
+    "test": "node fuse.js test",
+    "dist": "node fuse.js dist",
+    "precommit": "lint-staged"
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "lint-staged"
+    }
+  },
+  "lint-staged": {
+    "*.{js,json,css,md}": [
+      "prettier --write",
+      "git add"
+    ],
+    "*.ts": [
+      "prettier --write",
+      "tslint --fix",
+      "git add"
+    ]
   },
   "keywords": [
     "art",
@@ -22,32 +40,34 @@
     "tool",
     "svg"
   ],
-  "author": "Hugo Daniel",
-  "license": "EUPL-v1.2",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/HugoDaniel/gridgenerator.git"
+  },
+  "bugs": {
+    "url": "https://github.com/HugoDaniel/gridgenerator/issues"
+  },
+  "homepage": "https://gridgenerator.com",
+  "author": "Hugo Daniel Henriques Oliveira Gomes",
+  "license": "SEE LICENSE IN FILE LICENSE.md",
   "dependencies": {
-    "@types/express": "^4.16.0",
-    "body-parser": "^1.18.3",
-    "convert-svg-to-png": "^0.4.0",
-    "dotenv": "^6.0.0",
-    "express": "^4.16.3",
-    "inferno": "^5.2.0",
-    "inferno-server": "^5.2.0",
-    "xxhashjs": "^0.2.2"
+    "inferno": "^7.1.11"
   },
   "devDependencies": {
-    "@types/chai": "^4.1.4",
-    "@types/mocha": "^5.2.3",
-    "@types/node": "^10.5.1",
-    "chai": "^4.1.2",
-    "fuse-box": "^3.3.0",
+    "fuse-box": "^3.7.1",
     "fuse-test-runner": "^1.0.16",
-    "http-proxy-middleware": "^0.18.0",
-    "mocha": "^5.2.0",
-    "ts-node": "^7.0.0",
-    "ts-transform-classcat": "^0.1.0",
-    "ts-transform-inferno": "^2.2.0",
-    "tslint": "^5.10.0",
-    "typescript": "^2.9.2",
-    "uglify-es": "^3.3.9"
+    "terser": "^3.17.0",
+    "uglify-js": "^3.5.2",
+    "husky": "^1.3.1",
+    "lint-staged": "^8.1.5",
+    "prettier": "^1.16.4",
+    "prettier-tslint": "^0.4.2",
+    "rimraf": "^2.6.3",
+    "tslint": "^5.14.0",
+    "tslint-config-prettier": "^1.18.0",
+    "tslint-config-standard": "^8.0.1",
+    "typescript": "^3.3.4000",
+    "ts-transform-classcat": "^0.1.1",
+    "ts-transform-inferno": "^4.0.2"
   }
 }

@@ -113,7 +113,7 @@ export class FatState {
 			}
 			const lastModName = lastMod.actionName;
 			if (lastModName === name) {
-				// updade it
+				// update it
 				this._mods[this._mods.length - 1] =
 					new Modification(lastMod.version, lastMod.deltaT + deltaT, name, args);
 				return;
@@ -275,7 +275,6 @@ export class FatState {
 			// get values from shape
 			const shape = this._state.selectedShape;
 			const fillIdString = this._state.fills.updateFromEditor(shape.selectedPathFillId);
-			console.log('UPDATED TO', fillIdString);
 			this._state.ui.updateSelectedFill(
 				this._state.fills.buildSVG(shape.resolution, shape.getSelectedFills()),
 				fillIdString);
@@ -467,23 +466,36 @@ export class FatState {
 	public hudSaveShape(type: GridType, shapeId: ShapeId, shapeFillId: ShapeFillSetId, newFillIds: number[]): FatState {
 		// the current selected layer to update
 		const grid = this._state.layers.getSelected();
-		// is editing an existing shape ?
 		const isExisting = this._state.ui.shapeEditor.isExistingShape;
-		let shape;
+		// is editing an existing shape ?
 		if (isExisting) {
-			// analyze the new shape and return the transformations that need to be performed
-			const changes = this._state.shapes.getShapeChanges(shapeId);
-			// get the fill ids that need to be duplicated
-			const dupsNeeded = this._state.shapes.getNeededDups(shapeId, changes);
-			// duplicate the fillIds and create a map of duplicates
-			const dups = this._state.fills.duplicateMany(dupsNeeded.fillIds, newFillIds, dupsNeeded.size);
-			// update the current editing shape
-			shape = this._state.shapes.saveUpdatedShape(type, shapeId, shapeFillId, dups, changes);
+			this._hudUpdateShape(type, shapeId, shapeFillId, newFillIds);
 		} else {
 			// save the current editing shape
-			shape = this._state.shapes.saveNewShape(type, shapeId, shapeFillId);
+			const shape = this._state.shapes.saveNewShape(type, shapeId, shapeFillId);
 			grid.addNewShape(shapeId, shapeFillId);
+			// update the shapes menu and fills menu
+			this._state.ui.refreshMenus(
+				grid, this._state.shapes, this._state.fills.buildShapeSVG(shape)
+			);
+			// return to the project editing
+			this._state.ui.exitingEditor();
+			this._state.ui.editorOnBottom();
 		}
+		this.mod('hudSaveShape', [type, shapeId, shapeFillId, newFillIds]);
+		return this;
+	}
+	private _hudUpdateShape(type: GridType, shapeId: ShapeId, shapeFillId: ShapeFillSetId, newFillIds: number[]) {
+		// the current selected layer to update
+		const grid = this._state.layers.getSelected();
+		// analyze the new shape and return the transformations that need to be performed
+		const changes = this._state.shapes.getShapeChanges(shapeId);
+		// get the fill ids that need to be duplicated
+		const dupsNeeded = this._state.shapes.getNeededDups(shapeId, changes);
+		// duplicate the fillIds and create a map of duplicates
+		const dups = this._state.fills.duplicateMany(dupsNeeded.fillIds, newFillIds, dupsNeeded.size);
+		// update the current editing shape
+		const shape = this._state.shapes.saveUpdatedShape(type, shapeId, shapeFillId, dups, changes);
 		// update the shapes menu and fills menu
 		this._state.ui.refreshMenus(
 			grid, this._state.shapes, this._state.fills.buildShapeSVG(shape)
@@ -491,7 +503,10 @@ export class FatState {
 		// return to the project editing
 		this._state.ui.exitingEditor();
 		this._state.ui.editorOnBottom();
-		this.mod('hudSaveShape', [type, shapeId, shapeFillId, newFillIds]);
+	}
+	public hudSaveUpdatedShape(type: GridType, shapeId: ShapeId, shapeFillId: ShapeFillSetId, newFillIds: number[]): FatState {
+		this._hudUpdateShape(type, shapeId, shapeFillId, newFillIds);
+		this.mod('hudSaveUpdatedShape', [type, shapeId, shapeFillId, newFillIds]);
 		return this;
 	}
 	public hudSelectShape(shapeId: ShapeId): FatState {
@@ -568,7 +583,12 @@ export class FatState {
 	}
 	public hudNewPattern(cx: number, cy: number): FatState {
 		const grid = this._state.layers.getSelected();
-		grid.pattern = new TilePattern(cx - 1, cy - 1, cx + 1, cy + 1);
+		// restore the previous pattern configuration if present
+		if (grid.oldPattern) {
+			grid.pattern = grid.oldPattern;
+		} else {
+			grid.pattern = new TilePattern(cx - 1, cy - 1, cx + 1, cy + 1);
+		}
 		const lid = this._state.layers.selectedLayerId;
 		const clip = new ClipPattern(grid.pattern);
 		this._state.ui.patterns.set(lid, clip);
@@ -618,6 +638,8 @@ export class FatState {
 			clip.gridPattern = grid.pattern;
 			this._state.ui.patterns.set(lid, clip);
 		}
+		// save the current pattern settings to restore later
+		grid.oldPattern = grid.pattern;
 		// update the clip pattern
 		this.mod('hudPatternAdjust', [layerX, layerY]);
 		return this;

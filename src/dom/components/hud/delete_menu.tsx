@@ -8,7 +8,8 @@ export interface IDeleteMenuProps {
 export const DeleteMenu = (props: IDeleteMenuProps) => {
 	const btnProps: ITextButtonProps = {
 		onAction: props.onClearAll,
-		label: 'Clear All'
+		label: 'Clear All',
+		className: 'sans-serif'
 	};
 	return (
 	<nav className={`DeleteMenu ${props.className || ''} ma0 pa0 w3 transition-transform flex flex-column items-center justify-end`}>

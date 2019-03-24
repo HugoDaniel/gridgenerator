@@ -263,7 +263,9 @@ export class GridGeneratorDOM extends Component<IGridGeneratorDOMProps, any> {
 			}
 			<HUD {...hudProps}  onComponentShouldUpdate={this.props.events.shouldUpdateHUD as (lastProps: any, nextProps: any) => boolean} />
 			<Editor {...editorProps}  onComponentShouldUpdate={this.props.events.shouldUpdateEditor as (lastProps: any, nextProps: any) => boolean} />
-			<OnboardingPanel data={onboarding} />
+			{
+				// <OnboardingPanel data={onboarding} />
+			}
 			<MeanderFull {...meanderProps}  onComponentShouldUpdate={this.props.events.shouldUpdateMeander as (lastProps: any, nextProps: any) => boolean} />
 		</div>
 		);

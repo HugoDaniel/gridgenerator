@@ -45,6 +45,8 @@ export class Grid {
 	public cursorColor: FillId;
 	private cursorAt: [number, number];
 	public pattern: TilePattern | null;
+	public oldPattern: TilePattern | null;
+	// ^ previous pattern settings (useful to return to its state after)
 	constructor(type: GridType, shapes: ShapeId[], selectedShape: ShapeId, selectedShapeFillId: ShapeFillSetId, canvas: GridCanvas = new VectorMap()) {
 		this._curElement = new GridElement(selectedShape, selectedShapeFillId, 0);
 		this._type = type;
@@ -57,6 +59,7 @@ export class Grid {
 		this.cursorAt = [0, 0];
 		this.cursorColor = ColorDefaults.CURSOR;
 		this.pattern = null;
+		this.oldPattern = null;
 	}
 	public toJSON(): GridReviver {
 		return {

@@ -14,6 +14,7 @@ export class ProjectEvents {
 	public getProject: (id: number) => StoredProject | undefined;
 	public reviveProject: (id: number) => Promise<Project>;
 	public reviveNetProject: (proj: any) => Promise<Project>;
+	public saveLocally: () => void;
 	private resetScene: () => void;
 	private reviverWorker: Worker;
 	constructor(rt: Runtime, s: FatState, net: Net, p: ProjectMap, refresher: Refresher, resetScene: () => void) {
@@ -38,6 +39,19 @@ export class ProjectEvents {
 				return this.parseInWorker(proj);
 			}
 			return Promise.reject(`Server returned an invalid project`);
+		};
+		this.saveLocally = () => {
+			// create a copy of the current project and save it in local storage
+			const cur = this.projects.current;
+			const localProjs = localStorage.getItem(cur.localId + '');
+			let saved: any = [];
+			if (localProjs) {
+				saved = JSON.parse(localProjs);
+			}
+			saved.push(cur.toJSON());
+			localStorage.setItem(cur.localId + '', JSON.stringify(saved));
+			// update the saved state
+			
 		};
 		this.reviveProject = (id) => {
 			const storedProj = this.projects.get(id);

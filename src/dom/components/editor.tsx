@@ -16,6 +16,7 @@ import { Export, IExportProps } from './editor/export';
 import { IProductProps, Product } from './editor/product';
 import { IPublishProps, Publish } from './editor/publish';
 import { IPublishPreviewProps, PublishPreview } from './editor/publish/preview';
+import { ISaveProps, Save } from './editor/save';
 import { IShapeEditorProps, ShapeEditor } from './editor/shape_editor';
 import { ITemplatePickerProps, TemplatePicker } from './editor/template_picker';
 
@@ -55,7 +56,7 @@ export interface IEditorProps {
 	onFeaturesMenu: (feature: string, e: Event) => void;
 	onPricing: (e: any) => void;
 }
-function selectEditor(props: IEditorProps, colorPickerProps: IColorPickerProps, shapeEditorProps: IShapeEditorProps, templateProps: ITemplatePickerProps, exportProps: IExportProps, publishProps: IPublishProps, productProps: IProductProps) {
+function selectEditor(props: IEditorProps, colorPickerProps: IColorPickerProps, shapeEditorProps: IShapeEditorProps, templateProps: ITemplatePickerProps, exportProps: IExportProps, publishProps: IPublishProps, productProps: IProductProps, saveProps: ISaveProps) {
 	switch (props.at) {
 		case UIState.ShapeEditor:
 			switch (props.shapeEditor.editorMode) {
@@ -73,6 +74,10 @@ function selectEditor(props: IEditorProps, colorPickerProps: IColorPickerProps, 
 		case UIState.Export:
 			return (
 				<Export {...exportProps} height={props.height} onComponentDidMount={exportProps.events.onExportInit} />
+			);
+		case UIState.Save:
+			return (
+				<Save {...saveProps} height={props.height} onComponentDidMount={exportProps.events.onExportInit} />
 			);
 		case UIState.Publish:
 			return (
@@ -149,10 +154,16 @@ export const Editor = (props: IEditorProps) => {
 		height: props.height,
 		onExit: props.onExitFeatures
 	};
+	const saveProps: ISaveProps = {
+		className: '',
+		height: props.height,
+		onExit: props.onExitFeatures,
+		onSave: () => console.log('SAVING')
+	}
 	const isFillEditor = props.at === UIState.FillEditor;
 	return (
 		<div className={`Editor ${props.className || ''}`}>
-			{selectEditor(props, colorPickerProps, shapeEditorProps, templatePickerProps, exportProps, publishProps, productProps)}
+			{selectEditor(props, colorPickerProps, shapeEditorProps, templatePickerProps, exportProps, publishProps, productProps, saveProps)}
 			{ props.at === UIState.FillEditor || props.at === UIState.ShapeEditor ?
 			<div
 				className={`w-100 flex items-center justify-center editormw-ns fixed bottom-1`}
