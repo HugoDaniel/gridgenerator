@@ -3,6 +3,11 @@
   "version": "1.1.1",
   "description": "A Fat Node implementation for pure state. Easy time travel through your state. ",
   "main": "dist/index.js",
+  "ts:main": "src/index.ts",
+  "typings": "src/index.ts",
+  "files": [
+    "dist/"
+  ],
   "scripts": {
     "start": "node fuse.js",
     "test": "node fuse.js test",
@@ -43,20 +48,5 @@
     "url": "https://github.com/HugoDaniel/fatstate/issues"
   },
   "homepage": "https://github.com/HugoDaniel/fatstate#readme",
-  "dependencies": {},
-  "devDependencies": {
-    "fuse-box": "^3.7.1",
-    "fuse-test-runner": "^1.0.16",
-    "terser": "^3.17.0",
-    "uglify-js": "^3.5.2",
-    "husky": "^1.3.1",
-    "lint-staged": "^8.1.5",
-    "prettier": "^1.16.4",
-    "prettier-tslint": "^0.4.2",
-    "rimraf": "^2.6.3",
-    "tslint": "^5.14.0",
-    "tslint-config-prettier": "^1.18.0",
-    "tslint-config-standard": "^8.0.1",
-    "typescript": "^3.3.4000"
-  }
+  "dependencies": {}
 }

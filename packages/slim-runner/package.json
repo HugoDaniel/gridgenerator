@@ -5,6 +5,9 @@
   "main": "dist/index.js",
   "ts:main": "src/index.ts",
   "typings": "src/index.ts",
+  "files": [
+    "dist/"
+  ],
   "scripts": {
     "start": "node fuse.js",
     "test": "node fuse.js test",

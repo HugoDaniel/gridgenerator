@@ -45,7 +45,6 @@
   "homepage": "https://github.com/HugoDaniel/gridgenerator#readme",
   "license": "SEE LICENSE IN FILE LICENSE.md",
   "dependencies": {
-    "fatstate": "1.1.1",
     "slim-runner": "^1.1.2"
   }
 }
