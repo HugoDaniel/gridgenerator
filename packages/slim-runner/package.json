@@ -1,6 +1,6 @@
 {
   "name": "slim-runner",
-  "version": "1.1.1",
+  "version": "1.1.2",
   "description": "A slim framework to manage your app runtime and events",
   "main": "dist/index.js",
   "ts:main": "src/index.ts",

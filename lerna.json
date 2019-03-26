@@ -1,19 +1,23 @@
 {
-  "version": "1.1.1",
+  "version": "1.1.2",
   "npmClient": "npm",
   "command": {
     "publish": {
-      "ignoreChanges": ["*.md"],
+      "ignoreChanges": [
+        "*.md"
+      ],
       "message": "chore(release): publish"
     },
     "bootstrap": {
       "ignore": "grid-legacy",
-      "npmClientArgs": ["--no-package-lock"]
+      "npmClientArgs": [
+        "--no-package-lock"
+      ]
     }
   },
   "packages": [
     "packages/fastate",
-    "packages/slim-runner",
-    "packages/gridgenerator"
+    "packages/gridgenerator",
+    "packages/slim-runner"
   ]
 }
