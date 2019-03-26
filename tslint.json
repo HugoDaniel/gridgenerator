@@ -1,0 +1,14 @@
+{
+  "rulesDirectory": [],
+  "rules": {
+    "ordered-imports": false,
+    "object-literal-sort-keys": false,
+    "member-ordering": false,
+    "jsdoc-format": false
+  },
+  "extends": [
+    "tslint:recommended",
+    "tslint-config-standard",
+    "tslint-config-prettier"
+  ]
+}

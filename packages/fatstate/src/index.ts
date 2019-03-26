@@ -1,0 +1,1 @@
+export { Fat } from "./fatstate";

@@ -1,0 +1,51 @@
+{
+  "name": "gridgenerator",
+  "version": "1.1.1",
+  "description": "A painting web app",
+  "main": "dist/index.js",
+  "ts:main": "src/index.ts",
+  "typings": "src/index.ts",
+  "scripts": {
+    "start": "node fuse.js",
+    "test": "node fuse.js test",
+    "dist": "node fuse.js dist",
+    "precommit": "lint-staged"
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "lint-staged"
+    }
+  },
+  "lint-staged": {
+    "*.{js,json,css,md}": [
+      "prettier --write",
+      "git add"
+    ],
+    "*.ts": [
+      "prettier --write",
+      "tslint --fix",
+      "git add"
+    ]
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/HugoDaniel/gridgenerator.git"
+  },
+  "keywords": [
+    "runtime",
+    "engine",
+    "state",
+    "management",
+    "typescript"
+  ],
+  "author": "Hugo Daniel",
+  "bugs": {
+    "url": "https://github.com/HugoDaniel/gridgenerator/issues"
+  },
+  "homepage": "https://github.com/HugoDaniel/gridgenerator#readme",
+  "license": "SEE LICENSE IN FILE LICENSE.md",
+  "dependencies": {
+    "slim-runner": "1.1.1",
+    "fatstate": "1.1.1"
+	}
+}

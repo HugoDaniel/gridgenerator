@@ -1,0 +1,47 @@
+{
+  "name": "slim-runner",
+  "version": "1.1.1",
+  "description": "A slim framework to manage your app runtime and events",
+  "main": "dist/index.js",
+  "ts:main": "src/index.ts",
+  "typings": "src/index.ts",
+  "scripts": {
+    "start": "node fuse.js",
+    "test": "node fuse.js test",
+    "dist": "node fuse.js dist",
+    "precommit": "lint-staged"
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "lint-staged"
+    }
+  },
+  "lint-staged": {
+    "*.{js,json,css,md}": [
+      "prettier --write",
+      "git add"
+    ],
+    "*.ts": [
+      "prettier --write",
+      "tslint --fix",
+      "git add"
+    ]
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/HugoDaniel/slim-runner.git"
+  },
+  "keywords": [
+    "runtime",
+    "engine",
+    "state",
+    "management",
+    "typescript"
+  ],
+  "author": "Hugo Daniel",
+  "bugs": {
+    "url": "https://github.com/HugoDaniel/slim-runner/issues"
+  },
+  "homepage": "https://github.com/HugoDaniel/slim-runner#readme",
+  "license": "SEE LICENSE IN FILE LICENSE.md"
+}

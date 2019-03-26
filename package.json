@@ -1,0 +1,32 @@
+{
+  "name": "gridgenerator-build",
+  "private": true,
+  "license": "SEE LICENSE IN FILE LICENSE.md",
+  "author": {
+    "name": "Hugo Daniel Henriques Oliveira Gomes",
+    "email": "mail@hugodaniel.pt"
+  },
+  "bugs": {
+    "url": "https://github.com/HugoDaniel/gridgenerator/issues"
+  },
+  "homepage": "https://github.com/HugoDaniel/gridgenerator#readme",
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@github.com/HugoDaniel/gridgenerator.git"
+  },
+  "devDependencies": {
+    "fuse-box": "^3.7.1",
+    "fuse-test-runner": "^1.0.16",
+    "terser": "^3.17.0",
+    "uglify-js": "^3.5.2",
+    "husky": "^1.3.1",
+    "lint-staged": "^8.1.5",
+    "prettier": "^1.16.4",
+    "prettier-tslint": "^0.4.2",
+    "rimraf": "^2.6.3",
+    "tslint": "^5.14.0",
+    "tslint-config-prettier": "^1.18.0",
+    "tslint-config-standard": "^8.0.1",
+    "typescript": "^3.3.4000"
+  }
+}
