@@ -38,7 +38,10 @@
     "management",
     "typescript"
   ],
-  "author": "Hugo Daniel",
+  "author": {
+    "name": "Hugo Daniel Henriques Oliveira Gomes",
+    "email": "mail@hugodaniel.pt"
+  },
   "bugs": {
     "url": "https://github.com/HugoDaniel/gridgenerator/issues"
   },

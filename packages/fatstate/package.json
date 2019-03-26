@@ -30,7 +30,10 @@
       "git add"
     ]
   },
-  "author": "Hugo Daniel Henriques Oliveira Gomes",
+  "author": {
+    "name": "Hugo Daniel Henriques Oliveira Gomes",
+    "email": "mail@hugodaniel.pt"
+  },
   "license": "SEE LICENSE IN FILE LICENSE.md",
   "repository": {
     "type": "git",
