@@ -1,6 +1,6 @@
 {
   "name": "gridgenerator-math",
-  "version": "1.1.2",
+  "version": "1.1.3",
   "description": "Intersections, vectors, and common math functionality for gridgenerator.com",
   "main": "dist/index.js",
   "ts:main": "src/index.ts",
@@ -51,6 +51,6 @@
   "homepage": "https://github.com/HugoDaniel/gridgenerator#readme",
   "license": "SEE LICENSE IN FILE LICENSE.md",
   "dependencies": {
-    "fatstate": "1.1.2"
+    "fatstate": "^1.1.3"
   }
 }
