@@ -1,6 +1,6 @@
 {
   "name": "fatstate",
-  "version": "1.1.1",
+  "version": "1.1.2",
   "description": "A Fat Node implementation for pure state. Easy time travel through your state. ",
   "main": "dist/index.js",
   "ts:main": "src/index.ts",
@@ -50,6 +50,5 @@
   "bugs": {
     "url": "https://github.com/HugoDaniel/fatstate/issues"
   },
-  "homepage": "https://github.com/HugoDaniel/fatstate#readme",
-  "dependencies": {}
+  "homepage": "https://github.com/HugoDaniel/fatstate#readme"
 }
