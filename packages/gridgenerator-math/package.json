@@ -1,7 +1,13 @@
 {
-  "name": "gridgenerator",
-  "version": "1.0.0",
-  "description": "A design web app for non-designers",
+  "name": "gridgenerator-math",
+  "version": "1.1.2",
+  "description": "Intersections, vectors, and common math functionality for gridgenerator.com",
+  "main": "dist/index.js",
+  "ts:main": "src/index.ts",
+  "typings": "src/index.ts",
+  "files": [
+    "dist/"
+  ],
   "scripts": {
     "start": "node fuse.js",
     "test": "node fuse.js test",
@@ -24,37 +30,27 @@
       "git add"
     ]
   },
-  "keywords": [
-    "art",
-    "paint",
-    "web",
-    "app",
-    "webapp",
-    "grid",
-    "vector",
-    "pattern",
-    "ellipse",
-    "line",
-    "creative",
-    "design",
-    "tool",
-    "svg"
-  ],
   "repository": {
     "type": "git",
     "url": "git+https://github.com/HugoDaniel/gridgenerator.git"
   },
+  "keywords": [
+    "runtime",
+    "engine",
+    "state",
+    "management",
+    "typescript"
+  ],
+  "author": {
+    "name": "Hugo Daniel Henriques Oliveira Gomes",
+    "email": "mail@hugodaniel.pt"
+  },
   "bugs": {
     "url": "https://github.com/HugoDaniel/gridgenerator/issues"
   },
-  "homepage": "https://gridgenerator.com",
-  "author": "Hugo Daniel Henriques Oliveira Gomes",
+  "homepage": "https://github.com/HugoDaniel/gridgenerator#readme",
   "license": "SEE LICENSE IN FILE LICENSE.md",
   "dependencies": {
-    "inferno": "^7.1.11"
-  },
-  "devDependencies": {
-    "ts-transform-classcat": "^0.1.1",
-    "ts-transform-inferno": "^4.0.2"
+    "fatstate": "1.1.2"
   }
 }

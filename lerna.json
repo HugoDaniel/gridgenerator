@@ -15,9 +15,5 @@
       ]
     }
   },
-  "packages": [
-    "packages/fastate",
-    "packages/gridgenerator",
-    "packages/slim-runner"
-  ]
+  "packages": ["packages/*"]
 }
