@@ -1,6 +1,6 @@
-export interface ISerializable<A> {
-  toString: () => string;
-  fromString: (serialized: string) => A;
+export interface ISerializable<S> {
+  serialize: () => string;
+  deserialize: (serialized: string) => S;
 }
 
 export interface IWithState<A extends ISerializable<A>> {

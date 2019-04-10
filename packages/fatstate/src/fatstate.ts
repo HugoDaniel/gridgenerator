@@ -101,7 +101,7 @@ export class Fat<S extends ISerializable<S>, A extends IWithState<S>>
     }
     // Set the initial state:
     const actions = this.actions;
-    actions.state = this.actions.state.fromString(
+    actions.state = this.actions.state.deserialize(
       startingState || this.initialState
     );
     if (version === 0) {
@@ -157,7 +157,7 @@ export class Fat<S extends ISerializable<S>, A extends IWithState<S>>
     this.restoreTo(next, startingState);
   }
   /** Serializes the current state to a string */
-  public toString(): string {
+  public serialize(): string {
     const reviver: IFatReviver = {
       v: this.version,
       m: this.mods.map(m => m.toString()),
@@ -168,7 +168,7 @@ export class Fat<S extends ISerializable<S>, A extends IWithState<S>>
     };
     return JSON.stringify(reviver);
   }
-  public fromString(serialized: string): Fat<S, A> {
+  public deserialize(serialized: string): Fat<S, A> {
     const revived: IFatReviver = JSON.parse(serialized);
     // Duplicate the actions object:
     let actions: A;
@@ -177,7 +177,7 @@ export class Fat<S extends ISerializable<S>, A extends IWithState<S>>
     } else {
       actions = Object.assign(Object.create(null), this.actions);
     }
-    actions.state = actions.state.fromString(revived.s);
+    actions.state = actions.state.deserialize(revived.s);
     // Parse the mods array
     const mods = revived.m.map(modification =>
       Modification.fromString(modification, this.functionArgsReviver)

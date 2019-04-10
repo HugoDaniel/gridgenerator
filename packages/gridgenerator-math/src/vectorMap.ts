@@ -1,5 +1,5 @@
-import { Vector2D } from "./vector";
-import { ISerializable } from "fatstate";
+import * as Vec from "./vector";
+
 export type VectorMapReviver = Array<[number, number, any]>;
 export class VectorMap<T> {
   protected tree: Map<number, Map<number, T>>;

@@ -15,10 +15,10 @@ class State {
   public withResult(f: (arg: number) => number) {
     this.total.push(f(this.total[this.total.length - 1]));
   }
-  public toString(): string {
+  public serialize(): string {
     return JSON.stringify(this.total);
   }
-  public fromString(serialized: string): State {
+  public deserialize(serialized: string): State {
     return new State(JSON.parse(serialized));
   }
 }
@@ -114,9 +114,9 @@ export class IndexTest {
     fat.sub(30, 10); // fat.current.total[1] is 20;
     fat.add(30, 10); // fat.current.total[2] is 40;
     should(fat.current.total).deepEqual([30, 20, 40]);
-    const serialized = fat.toString();
+    const serialized = fat.serialize();
     should(serialized).haveLengthGreater(0);
-    const newFat = fat.fromString(serialized);
+    const newFat = fat.deserialize(serialized);
     should(newFat.current.total).deepEqual([30, 20, 40]);
   }
 }
