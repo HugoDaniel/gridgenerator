@@ -1,9 +1,4 @@
-export interface ISerializable<S> {
-  serialize: () => string;
-  deserialize: (serialized: string) => S;
-}
-
-export interface IWithState<A extends ISerializable<A>> {
+export interface IWithState<A> {
   state: A;
   [propName: string]: any;
 }
