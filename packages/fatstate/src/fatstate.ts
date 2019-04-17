@@ -3,7 +3,6 @@ export {
   create,
   current,
   mostRecentVersion,
-  mod,
   restoreTo,
   prev,
   next,
@@ -14,17 +13,30 @@ import * as Modification from "./modification";
 import { IWithState, FunctionPropertyNames, FunctionProperties } from "./types";
 
 //#region Private Attributes
+/** Current history version */
 const _version = Symbol("version");
+/** Modifications get tracked here */
 const _mods = Symbol("mods");
+/** The time when the last modification occured  */
 const _prevTime = Symbol("prevTime");
+/** If two modifications with the same name occur before minTime as elapsed
+ * they are not stored as separate */
 const _minTime = Symbol("minTime");
+/** The object that contains the "state" attribute and all state manipulation functions */
 const _actions = Symbol("actions");
+/** A string that is used to restore the state to its initial representation */
 const _initialState = Symbol("initialState");
+/** Set of all the functions available on the "action" object */
 const _actionNames = Symbol("actionNames");
+/** A function that can convert the "actions" state into a string */
 const _serializer = Symbol("serializer");
+/** A function that can convert a string into the "actions" state */
 const _deserializer = Symbol("deserializer");
+/** A function that can convert the modifications function arguments to a string */
 const _argsReviver = Symbol("argsReviver");
 //#endregion
+
+/** The object that keeps track of each state manipulation function */
 interface Data<S, A extends IWithState<S>> {
   [_version]: number;
   [_mods]: Array<Modification.Data<A>>;
@@ -69,6 +81,13 @@ function init<S, A extends IWithState<S>>(
     [_argsReviver]: argsReviver
   };
 }
+/** Creates a new object that keeps track of each state manipulation function
+ * @param actions The object that contains the "state" and all its manipulation functions
+ * @param serializer A function that can convert the "state" on the actions param to a string
+ * @param deserializer A function that can convert a sring to the "state" on the actions param
+ * @param functionArgsReviver A function that can convert the modifications function arguments to a string
+ * @returns An object that has all the functions of the "actions" object provided, but can keep track of their calls and do simple time-travel.
+ */
 function create<U extends IWithState<U["state"]>>(
   actions: U,
   serializer: (state: U["state"]) => string = JSON.stringify,
@@ -98,18 +117,23 @@ function create<U extends IWithState<U["state"]>>(
   }
   return result as Data<U["state"], U> & FunctionProperties<U>;
 }
-
+/** The current state */
 function current<S, A extends IWithState<S>>(
   fatstate: Data<S, A>
 ): Readonly<S> {
   return fatstate[_actions].state;
 }
+/** The number of the most recent version */
 function mostRecentVersion<S, A extends IWithState<S>>(
   fatstate: Data<S, A>
 ): number {
   return fatstate[_mods].length;
 }
-
+/** Tracks a modification on the state
+ * @param fatstate The object that can keep track of the state modifications
+ * @param name A string that must be a name belonging to a function on the "actions" object
+ * @param args An array of the arguments passed to the function call being tracked
+ */
 async function mod<S, A extends IWithState<S>>(
   fatstate: Data<S, A>,
   name: FunctionPropertyNames<A>,
@@ -142,7 +166,12 @@ async function mod<S, A extends IWithState<S>>(
   fatstate[_version]++;
   modsArray.push(Modification.create(fatstate[_version], deltaT, name, args));
 }
-
+/** Changes the state to be at the version specified in the arg
+ * @remarks It replays all the actions from the initial state up until the desired version is reached
+ * @param fatstate The object that can keep track of the state modifications
+ * @param version Where to stop the state at
+ * @param startingState If provided, it considers this string as the initial state
+ */
 function restoreTo<S, A extends IWithState<S>>(
   fatstate: Data<S, A>,
   version: number,
@@ -176,7 +205,11 @@ function restoreTo<S, A extends IWithState<S>>(
     }
   }
 }
-
+/** Changes the state to the immediate previous version
+ * @param fatstate The object that can keep track of the state modifications
+ * @param actionsToReplay If provided it jumps to the immediate previous state modified by one of these actions
+ * @param startingState If provided, it considers this string as the initial state
+ */
 function prev<S, A extends IWithState<S>>(
   fatstate: Data<S, A>,
   actionsToReplay?: Set<FunctionPropertyNames<A>>,
@@ -194,7 +227,11 @@ function prev<S, A extends IWithState<S>>(
   }
   restoreTo(fatstate, prev, startingState);
 }
-
+/** Changes the state to the immediate next version
+ * @param fatstate The object that can keep track of the state modifications
+ * @param actionsToReplay If provided it jumps to the immediate next state modified by one of these actions
+ * @param startingState If provided, it considers this string as the initial state
+ */
 function next<S, A extends IWithState<S>>(
   fatstate: Data<S, A>,
   actionsToReplay?: Set<FunctionPropertyNames<A>>,
@@ -218,7 +255,6 @@ function next<S, A extends IWithState<S>>(
   }
   restoreTo(fatstate, next, startingState);
 }
-
 interface IDataReviver {
   v: number;
   m: string[];
@@ -227,7 +263,11 @@ interface IDataReviver {
   s: string;
   i: string;
 }
-
+/**
+ * Converts the state tracking object into a string
+ * @param fatstate The object that can keep track of the state modifications
+ * @returns The string of the serialized object
+ */
 function serialize<S, A extends IWithState<S>>(fatstate: Data<S, A>): string {
   const reviver: IDataReviver = {
     v: fatstate[_version],
@@ -239,7 +279,15 @@ function serialize<S, A extends IWithState<S>>(fatstate: Data<S, A>): string {
   };
   return JSON.stringify(reviver);
 }
-
+/**
+ * Converts a string into the state tracking object
+ * @param serialized The string of the serialized object
+ * @param actions An object with all the state modifying functions
+ * @param serializer A function that can serialize the actions object "state" attribute
+ * @param deserializer A function that can deserialize a string into the actions object "state" attribute
+ * @param functionArgsReviver A function that can convert the modifications function arguments to a string
+ * @returns The state tracking object
+ */
 function deserialize<S, A extends IWithState<S>>(
   serialized: string,
   actions: A,
