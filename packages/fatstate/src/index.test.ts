@@ -63,60 +63,60 @@ export class IndexTest {
   }
   "Can restore to any given previous state"() {
     actions.state = new State();
-    const fat = Fat.init(actions);
+    const fat = Fat.create(actions);
     fat.add(10, 20); // fat.current.total[0] is 30;
     fat.sub(30, 10); // fat.current.total[1] is 20;
     fat.add(30, 10); // fat.current.total[2] is 40;
-    should(fat.current.total).deepEqual([30, 20, 40]);
-    fat.restoreTo(1);
-    should(fat.current.total).haveLength(1);
-    should(fat.current.total[0]).equal(30);
-    should(fat.current.total[1]).beUndefined();
+    should(Fat.current(fat).total).deepEqual([30, 20, 40]);
+    Fat.restoreTo(fat, 1);
+    should(Fat.current(fat).total).haveLength(1);
+    should(Fat.current(fat).total[0]).equal(30);
+    should(Fat.current(fat).total[1]).beUndefined();
   }
   "After moving to a previous state can restore to the most recent state"() {
     actions.state = new State();
-    const fat = Fat.init(actions);
+    const fat = Fat.create(actions);
     fat.add(10, 20); // fat.current.total[0] is 30;
     fat.sub(30, 10); // fat.current.total[1] is 20;
     fat.add(30, 10); // fat.current.total[2] is 40;
-    fat.restoreTo(1);
-    should(fat.current.total).haveLength(1);
-    should(fat.current.total[0]).equal(30);
-    fat.restoreTo(fat.mostRecentVersion);
-    should(fat.current.total).deepEqual([30, 20, 40]);
+    Fat.restoreTo(fat, 1);
+    should(Fat.current(fat).total).haveLength(1);
+    should(Fat.current(fat).total[0]).equal(30);
+    Fat.restoreTo(fat, Fat.mostRecentVersion(fat));
+    should(Fat.current(fat).total).deepEqual([30, 20, 40]);
   }
   "Can restore to the immediately previous state"() {
     actions.state = new State();
-    const fat = Fat.init(actions);
+    const fat = Fat.create(actions);
     fat.add(10, 20); // fat.current.total[0] is 30;
     fat.sub(30, 10); // fat.current.total[1] is 20;
     fat.add(30, 10); // fat.current.total[2] is 40;
-    fat.prev();
-    should(fat.current.total).deepEqual([30, 20]);
+    Fat.prev(fat);
+    should(Fat.current(fat).total).deepEqual([30, 20]);
   }
   "Can restore to the immediately next state"() {
     actions.state = new State();
-    const fat = Fat.init(actions);
+    const fat = Fat.create(actions);
     fat.add(10, 20); // fat.current.total[0] is 30;
     fat.sub(30, 10); // fat.current.total[1] is 20;
     fat.add(30, 10); // fat.current.total[2] is 40;
     // To create a replay set of actions do these 2 lines:
     // const s: Set<FunctionPropertyNames<IActionsT>> = new Set();
     // s.add('sub');
-    fat.prev();
-    fat.next();
-    should(fat.current.total).deepEqual([30, 20, 40]);
+    Fat.prev(fat);
+    Fat.next(fat);
+    should(Fat.current(fat).total).deepEqual([30, 20, 40]);
   }
   "Can serialize to/from string"() {
     actions.state = new State();
-    const fat = Fat.init(actions);
+    const fat = Fat.create(actions);
     fat.add(10, 20); // fat.current.total[0] is 30;
     fat.sub(30, 10); // fat.current.total[1] is 20;
     fat.add(30, 10); // fat.current.total[2] is 40;
-    should(fat.current.total).deepEqual([30, 20, 40]);
-    const serialized = fat.serialize();
+    should(Fat.current(fat).total).deepEqual([30, 20, 40]);
+    const serialized = Fat.serialize(fat);
     should(serialized).haveLengthGreater(0);
-    const newFat = fat.deserialize(serialized);
+    const newFat = Fat.deserialize(fat, serialized);
     should(newFat.current.total).deepEqual([30, 20, 40]);
   }
 }
