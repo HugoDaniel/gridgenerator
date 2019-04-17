@@ -2,7 +2,7 @@
 // tslint:disable:interface-name
 // tslint:disable:member-access
 import { should } from "fuse-test-runner";
-import { Fat } from "./index";
+import * as Fat from "./index";
 
 class State {
   public total: number[];
@@ -43,23 +43,23 @@ const actions: IActionsT = {
 
 export class IndexTest {
   "Fat.init() creates a new Fat state"() {
-    const fat = Fat.init(actions);
+    const fat = Fat.create(actions);
     should(fat.add).beOkay();
     should(fat.sub).beOkay();
     should(fat.mul10).beOkay();
-    should(fat.current.total).beOkay();
-    should(fat.current.total.length).equal(0);
+    should(Fat.current(fat).total).beOkay();
+    should(Fat.current(fat).total.length).equal(0);
   }
   "Actions can modify state"() {
     actions.state = new State();
-    const fat = Fat.init(actions);
+    const fat = Fat.create(actions);
     fat.add(10, 20);
-    should(fat.current.total.length).equal(1);
-    should(fat.current.total[0]).equal(30);
+    should(Fat.current(fat).total.length).equal(1);
+    should(Fat.current(fat).total[0]).equal(30);
     fat.sub(30, 10);
-    should(fat.current.total.length).equal(2);
-    should(fat.current.total[0]).equal(30);
-    should(fat.current.total[1]).equal(20);
+    should(Fat.current(fat).total.length).equal(2);
+    should(Fat.current(fat).total[0]).equal(30);
+    should(Fat.current(fat).total[1]).equal(20);
   }
   "Can restore to any given previous state"() {
     actions.state = new State();
