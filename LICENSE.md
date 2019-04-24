@@ -1,7 +1,6 @@
-Grid Generator
-==============
+# Grid Generator
 
-Copyright (c) 2018, Hugo Daniel Henriques Oliveira Gomes All Rights Reserved. Licensed under the EUPL.
+Copyright (c) 2019, Hugo Daniel Henriques Oliveira Gomes All Rights Reserved. Licensed under the EUPL.
 
 [EUPL v1.2](https://joinup.ec.europa.eu/collection/eupl/eupl-text-11-12)
 
@@ -10,7 +9,7 @@ Copyright (c) 2018, Hugo Daniel Henriques Oliveira Gomes All Rights Reserved. Li
 This European Union Public Licence (the ‘EUPL’) applies to the Work (as defined
 below) which is provided under the terms of this Licence. Any use of the Work,
 other than as authorised under this Licence is prohibited (to the extent such
-use is covered by a right of the copyright holder of the Work).  The Work is
+use is covered by a right of the copyright holder of the Work). The Work is
 provided under the terms of this Licence when the Licensor (as defined below)
 has placed the following notice immediately following the copyright notice for
 the Work:
@@ -134,7 +133,7 @@ Licence shall prevail.
 **Provision of Source Code**: When distributing or communicating copies of the
 Work, the Licensee will provide a machine-readable copy of the Source Code or
 indicate a repository where this Source will be easily and freely available for
-as long as the Licensee continues to distribute or communicate the Work.  Legal
+as long as the Licensee continues to distribute or communicate the Work. Legal
 Protection: This Licence does not grant permission to use the trade names,
 trademarks, service marks, or names of the Licensor, except as required for
 reasonable and customary use in describing the origin of the Work and
@@ -265,7 +264,7 @@ Without prejudice to specific agreement between parties,
 - this licence shall be governed by Belgian law if the Licensor has no seat,
   residence or registered office inside a European Union Member State.
 
-## *Appendix*
+## _Appendix_
 
 ‘Compatible Licences’ according to Article 5 EUPL are:
 
@@ -289,4 +288,3 @@ Code from exclusive appropriation.
 
 All other changes or additions to this Appendix require the production of a new
 EUPL version.
-

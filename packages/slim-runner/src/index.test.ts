@@ -1,7 +1,6 @@
 // tslint:disable:max-classes-per-file
 // tslint:disable:interface-name
 // tslint:disable:member-access
-import { should } from "fuse-test-runner";
 import { SlimRunner } from "./index";
 
 /*
@@ -94,17 +93,19 @@ class AppEvents {
   }
 }
 
-// Assertions at https://fuse-box.org/docs/test-runner/test-runner
-export class IndexTest {
-  "new SlimRunner() creates a new SlimRunner state"() {
-    const slim = new SlimRunner(appState, AppEvents, appRuntime);
-    should(slim.state.todos.todos.size).equal(0);
-    should(slim.events.app).beOkay();
-  }
-  "SlimRunner events can act on its state"() {
-    const slim = new SlimRunner(appState, AppEvents, appRuntime);
-    should(slim.state.todos.todos.size).equal(0);
+let slim = new SlimRunner(appState, AppEvents, appRuntime);
+beforeEach(() => {
+  slim = new SlimRunner(appState, AppEvents, appRuntime);
+});
+
+describe("Test1", () => {
+  it("new SlimRunner() creates a new SlimRunner state", () => {
+    expect(slim.state.todos.todos.size).toEqual(0);
+    expect(slim.events.app).not.toBeUndefined();
+  });
+  it("SlimRunner events can act on its state", () => {
+    expect(slim.state.todos.todos.size).toEqual(0);
     slim.events.newTodo("Test Todo");
-    should(slim.state.todos.todos.size).equal(1);
-  }
-}
+    expect(slim.state.todos.todos.size).toEqual(1);
+  });
+});

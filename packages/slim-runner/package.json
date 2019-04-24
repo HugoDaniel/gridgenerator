@@ -9,26 +9,10 @@
     "dist/"
   ],
   "scripts": {
-    "start": "node fuse.js",
-    "test": "node fuse.js test",
+    "test": "node_modules/.bin/jest",
     "dist": "node fuse.js dist",
-    "precommit": "lint-staged"
-  },
-  "husky": {
-    "hooks": {
-      "pre-commit": "lint-staged"
-    }
-  },
-  "lint-staged": {
-    "*.{js,json,css,md}": [
-      "prettier --write",
-      "git add"
-    ],
-    "*.ts": [
-      "prettier --write",
-      "tslint --fix",
-      "git add"
-    ]
+    "clean": "node fuse.js clean",
+    "typecheck": "node_modules/.bin/tsc -p ."
   },
   "repository": {
     "type": "git",
@@ -49,5 +33,16 @@
     "url": "https://github.com/HugoDaniel/slim-runner/issues"
   },
   "homepage": "https://github.com/HugoDaniel/slim-runner#readme",
-  "license": "SEE LICENSE IN FILE LICENSE.md"
+  "license": "SEE LICENSE IN FILE LICENSE.md",
+  "dependencies": {},
+  "devDependencies": {
+    "@types/jest": "^24.0.11",
+    "fuse-box": "^3.7.1",
+    "jest": "^24.7.1",
+    "rimraf": "^2.6.3",
+    "terser": "^3.17.0",
+    "ts-jest": "^24.0.2",
+    "typescript": "^3.4.5",
+    "uglify-js": "^3.5.7"
+  }
 }

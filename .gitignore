@@ -39,3 +39,6 @@ TODO
 .env_sandbox
 .env_production
 SALES
+!fuse.js
+!*/fuse.js
+!jest.config.js

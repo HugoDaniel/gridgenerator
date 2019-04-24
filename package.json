@@ -1,5 +1,38 @@
 {
   "name": "gridgenerator-build",
   "private": true,
-  "workspaces": ["packages/fatstate"]
+  "workspaces": [
+    "packages/fatstate",
+    "packages/slim-runner",
+    "packages/gridgenerator-math"
+  ],
+  "scripts": {
+    "precommit": "lint-staged"
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "lint-staged"
+    }
+  },
+  "lint-staged": {
+    "*.{js,json,css,md}": [
+      "prettier --write",
+      "git add"
+    ],
+    "*.ts": [
+      "prettier --write",
+      "tslint --fix",
+      "git add"
+    ]
+  },
+  "devDependencies": {
+    "husky": "^2.1.0",
+    "lint-staged": "^8.1.5",
+    "prettier": "^1.17.0",
+    "prettier-tslint": "^0.4.2",
+    "tslint": "^5.16.0",
+    "tslint-config-prettier": "^1.18.0",
+    "tslint-config-standard": "^8.0.1",
+    "typescript": "^3.4.5"
+  }
 }

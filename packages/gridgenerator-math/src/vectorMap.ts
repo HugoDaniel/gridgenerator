@@ -1,12 +1,15 @@
-import * as Vec from "./vector";
-
+import { Vector2D } from "./vector";
 export type VectorMapReviver = Array<[number, number, any]>;
 export class VectorMap<T> {
   protected tree: Map<number, Map<number, T>>;
   protected _size: number;
+  // fast memory management:
+  private memoryAt: number;
+  private memorySize: number;
+  private memory: Array<Map<number, T>>;
   constructor(vectors?: Vector2D[], elements?: T[]) {
     this.tree = new Map();
-    // ^ a Map of Maps
+    // ^ a Map of Set's
     // Maps x Number values to Map's of Numbers (y's) to Bool (or anything else)
     if (vectors && vectors.length > 0 && elements) {
       this._size = vectors.length;
@@ -19,8 +22,20 @@ export class VectorMap<T> {
     } else {
       this._size = 0;
     }
+    // initialize memory, to avoid GC mess when inserting
+    // elements further than the creation
+    this.memorySize = 128;
+    this.memory = new Array(this.memorySize);
+    this.initMemory();
   }
-  public toString(elemToString: (e: any) => any) {
+  private initMemory() {
+    const s = this.memorySize;
+    for (let i = 0; i < s; i++) {
+      this.memory[i] = new Map();
+    }
+    this.memoryAt = 0;
+  }
+  public toJSON(elemToJSON: (e: any) => any) {
     const result: VectorMapReviver = [];
     this.map((elem, x, y) => {
       if (x !== undefined && y !== undefined) {
@@ -37,9 +52,17 @@ export class VectorMap<T> {
     a.map(v => result.addXY(v[0], v[1], reviveElem(v[2])));
     return result;
   }
+  private getNewMap() {
+    if (this.memoryAt === this.memorySize) {
+      this.initMemory();
+    }
+    return this.memory[this.memoryAt++];
+  }
   public clear() {
+    this.memorySize = Math.max(this._size, 128);
     this.tree.clear();
     this._size = 0;
+    this.initMemory();
   }
   get size(): number {
     return this._size;
@@ -91,7 +114,7 @@ export class VectorMap<T> {
     }
   }
   public addXY(x: number, y: number, value: T): VectorMap<T> {
-    const ys: Map<number, T> = this.tree.get(x) || new Map();
+    const ys: Map<number, T> = this.tree.get(x) || this.getNewMap();
     if (ys.size === 0 || !ys.has(y)) {
       this._size += 1;
     }
@@ -104,7 +127,7 @@ export class VectorMap<T> {
     return this.addXY(v.x, v.y, value);
   }
   public deleteXY(x: number, y: number): VectorMap<T> {
-    const ys: Map<number, T> = this.tree.get(x) || new Map();
+    const ys: Map<number, T> = this.tree.get(x) || this.getNewMap();
     if (ys.size <= 1) {
       this.tree.delete(x);
     } else {
