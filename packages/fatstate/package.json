@@ -10,9 +10,11 @@
   ],
   "scripts": {
     "start": "node fuse.js",
-    "test": "node fuse.js test",
+    "test": "node_modules/.bin/jest",
     "dist": "node fuse.js dist",
-    "precommit": "lint-staged"
+    "clean": "node fuse.js clean",
+    "precommit": "lint-staged",
+    "typecheck": "node_modules/.bin/tsc -p ."
   },
   "husky": {
     "hooks": {
@@ -50,5 +52,23 @@
   "bugs": {
     "url": "https://github.com/HugoDaniel/fatstate/issues"
   },
-  "homepage": "https://github.com/HugoDaniel/fatstate#readme"
+  "homepage": "https://github.com/HugoDaniel/fatstate#readme",
+  "dependencies": {},
+  "devDependencies": {
+    "@types/jest": "^24.0.11",
+    "fuse-box": "^3.7.1",
+    "husky": "^1.3.1",
+    "jest": "^24.7.1",
+    "lint-staged": "^8.1.5",
+    "prettier": "^1.17.0",
+    "prettier-tslint": "^0.4.2",
+    "rimraf": "^2.6.3",
+    "terser": "^3.17.0",
+    "ts-jest": "^24.0.2",
+    "tslint": "^5.16.0",
+    "tslint-config-prettier": "^1.18.0",
+    "tslint-config-standard": "^8.0.1",
+    "typescript": "^3.4.5",
+    "uglify-js": "^3.5.6"
+  }
 }

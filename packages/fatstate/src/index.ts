@@ -1,2 +1,1 @@
-export * from "./fatstate";
-export { IWithState, FunctionPropertyNames, FunctionProperties } from "./types";
+export { Fat } from "./fatstate";
