@@ -4,10 +4,12 @@
   "workspaces": [
     "packages/fatstate",
     "packages/slim-runner",
-    "packages/gridgenerator-math"
+    "packages/gridgenerator-data",
+    "packages/gridgenerator-engine"
   ],
   "scripts": {
-    "precommit": "lint-staged"
+    "precommit": "lint-staged",
+    "typecheck": "node_modules/.bin/tsc -p ."
   },
   "husky": {
     "hooks": {

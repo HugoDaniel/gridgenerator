@@ -3,4 +3,3 @@
 // tslint:disable:member-access
 import { should } from "fuse-test-runner";
 import { GridGenerator } from "./index";
-
