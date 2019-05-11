@@ -14,6 +14,8 @@ export { Shape, ShapeFillSetId } from "./state/shape/shape";
 export { UI, UIState } from "./state/ui";
 export { UIShapeEditor, UIShapeEditorMode } from "./state/ui/shape_editor";
 export { UIFillEditor, UIFillEditorMode } from "./state/ui/fill_editor";
+export { UICursor } from "./state/ui/cursor";
+export { ExportEditorMode } from "./state/ui/export";
 export {
   UIExportEditor,
   ExportAt,

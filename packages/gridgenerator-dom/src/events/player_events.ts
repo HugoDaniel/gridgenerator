@@ -6,8 +6,12 @@ import {
   ProjectAction,
   ProjectLicense,
   State
-} from "../../data";
-import { CanvasContext, PlayerCanvasPainter, Runtime } from "../../engine";
+} from "gridgenerator-data";
+import {
+  CanvasContext,
+  PlayerCanvasPainter,
+  Runtime
+} from "gridgenerator-engine";
 import { downloadFile } from "../common";
 import { Refresher } from "./refresher";
 
@@ -107,7 +111,7 @@ export class PlayerEvents {
           this.state.state.restoreTo(0, s);
           this.paint(this.state.state.current);
           this.updateVersion();
-          this.runtime.playerLoop = setInterval(loop, interval);
+          this.runtime.playerLoop = window.setInterval(loop, interval);
           this.refresher.refreshRuntimeOnly(this.runtime);
         }, this.onTimeTravelError);
       } else {
@@ -116,7 +120,7 @@ export class PlayerEvents {
           this.updateVersion();
           this.paint(this.state.state.current);
           this.refresher.refreshPlayerAndDOM(this.state);
-          this.runtime.playerLoop = setInterval(loop, interval);
+          this.runtime.playerLoop = window.setInterval(loop, interval);
           this.refresher.refreshRuntimeOnly(this.runtime);
         }, this.onTimeTravelError);
       }

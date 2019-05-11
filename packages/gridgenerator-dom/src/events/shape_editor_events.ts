@@ -3,11 +3,11 @@ import {
   FillId,
   RGBColor,
   UIShapeEditorMode,
-  Vector2D
-} from "../../data";
-import { ExportEditorMode } from "../../data/state/ui/export";
-import { Movement, Runtime } from "../../engine";
-import { getEventX, getEventY, IEventHandler } from "../common";
+  Vector2D,
+  ExportEditorMode
+} from "gridgenerator-data";
+import { Movement, Runtime } from "gridgenerator-engine";
+import { IEventHandler } from "../common";
 import { IShapePointAttribs } from "../components/editor/shape/point";
 import { Refresher } from "./refresher";
 

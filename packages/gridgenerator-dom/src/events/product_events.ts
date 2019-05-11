@@ -8,10 +8,13 @@ import {
   TShirtColor,
   TShirtSize,
   TShirtType
-} from "../../data";
-import { Net, Runtime } from "../../engine";
-import { Movement } from "../../engine/runtime/movement";
-import { IProductMovementDetail } from "../../engine/runtime/movement/product";
+} from "gridgenerator-data";
+import {
+  IProductMovementDetail,
+  Movement,
+  Net,
+  Runtime
+} from "gridgenerator-engine";
 import { IEventHandler } from "../common";
 import { Refresher } from "./refresher";
 

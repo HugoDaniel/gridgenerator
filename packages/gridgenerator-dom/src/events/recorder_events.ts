@@ -1,5 +1,5 @@
-import { FatState } from "../../data";
-import { ColorCanvasPainter, Runtime } from "../../engine";
+import { FatState } from "gridgenerator-data";
+import { ColorCanvasPainter, Runtime } from "gridgenerator-engine";
 import { Refresher } from "./refresher";
 
 export class RecorderEvents {

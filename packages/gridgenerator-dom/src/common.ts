@@ -87,7 +87,7 @@ export function loadScript(src, id?: string): Promise<{}> {
   tag.src = src;
   const p = new Promise((resolve, reject) => {
     tag.onload = () => {
-      setTimeout(1750, resolve);
+      setTimeout(resolve, 1750);
     };
     tag.onerror = reject;
   });

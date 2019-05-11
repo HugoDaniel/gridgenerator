@@ -7,8 +7,8 @@ import {
   Project,
   ProjectMap,
   State
-} from "../../data";
-import { Runtime } from "../../engine";
+} from "gridgenerator-data";
+import { Runtime } from "gridgenerator-engine";
 import { UpdateAction } from "../common";
 
 export class Refresher {

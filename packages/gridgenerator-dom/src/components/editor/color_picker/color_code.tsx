@@ -1,7 +1,6 @@
 import { Component, linkEvent } from "inferno";
 import { RGBColor } from "gridgenerator-data";
 import { Button } from "../../base/buttons";
-import { Input } from "../../base/form";
 
 export interface IColorCodeProps {
   className?: string;

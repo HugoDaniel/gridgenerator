@@ -3,15 +3,14 @@ import {
   UIFillEditorColorMode,
   UIFillEditorMode,
   WheelMode
-} from "../../data";
+} from "gridgenerator-data";
 import {
   CanvasContext,
   ColorCanvasPainter,
   Runtime,
   toColorPickerCanvasCtx
-} from "../../engine";
-import { Movement } from "../../engine/runtime/movement";
-import { IColorCanvasMovementDetail } from "../../engine/runtime/movement/color_canvas";
+} from "gridgenerator-engine";
+import { Movement, IColorCanvasMovementDetail } from "gridgenerator-engine";
 import { getEventX, getEventY, IEventHandler } from "../common";
 import { Refresher } from "./refresher";
 
@@ -40,7 +39,7 @@ export class ColorPickerEvents implements IEventHandler {
     this.runtime = rt;
     this.state = s;
     this.refresher = refresher;
-    const f = function() {
+    const f = () => {
       this.refresher.refreshRuntimeOnly(this.runtime);
       return 0;
     };

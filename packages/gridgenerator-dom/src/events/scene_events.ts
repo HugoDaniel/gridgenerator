@@ -1,18 +1,17 @@
 import {
   FatState,
-  GridElement,
   ToolsMenuId,
   Vector2D,
-  Viewport
-} from "../../data";
-import { UICursor } from "../../data/state/ui/cursor";
+  Viewport,
+  UICursor
+} from "gridgenerator-data";
+import {} from "../../";
 import {
-  CanvasContext,
   ClipSpace,
   Runtime,
   ScenePainter,
   WebGLContext
-} from "../../engine";
+} from "gridgenerator-engine";
 import { IEventHandler, UpdateAction } from "../common";
 import { Refresher } from "./refresher";
 

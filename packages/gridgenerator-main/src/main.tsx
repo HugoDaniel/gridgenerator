@@ -101,15 +101,13 @@ class Main {
       this.player,
       refresher
     );
-    /*
     // @ts-ignore
     this.debug = new Debug(
       process.env.NODE_ENV === "development",
       this.runtime,
       this.events,
       this.state
-	);
-	*/
+    );
     // ^ false when building for production
   }
   public setMeander(m: Meander): void {
@@ -137,13 +135,17 @@ class Main {
   public setState(s: FatState): void {
     this.state = s;
     this.events.updateState(this.state);
-    this.debug.fat = s;
-    this.debug.events = this.events;
+    if (this.debug) {
+      this.debug.fat = s;
+      this.debug.events = this.events;
+    }
   }
   public setStateAndDOM(s: FatState, action?: UpdateAction): void {
     this.setState(s);
-    this.debug.fat = s;
-    this.debug.events = this.events;
+    if (this.debug) {
+      this.debug.fat = s;
+      this.debug.events = this.events;
+    }
     this.updateDOM(action || UpdateAction.All);
   }
   public setProjects(p: ProjectMap): void {
@@ -201,7 +203,7 @@ class Main {
     this.updateDOM(UpdateAction.All);
   }
   public updateDOM(action?: UpdateAction) {
-    this.debug.render();
+    if (this.debug) this.debug.render();
     render(
       <GridGeneratorDOM
         state={this.state.current}

@@ -29,7 +29,7 @@ Sparky.task("config", () => {
     globals: { default: "*" }, // we need to expore index in our bundles
     target: target,
     output: "dist/$name.js",
-    cache: false,
+    cache: !isProduction,
     hash: isProduction,
     transformers: {
       before: [transformInferno({ classwrap: true })]
@@ -80,6 +80,14 @@ Sparky.task("dev", ["clean", "config"], async () => {
     .watch("**")
     .hmr()
     .instructions(">main.tsx");
+  fuse.dev({
+    proxy: {
+      "/auth/google": {
+        target: "http://localhost:3333/",
+        changeOrigin: false
+      }
+    }
+  });
   await fuse.run();
 });
 

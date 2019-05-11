@@ -1,6 +1,6 @@
-import { FatState, Onboarding, OnboardingAt } from "../../data";
-import { Runtime } from "../../engine";
-import { IEventHandler, UpdateAction } from "../common";
+import { FatState, Onboarding } from "gridgenerator-data";
+import { Runtime } from "gridgenerator-engine";
+import { IEventHandler } from "../common";
 import { Refresher } from "./refresher";
 
 export class OnboardingEvents implements IEventHandler {

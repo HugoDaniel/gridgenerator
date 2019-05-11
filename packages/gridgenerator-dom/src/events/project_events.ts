@@ -2,10 +2,9 @@ import {
   FatState,
   Project,
   ProjectMap,
-  State,
   StoredProject
-} from "../../data";
-import { Net, Runtime } from "../../engine";
+} from "gridgenerator-data";
+import { Net, Runtime } from "gridgenerator-engine";
 import { Refresher } from "./refresher";
 
 export class ProjectEvents {

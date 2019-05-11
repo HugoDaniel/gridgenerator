@@ -6,8 +6,8 @@ import {
   ShapeId,
   ToolsMenuId,
   UIState
-} from "../../data";
-import { ColorCanvasPainter, Runtime } from "../../engine";
+} from "gridgenerator-data";
+import { ColorCanvasPainter, Runtime } from "gridgenerator-engine";
 import { IEventHandler } from "../common";
 import { Refresher } from "./refresher";
 

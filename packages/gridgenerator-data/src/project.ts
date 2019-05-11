@@ -1,6 +1,6 @@
 import XXH from "xxhashjs";
 import { FatState, FatStateReviver } from "./fat";
-import { IStateSVGParts, State, StateReviver } from "./state";
+import { State, StateReviver } from "./state";
 
 export enum ProjectLicense {
   CC0 = "CC0",
