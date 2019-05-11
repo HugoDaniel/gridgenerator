@@ -101,13 +101,15 @@ class Main {
       this.player,
       refresher
     );
+    /*
     // @ts-ignore
     this.debug = new Debug(
       process.env.NODE_ENV === "development",
       this.runtime,
       this.events,
       this.state
-    );
+	);
+	*/
     // ^ false when building for production
   }
   public setMeander(m: Meander): void {

@@ -1,4 +1,10 @@
-const { FuseBox, QuantumPlugin, Sparky } = require("fuse-box");
+const {
+  FuseBox,
+  Sparky,
+  CSSPlugin,
+  CopyPlugin,
+  QuantumPlugin
+} = require("fuse-box");
 
 let fuse;
 let isProduction = false;
@@ -8,7 +14,7 @@ let target = "browser@es6";
 
 // bundle name needs to be changed too (as we are making an isolate build and
 // and we need to bundle the API into it
-const baseName = "gridgenerator-engine";
+const baseName = "gridgenerator-dom";
 let bundleName = baseName;
 
 let instructions = "> index.ts";
@@ -21,6 +27,8 @@ Sparky.task("config", () => {
     output: "dist/$name.js",
     cache: false,
     plugins: [
+      CSSPlugin(),
+      CopyPlugin({ files: ["*.svg", "*.png", "countries.json"] }),
       isProduction &&
         QuantumPlugin({
           containedAPI: true,

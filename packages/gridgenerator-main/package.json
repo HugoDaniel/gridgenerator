@@ -41,11 +41,13 @@
   },
   "devDependencies": {
     "@types/jest": "^24.0.12",
+    "dotenv": "^8.0.0",
     "fuse-box": "^3.7.1",
     "jest": "^24.8.0",
     "rimraf": "^2.6.3",
     "terser": "^3.17.0",
     "ts-jest": "^24.0.2",
+    "ts-transform-inferno": "^4.0.2",
     "typescript": "^3.4.5",
     "uglify-js": "^3.5.11"
   }

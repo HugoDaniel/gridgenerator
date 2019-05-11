@@ -1,4 +1,14 @@
-const { FuseBox, QuantumPlugin, Sparky } = require("fuse-box");
+require("dotenv").config();
+const {
+  FuseBox,
+  Sparky,
+  EnvPlugin,
+  CSSPlugin,
+  CopyPlugin,
+  WebIndexPlugin,
+  QuantumPlugin
+} = require("fuse-box");
+const transformInferno = require("ts-transform-inferno").default;
 
 let fuse;
 let isProduction = false;
@@ -8,10 +18,10 @@ let target = "browser@es6";
 
 // bundle name needs to be changed too (as we are making an isolate build and
 // and we need to bundle the API into it
-const baseName = "gridgenerator-engine";
+const baseName = "gridgenerator-main";
 let bundleName = baseName;
 
-let instructions = "> index.ts";
+let instructions = "> main.tsx";
 
 Sparky.task("config", () => {
   fuse = FuseBox.init({
@@ -20,12 +30,32 @@ Sparky.task("config", () => {
     target: target,
     output: "dist/$name.js",
     cache: false,
+    hash: isProduction,
+    transformers: {
+      before: [transformInferno({ classwrap: true })]
+    },
+    sourceMaps: true,
     plugins: [
+      EnvPlugin({
+        PAYPAL_ENV: process.env.PAYPAL_ENV,
+        PAYPAL_CLIENTID: process.env.PAYPAL_CLIENTID,
+        NODE_ENV: isProduction ? "production" : "development",
+        HOST: isProduction
+          ? "https://gridgenerator.com"
+          : "https://localhost:8080"
+      }),
+      CSSPlugin(),
+      CopyPlugin({ files: ["*.svg", "*.png", "countries.json"] }),
+      WebIndexPlugin({
+        title: "Grid Generator",
+        template: "src/app.html"
+      }),
       isProduction &&
         QuantumPlugin({
           containedAPI: true,
           ensureES5: false,
-          uglify: true,
+          uglify: false,
+          treeshake: true,
           bakeApiIntoBundle: bundleName
         })
     ]
@@ -42,13 +72,18 @@ Sparky.task("copy-src", () =>
 );
 Sparky.task("copy-pkg", () => Sparky.src("./package.json").dest("dist/"));
 
-Sparky.task("dev", ["clean"], () => {
+Sparky.task("dev", ["clean", "config"], async () => {
   bundleName = `${baseName}.dev`;
-  // instructions = "> dev.ts";
+  fuse
+    .bundle("client/bundle")
+    .target("browser@esnext")
+    .watch("**")
+    .hmr()
+    .instructions(">main.tsx");
+  await fuse.run();
 });
 
 Sparky.task("dist-min", async () => {
-  //  target = "browser@es5";
   isProduction = true;
   bundleName = `${baseName}.min`;
   await Sparky.resolve("config");
