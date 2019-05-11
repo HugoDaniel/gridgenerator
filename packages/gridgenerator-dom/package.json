@@ -1,0 +1,50 @@
+{
+  "name": "gridgenerator-dom",
+  "version": "1.0.0",
+  "description": "DOM events and components for gridgenerator.com",
+  "main": "dist/index.js",
+  "ts:main": "src/index.ts",
+  "typings": "src/index.ts",
+  "files": [
+    "dist/"
+  ],
+  "scripts": {
+    "test": "node fuse.js test",
+    "dist": "node fuse.js dist"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/HugoDaniel/gridgenerator.git"
+  },
+  "keywords": [
+    "runtime",
+    "engine",
+    "state",
+    "management",
+    "typescript"
+  ],
+  "author": {
+    "name": "Hugo Daniel Henriques Oliveira Gomes",
+    "email": "mail@hugodaniel.pt"
+  },
+  "bugs": {
+    "url": "https://github.com/HugoDaniel/gridgenerator/issues"
+  },
+  "homepage": "https://github.com/HugoDaniel/gridgenerator#readme",
+  "license": "SEE LICENSE IN FILE LICENSE.md",
+  "dependencies": {
+    "gridgenerator-data": "^1.0.0",
+    "gridgenerator-engine": "^1.0.0",
+    "inferno": "^7.1.12"
+  },
+  "devDependencies": {
+    "@types/jest": "^24.0.11",
+    "fuse-box": "^3.7.1",
+    "jest": "^24.7.1",
+    "rimraf": "^2.6.3",
+    "terser": "^3.17.0",
+    "ts-jest": "^24.0.2",
+    "typescript": "^3.4.5",
+    "uglify-js": "^3.5.7"
+  }
+}

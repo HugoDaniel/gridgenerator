@@ -77,3 +77,4 @@ export {
 } from "./cart/product";
 export { getCountry, Country, Countries } from "./meander/country";
 export { Onboarding, OnboardingAt } from "./onboarding";
+export { PatternHit } from "./state/ui/clip_pattern";
