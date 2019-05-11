@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<!-- Generator: Adobe Illustrator 16.0.0, SVG Export Plug-In . SVG Version: 6.00 Build 0)  -->
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
+	 width="44px" height="64px" viewBox="0 0 44 64" style="enable-background:new 0 0 44 64;" xml:space="preserve">
+<g id="Bulb">
+	<g>
+		<path style="fill:#FFD073;" d="M22,0C9.85,0,0,9.551,0,21.333C0,38,12,40,12,48h20c0-8,12-10,12-26.667C44,9.551,34.15,0,22,0z"/>
+	</g>
+</g>
+<g id="Spark">
+	<g>
+		<path style="fill-rule:evenodd;clip-rule:evenodd;fill:#D4A548;" d="M28,20c-2.209,0-4,1.791-4,4h-4c0-2.209-1.791-4-4-4
+			s-4,1.791-4,4s1.791,4,4,4v20h4V28h4v20h4V28c2.209,0,4-1.791,4-4S30.209,20,28,20z"/>
+	</g>
+</g>
+<g id="Head">
+	<g>
+		<ellipse style="fill:#949393;" cx="22" cy="58.014" rx="6" ry="5.986"/>
+	</g>
+</g>
+<g id="Body_2_">
+	<g>
+		<path style="fill-rule:evenodd;clip-rule:evenodd;fill:#B3B3B3;" d="M32,50v-2H12v2c0,1.104,0.896,2,2,2c-1.104,0-2,0.895-2,2
+			c0,1.104,0.896,2,2,2h2c-1.104,0-2,0.895-2,2c0,1.104,0.896,1.999,2,1.999h12c1.104,0,2-0.895,2-1.999c0-1.105-0.896-2-2-2h2
+			c1.104,0,2-0.896,2-2c0-1.105-0.896-2-2-2C31.104,52,32,51.104,32,50z"/>
+	</g>
+</g>
+<g>
+</g>
+<g>
+</g>
+<g>
+</g>
+<g>
+</g>
+<g>
+</g>
+<g>
+</g>
+<g>
+</g>
+<g>
+</g>
+<g>
+</g>
+<g>
+</g>
+<g>
+</g>
+<g>
+</g>
+<g>
+</g>
+<g>
+</g>
+<g>
+</g>
+</svg>

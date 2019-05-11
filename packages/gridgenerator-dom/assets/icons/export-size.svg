@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
+	 width="64px" height="64px" viewBox="0 0 64 64" style="enable-background:new 0 0 64 64;" xml:space="preserve">
+<g id="Margin">
+	<g>
+		<path style="fill-rule:evenodd;clip-rule:evenodd;fill:#CCCCCC;" d="M10,6.002h8V2.001h-8V6.002z M22,6.002h8V2.001h-8V6.002z
+			 M34,6.002h8V2.001h-8V6.002z M52,2.001h-8v4.001h8V2.001z M10,62.001h8v-3.999h-8V62.001z M22,62.001h8v-3.999h-8V62.001z
+			 M34,62.001h8v-3.999h-8V62.001z M46,62.001h8v-3.999h-8V62.001z M2,54.001h4v-7.999H2V54.001z M2,42.002h4v-8.001H2V42.002z
+			 M2,30.002h4v-8.001H2V30.002z M2,18.001h4v-7.999H2V18.001z M58,54.002h4v-8h-4V54.002z M58,42.001h4v-7.999h-4V42.001z
+			 M58,30.002h4v-8.001h-4V30.002z M58,10.002v8h4v-8H58z"/>
+	</g>
+</g>
+<g id="Corners">
+	<g>
+		<path style="fill-rule:evenodd;clip-rule:evenodd;fill:#666666;" d="M0,8h8V0H0V8z M56,0v8h8V0H56z M56,64h8v-8h-8V64z M0,64h8v-8
+			H0V64z"/>
+	</g>
+</g>
+</svg>
