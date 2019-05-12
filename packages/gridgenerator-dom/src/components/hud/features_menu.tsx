@@ -1,3 +1,6 @@
+// @ts-ignore
+import shirt_icon from "../../../assets/icons/shirt.svg";
+
 import { linkEvent } from "inferno";
 import { FeaturesMenuId, Menu } from "gridgenerator-data";
 import { justClick } from "../../common";
@@ -10,6 +13,7 @@ export interface IFeaturesMenuProps {
   onAction: (id: FeaturesMenuId, e: Event) => void;
   gotoLogin: () => void;
 }
+
 export const FeaturesMenu = (props: IFeaturesMenuProps) => (
   <nav className={`FeaturesMenu ${props.className || ""}`} $HasKeyedChildren>
     {props.menu.map((_id, e, isSelected) => {
@@ -26,10 +30,10 @@ export const FeaturesMenu = (props: IFeaturesMenuProps) => (
             isSelected ? "top-bar-selected" : ""
           }`}
         >
-          {e.iconUrl ? (
+          {id === FeaturesMenuId.Product ? (
             <div className="flex items-center justify-center">
               <p className="mr1">{label}</p>
-              <img src={e.iconUrl} className="mb1 w1 h1" />
+              <img src={shirt_icon} className="mb1 w1 h1" />
             </div>
           ) : (
             label

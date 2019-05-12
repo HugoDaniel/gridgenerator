@@ -46,15 +46,18 @@ export class State {
     );
     this._ui = new UI(this._layers.getSelected(), this._shapes, this._fills);
   }
-  public toJSON(): StateReviver {
-    return {
-      version: this.version,
-      fills: this._fills.toJSON(),
-      shapes: this._shapes.toJSON(),
-      viewport: this._viewport.toJSON(),
-      layers: this._layers.toJSON(),
-      ui: this._ui.toJSON()
-    };
+  public static toJSON(s: State): string {
+    return JSON.stringify({
+      version: s.version,
+      fills: s._fills.toJSON(),
+      shapes: s._shapes.toJSON(),
+      viewport: s._viewport.toJSON(),
+      layers: s._layers.toJSON(),
+      ui: s._ui.toJSON()
+    });
+  }
+  public static fromJSON(s: string): State {
+    return this.revive(JSON.parse(s));
   }
   public static revive(r: StateReviver) {
     const result = new State();

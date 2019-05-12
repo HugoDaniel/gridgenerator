@@ -110,9 +110,6 @@ export class GridGeneratorDOM extends Component<IGridGeneratorDOMProps, any> {
     removeMouse(domElem, this.props.events);
     removeTouch(domElem, this.props.events);
   }
-  private selectCursor(props: IGridGeneratorDOMProps, inProj: boolean): string {
-    return props.state.ui.cursorHandler.iconURL();
-  }
   public render() {
     const state: Readonly<State> = this.props.state;
     const project: Project = this.props.projects.current;
@@ -228,7 +225,8 @@ export class GridGeneratorDOM extends Component<IGridGeneratorDOMProps, any> {
       onContext: events.onWebGLInit,
       height: runtime.height,
       width: runtime.width,
-      action: this.props.action
+      action: this.props.action,
+      cursor: state.ui.cursorHandler.cursor
     };
     const inProj =
       this.props.meander.course === MeanderCourse.Project ||
@@ -250,21 +248,13 @@ export class GridGeneratorDOM extends Component<IGridGeneratorDOMProps, any> {
       playerState: this.props.player,
       playerEvents: this.props.events.playerEvents
     };
-    const cursor = this.selectCursor(this.props, inProj);
-    /*
-		<Recorder
-			onRestore={events.recorderEvents.restoreTo}
-			version={this.props.version}
-			maxVersion={this.props.maxVersion}
-		/>
-		*/
     const isLoggedIn =
       this.props.projects.size > 0 &&
       this.props.meander.profile.created &&
       this.props.runtime.token;
     const pattern = state.pattern;
     return (
-      <div style={{ cursor }}>
+      <div>
         <Scene
           {...sceneProps}
           onComponentShouldUpdate={

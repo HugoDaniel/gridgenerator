@@ -1,6 +1,5 @@
 export interface MenuEntryReviver {
   l: string;
-  i: string;
   t: string | null;
   sp: string[];
   s: string;
@@ -8,21 +7,18 @@ export interface MenuEntryReviver {
 }
 export class MenuEntry {
   public readonly label: string;
-  public readonly iconUrl: string;
   public readonly svgPaths: string[];
   public readonly tooltip: string | null;
   public svg: string;
   public rotation: number;
   constructor(
     label: string,
-    iconUrl: string | null = null,
     tooltip: string | null = null,
     svgPaths: string[] = [],
     svg: string = "",
     rotation: number = 0
   ) {
     this.label = label;
-    this.iconUrl = iconUrl || "";
     this.tooltip = tooltip;
     this.svgPaths = svgPaths;
     this.svg = svg;
@@ -31,7 +27,6 @@ export class MenuEntry {
   public toJSON(): MenuEntryReviver {
     return {
       l: this.label,
-      i: this.iconUrl,
       t: this.tooltip,
       sp: this.svgPaths.slice(0),
       s: this.svg,
@@ -39,7 +34,7 @@ export class MenuEntry {
     };
   }
   public static revive(o: MenuEntryReviver) {
-    return new MenuEntry(o.l, o.i, o.t, o.sp, o.s, o.r);
+    return new MenuEntry(o.l, o.t, o.sp, o.s, o.r);
   }
 }
 export interface MenuReviver {

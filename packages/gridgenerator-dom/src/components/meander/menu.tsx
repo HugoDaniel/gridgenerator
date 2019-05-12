@@ -13,7 +13,7 @@ export const MeanderMenu = (props: IMeanderMenuProps<any>) => {
           <a
             className={`f6 f5-l link pointer bg-animate black-80 ${
               isSelected ? "b" : ""
-            } hover-bg-${entry.iconUrl} dib pa3 ph4-l`}
+            } dib pa3 ph4-l`}
             onClick={linkEvent(key, props.onAction)}
           >
             {entry.label}

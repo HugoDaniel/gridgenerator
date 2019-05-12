@@ -1,3 +1,4 @@
+/*
 // @ts-ignore
 import picker_hering_icon from "../../../assets/icons/picker-hering.svg";
 // @ts-ignore
@@ -20,6 +21,7 @@ import tools_paint_icon from "../../../assets/icons/tools-pencil.svg";
 import tools_undo_icon from "../../../assets/icons/tools-undo.svg";
 // @ts-ignore
 import tools_zoom_icon from "../../../assets/icons/tools-zoom.svg";
+*/
 
 import { MenuEntry } from "./menu";
 
@@ -60,13 +62,13 @@ export const enum ToolsMenuId {
   Grid
 }
 export const DefaultToolsMenu: Map<ToolsMenuId, MenuEntry> = new Map([
-  [ToolsMenuId.Undo, new MenuEntry("Undo", tools_undo_icon, "Undo")],
+  [ToolsMenuId.Undo, new MenuEntry("Undo", "Undo")],
   // 	[ ToolsMenuId.Artists, new MenuEntry('Artists', tools_artists_icon) ],
-  [ToolsMenuId.Zoom, new MenuEntry("Zoom", tools_zoom_icon, "Zoom")],
-  [ToolsMenuId.Move, new MenuEntry("Move", tools_move_icon, "Pan/Move Grid")],
-  [ToolsMenuId.Grid, new MenuEntry("Grid", tools_grid_icon, "Pattern")],
-  [ToolsMenuId.Delete, new MenuEntry("Delete", tools_delete_icon, "Eraser")],
-  [ToolsMenuId.Paint, new MenuEntry("Paint", tools_paint_icon, "Draw")]
+  [ToolsMenuId.Zoom, new MenuEntry("Zoom", "Zoom")],
+  [ToolsMenuId.Move, new MenuEntry("Move", "Pan/Move Grid")],
+  [ToolsMenuId.Grid, new MenuEntry("Grid", "Pattern")],
+  [ToolsMenuId.Delete, new MenuEntry("Delete", "Eraser")],
+  [ToolsMenuId.Paint, new MenuEntry("Paint", "Draw")]
 ]);
 
 export enum UIFillEditorColorMode {
@@ -77,13 +79,7 @@ export enum UIFillEditorColorMode {
 }
 
 export const DefaultColorMenu: Map<UIFillEditorColorMode, MenuEntry> = new Map([
-  [
-    UIFillEditorColorMode.Saturation,
-    new MenuEntry("Saturation", picker_saturation_icon)
-  ],
-  [UIFillEditorColorMode.Hering, new MenuEntry("Color", picker_hering_icon)],
-  [
-    UIFillEditorColorMode.Lightness,
-    new MenuEntry("Light", picker_lightness_icon)
-  ]
+  [UIFillEditorColorMode.Saturation, new MenuEntry("Saturation")],
+  [UIFillEditorColorMode.Hering, new MenuEntry("Color")],
+  [UIFillEditorColorMode.Lightness, new MenuEntry("Light")]
 ]);

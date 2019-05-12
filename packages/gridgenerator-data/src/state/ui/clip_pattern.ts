@@ -1,4 +1,4 @@
-import { TilePattern, TilePatternReviver } from "../layer/tile_pattern";
+import { TilePattern } from "../layer/tile_pattern";
 import { Viewport } from "../viewport";
 export const enum PatternHit {
   Inside = "Inside",

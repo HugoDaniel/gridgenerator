@@ -1,10 +1,6 @@
-import { RGBColor } from "./color/rgb";
-import { FillId } from "./fill_map";
 import { Grid, GridType } from "./layer/grid";
-import { GridElement } from "./layer/grid_element";
 import { Layer, LayerReviver, LayerType } from "./layer/layer";
 import { VectorMap } from "./math/set";
-import { Vector2D } from "./math/vector";
 import { ShapeFillSetId } from "./shape/shape";
 import { ShapeId } from "./shape_map";
 

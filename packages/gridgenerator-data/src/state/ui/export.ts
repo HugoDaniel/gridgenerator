@@ -1,5 +1,4 @@
 import { IGridDimension } from "../layer/grid";
-import { resolution } from "../math/aspect";
 export enum ExportAt {
   Image = 1,
   Video,

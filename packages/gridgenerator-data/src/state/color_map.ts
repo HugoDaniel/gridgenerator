@@ -9,7 +9,7 @@ export interface IColorMapReviver {
   editor: IWheelReviver;
   editorSelectedColorId: number | null;
   editorColorIds: number[];
-  editorOriginalColors: RGBColor[];
+  editorOriginalColors: RGBColorReviver[];
 }
 export class ColorMap {
   public colors: Map<ColorId, RGBColor>;
@@ -33,7 +33,7 @@ export class ColorMap {
       editor: this.editor.toJSON(),
       editorSelectedColorId: this.editorSelectedColorId,
       editorColorIds: this.editorColorIds.slice(0),
-      editorOriginalColors: this.editorOriginalColors.slice(0),
+      editorOriginalColors: this.editorOriginalColors.map(c => c.toJSON()),
       colors: [...this.colors.entries()].map(
         ([cid, c]) => [cid, c.toJSON()] as [number, RGBColorReviver]
       )

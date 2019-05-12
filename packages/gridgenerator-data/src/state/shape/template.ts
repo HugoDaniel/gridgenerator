@@ -245,18 +245,10 @@ export class Intersection {
     this.elementB = elemB;
   }
   public toJSON() {
-    return {
-      pt: this.point.toJSON(),
-      a: this.elementA,
-      b: this.elementB
-    };
+    return [this.point.toJSON(), this.elementA, this.elementB];
   }
-  public static revive(o: {
-    pt: { x: number; y: number };
-    a: number;
-    b: number;
-  }) {
-    return new Intersection(Vector2D.revive(o.pt), o.a, o.b);
+  public static revive([pt, a, b]: [[number, number], number, number]) {
+    return new Intersection(Vector2D.revive(pt), a, b);
   }
   public equals(i: Intersection) {
     return (

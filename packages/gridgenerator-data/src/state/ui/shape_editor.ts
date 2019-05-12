@@ -6,9 +6,9 @@ export interface UIShapeEditorReviver {
   act: string;
   cpts: Array<[number, number, any]>;
   spts: Array<[number, number, any]>;
-  apts: Array<{ x: number; y: number }>;
-  ce: { x: number; y: number } | null;
-  oe: { x: number; y: number } | null;
+  apts: Array<number[]>;
+  ce: [number, number] | null;
+  oe: [number, number] | null;
   tp: string;
   tb: string;
   tr: number;

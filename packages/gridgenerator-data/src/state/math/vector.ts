@@ -5,11 +5,11 @@ export class Vector2D {
     this.x = x;
     this.y = y;
   }
-  public toJSON() {
-    return { x: this.x, y: this.y };
+  public toJSON(): [number, number] {
+    return [this.x, this.y];
   }
-  public static revive(v: { x: number; y: number }): Vector2D {
-    return new Vector2D(v.x, v.y);
+  public static revive([x, y]: [number, number]): Vector2D {
+    return new Vector2D(x, y);
   }
   get fst(): number {
     return this.x;

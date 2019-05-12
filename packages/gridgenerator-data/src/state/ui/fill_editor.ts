@@ -5,6 +5,7 @@ import { Shape } from "../shape/shape";
 import { DefaultColorMenu, UIFillEditorColorMode } from "./defaults";
 import { UIFillPath, UIFillPathReviver } from "./fill_path";
 import { Menu, MenuReviver } from "./menu";
+
 export interface UIFillEditorReviver {
   m: number;
   pt: string;

@@ -237,7 +237,6 @@ export class UI {
         new MenuEntry(
           `shape-${shapes[i]}`,
           null,
-          null,
           shapeStrings[i],
           undefined,
           _grid.getShapeRotation(shapes[i])
@@ -261,7 +260,7 @@ export class UI {
     for (const [fillSetId, svg] of svgs.entries()) {
       this.fillsMenu.entries.set(
         fillSetId,
-        new MenuEntry(`fill-${fillSetId}`, null, null, empty, svg, rot)
+        new MenuEntry(`fill-${fillSetId}`, null, empty, svg, rot)
       );
     }
     this.fillsMenu.selected = shape.selectedFillSet;

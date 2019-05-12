@@ -1,9 +1,4 @@
-export interface RGBColorReviver {
-  r: number;
-  g: number;
-  b: number;
-  a: number;
-}
+export type RGBColorReviver = [number, number, number, number];
 export class RGBColor {
   public r: number;
   public g: number;
@@ -16,15 +11,10 @@ export class RGBColor {
     this.a = a;
   }
   public toJSON(): RGBColorReviver {
-    return {
-      r: this.r,
-      g: this.g,
-      b: this.b,
-      a: this.a
-    };
+    return [this.r, this.g, this.b, this.a];
   }
-  public static revive(obj: RGBColorReviver) {
-    return new RGBColor(obj.r, obj.g, obj.b, obj.a);
+  public static revive([r, g, b, a]) {
+    return new RGBColor(r, g, b, a);
   }
   /** Returns an array for the color where each component is between 0.0 and 1.0 */
   public toGL(): number[] {

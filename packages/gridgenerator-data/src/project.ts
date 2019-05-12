@@ -1,5 +1,5 @@
 import XXH from "xxhashjs";
-import { FatState, FatStateReviver } from "./fat";
+import { StateActions, createState } from "./actions";
 import { State, StateReviver } from "./state";
 
 export enum ProjectLicense {
@@ -58,7 +58,7 @@ export interface ProjectReviver {
   legal: ProjectLicense;
   initialState: StateReviver;
   finalState: StateReviver | null;
-  fatState: FatStateReviver;
+  fatState: string;
   isPublished: boolean;
   action: ProjectAction;
   svg: string | null;
@@ -85,7 +85,7 @@ export class Project {
   public legal: ProjectLicense;
   public initialState: State;
   public finalState: State | null;
-  public fatState: FatState;
+  public stateActions: StateActions;
   public isPublished: boolean;
   public action: ProjectAction;
   public svg: string | null;
@@ -100,13 +100,13 @@ export class Project {
     initialState: State,
     action?: ProjectAction,
     license?: ProjectLicense,
-    fat?: FatState
+    stateActions?: StateActions
   ) {
     this.legal = license || ProjectLicense.CC0;
     this.action = action || ProjectAction.Original;
     // deep copy the initial state
     this.initialState = initialState;
-    this.fatState = fat || new FatState(this.initialStateCopy);
+    this.stateActions = stateActions || createState();
     this.isPublished = false;
     this.canChangeLicense = canChangeLicense(this.legal);
     // create the localId
@@ -153,13 +153,10 @@ export class Project {
     };
   }
   get initialStateCopy() {
-    return State.revive(this.initialState.toJSON());
+    return this.stateActions.initialStateCopy;
   }
-  get fatStateCopy() {
-    if (this.fatState) {
-      return FatState.revive(this.fatState.toJSON(), this.initialStateCopy);
-    }
-    return new FatState(this.initialStateCopy);
+  get fatStateCopy(): StateActions {
+    return this.stateActions.deserialize(this.stateActions.serialize());
   }
   set license(s: string) {
     switch (s) {

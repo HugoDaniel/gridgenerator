@@ -2,7 +2,7 @@ import { ColorDefaults } from "./color/defaults";
 import { GridType } from "./layer/grid";
 import { RandomArray } from "./math/random";
 import { Vector2D } from "./math/vector";
-import { Path, PathActionReviver, PathReviver } from "./shape/path";
+import { Path, PathReviver } from "./shape/path";
 import {
   IDupsNeeded,
   IUpdatedShapeCmds,

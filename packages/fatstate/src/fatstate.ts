@@ -1,14 +1,13 @@
 import { Modification } from "./modification";
 import { IWithState, FunctionPropertyNames, FunctionProperties } from "./types";
 
-interface IFatReviver {
-  v: number;
-  m: string[];
-  pT: number;
-  mT: number;
-  s: string;
-  i: string;
-}
+type FatReviver = [
+  number, // version
+  string[], // mods
+  number, // minTime
+  string, // state
+  string // initialState
+];
 
 export class Fat<S, A extends IWithState<S>> {
   private version: number;
@@ -54,6 +53,9 @@ export class Fat<S, A extends IWithState<S>> {
   }
   get mostRecentVersion(): number {
     return this.mods.length;
+  }
+  get initialStateCopy(): S {
+    return this.stateDeserializer(this.initialState);
   }
   public async mod(name: FunctionPropertyNames<A>, args: IArguments) {
     // check the deltaT
@@ -149,21 +151,26 @@ export class Fat<S, A extends IWithState<S>> {
   }
   /** Serializes the current state to a string */
   public serialize(): string {
-    const reviver: IFatReviver = {
-      v: this.version,
-      m: this.mods.map(m => m.serialize()),
-      pT: this.prevTime,
-      mT: this.minTime,
-      s: this.stateSerializer(this.actions.state),
-      i: this.initialState
-    };
+    const reviver: FatReviver = [
+      this.version,
+      this.mods.map(m => m.serialize()),
+      this.minTime,
+      this.stateSerializer(this.actions.state),
+      this.initialState
+    ];
     return JSON.stringify(reviver);
   }
   public deserialize(serialized: string): Fat<S, A> & FunctionProperties<A> {
-    const revived: IFatReviver = JSON.parse(serialized);
-    const state = this.stateDeserializer(revived.s);
+    const [
+      version,
+      serializedMods,
+      minTime,
+      serializedState,
+      initialState
+    ]: FatReviver = JSON.parse(serialized);
+    const state = this.stateDeserializer(serializedState);
     // Parse the mods array
-    const mods = revived.m.map(modification =>
+    const mods = serializedMods.map(modification =>
       Modification.deserialize(modification, this.functionArgsReviver)
     );
     // Our final Fat state:
@@ -175,6 +182,9 @@ export class Fat<S, A extends IWithState<S>> {
     );
     finalFat.mods = mods;
     finalFat.actions.state = state;
+    finalFat.initialState = initialState;
+    finalFat.minTime = minTime;
+    finalFat.version = version;
     return finalFat;
   }
 

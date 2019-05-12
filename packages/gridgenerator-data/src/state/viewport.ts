@@ -1,9 +1,4 @@
-export interface ViewportReviver {
-  l: number;
-  u: number;
-  x: number;
-  y: number;
-}
+export type ViewportReviver = [number, number, number, number];
 export class Viewport {
   public lastSize: number;
   public readonly maxSize: number;
@@ -25,16 +20,11 @@ export class Viewport {
     this.minSize = 16; // size when zoom is at 0.0
   }
   public toJSON(): ViewportReviver {
-    return {
-      l: this.lastSize,
-      u: this.unitSize,
-      x: this._x,
-      y: this._y
-    };
+    return [this.lastSize, this.unitSize, this._x, this._y];
   }
-  public static revive(o: ViewportReviver) {
-    const result = new Viewport(o.u, o.x, o.y);
-    result.lastSize = o.l;
+  public static revive([l, u, x, y]: ViewportReviver) {
+    const result = new Viewport(u, x, y);
+    result.lastSize = l;
     return result;
   }
   get x() {

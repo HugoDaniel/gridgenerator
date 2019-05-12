@@ -334,9 +334,9 @@ class PathShape {
 export interface PathShapeInstanceReviver {
   a: object[];
   r: Array<[number, number, number]>;
-  ce: { x: number; y: number } | null;
-  oe: { x: number; y: number } | null;
-  pts: Array<{ x: number; y: number }>;
+  ce: [number, number] | null;
+  oe: [number, number] | null;
+  pts: Array<[number, number]>;
 }
 class PathShapeInstance {
   public readonly template: Template;

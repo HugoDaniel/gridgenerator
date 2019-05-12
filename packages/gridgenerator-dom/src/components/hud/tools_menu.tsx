@@ -1,3 +1,18 @@
+// @ts-ignore
+import tools_artists_icon from "../../../assets/icons/tools-artists.svg";
+// @ts-ignore
+import tools_delete_icon from "../../../assets/icons/tools-eraser.svg";
+// @ts-ignore
+import tools_grid_icon from "../../../assets/icons/tools-grid.svg";
+// @ts-ignore
+import tools_move_icon from "../../../assets/icons/tools-move.svg";
+// @ts-ignore
+import tools_paint_icon from "../../../assets/icons/tools-pencil.svg";
+// @ts-ignore
+import tools_undo_icon from "../../../assets/icons/tools-undo.svg";
+// @ts-ignore
+import tools_zoom_icon from "../../../assets/icons/tools-zoom.svg";
+
 import { linkEvent } from "inferno";
 import { Menu, ToolsMenuId } from "gridgenerator-data";
 import { justClick } from "../../common";
@@ -22,6 +37,24 @@ export interface IToolsMenuProps {
   isPatternOn: boolean;
 }
 
+function getImgUrl(id: ToolsMenuId): string {
+  switch (id) {
+    case ToolsMenuId.Artists:
+      return tools_artists_icon;
+    case ToolsMenuId.Delete:
+      return tools_delete_icon;
+    case ToolsMenuId.Grid:
+      return tools_grid_icon;
+    case ToolsMenuId.Move:
+      return tools_move_icon;
+    case ToolsMenuId.Paint:
+      return tools_paint_icon;
+    case ToolsMenuId.Undo:
+      return tools_undo_icon;
+    case ToolsMenuId.Zoom:
+      return tools_zoom_icon;
+  }
+}
 export const ToolsMenu = (props: IToolsMenuProps) => (
   <nav
     className={`ToolsMenu ${props.className || ""} ${
@@ -66,7 +99,11 @@ export const ToolsMenu = (props: IToolsMenuProps) => (
               ) : (
                 <div />
               )}
-              <img src={e.iconUrl} alt={`${e.label} tool`} className={"w1"} />
+              <img
+                src={getImgUrl(id)}
+                alt={`${e.label} tool`}
+                className={"w1"}
+              />
             </a>
           );
         }
