@@ -1,14 +1,10 @@
 export class Country {
-  public readonly name: string;
-  public readonly alpha2: string;
-  public readonly alpha3: string;
-  public readonly code: number;
-  constructor(name, alpha2, alpha3, code) {
-    this.name = name;
-    this.alpha2 = alpha2;
-    this.alpha3 = alpha3;
-    this.code = code;
-  }
+  constructor(
+    readonly name: string,
+    readonly alpha2: string,
+    readonly alpha3: string,
+    readonly code: number
+  ) {}
 }
 export const Countries = [
   new Country("Select Country", "-1", "NIL", -1),
@@ -262,7 +258,7 @@ export const Countries = [
   new Country("Zambia", "ZM", "ZMB", 894),
   new Country("Zimbabwe", "ZW", "ZWE", 716)
 ];
-export function getCountry(code) {
+export function getCountry(code: number) {
   for (let i = 0; i < Countries.length; i++) {
     const c = Countries[i];
     if (c.code === code) {

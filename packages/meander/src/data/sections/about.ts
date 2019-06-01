@@ -1,4 +1,4 @@
-import { Menu, MenuEntry } from "../state/ui/menu";
+import { Menu, MenuEntry } from "./node_modules/gridgenerator-data/src/state/ui/menu";
 export const enum AboutMenuId {
   GridGenerator = "gridgenerator",
   Contact = "contact"

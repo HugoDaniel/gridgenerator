@@ -1,7 +1,7 @@
 {
-  "name": "fatstate",
-  "version": "1.1.3",
-  "description": "A Fat Node implementation for pure state. Easy time travel through your state. ",
+  "name": "meander",
+  "version": "1.0.0",
+  "description": "Manages all pages not related to the web app tool you are building. Useful for Project management and the basic app menu.",
   "main": "dist/index.js",
   "ts:main": "src/index.ts",
   "typings": "src/index.ts",
@@ -39,20 +39,18 @@
   "license": "SEE LICENSE IN FILE LICENSE.md",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/HugoDaniel/fatstate.git"
+    "url": "git+https://github.com/HugoDaniel/gridgenerator.git"
   },
   "keywords": [
-    "state",
-    "management",
-    "time-travel",
-    "travel",
-    "time",
-    "typescript"
+    "project",
+    "about",
+    "pages",
+    "management"
   ],
   "bugs": {
-    "url": "https://github.com/HugoDaniel/fatstate/issues"
+    "url": "https://github.com/HugoDaniel/gridgenerator/issues"
   },
-  "homepage": "https://github.com/HugoDaniel/fatstate#readme",
+  "homepage": "https://github.com/HugoDaniel/gridgenerator#readme",
   "dependencies": {},
   "devDependencies": {
     "@types/jest": "^24.0.13",

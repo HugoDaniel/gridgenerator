@@ -36,13 +36,13 @@
     "xxhashjs": "^0.2.2"
   },
   "devDependencies": {
-    "@types/jest": "^24.0.11",
+    "@types/jest": "^24.0.13",
     "fuse-box": "^3.7.1",
-    "jest": "^24.7.1",
+    "jest": "^24.8.0",
     "rimraf": "^2.6.3",
     "terser": "^3.17.0",
     "ts-jest": "^24.0.2",
     "typescript": "^3.4.5",
-    "uglify-js": "^3.5.7"
+    "uglify-js": "^3.5.13"
   }
 }

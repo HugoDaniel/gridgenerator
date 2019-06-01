@@ -30,9 +30,9 @@
     ]
   },
   "devDependencies": {
-    "husky": "^2.2.0",
-    "lint-staged": "^8.1.6",
-    "prettier": "^1.17.0",
+    "husky": "^2.3.0",
+    "lint-staged": "^8.1.7",
+    "prettier": "^1.17.1",
     "prettier-tslint": "^0.4.2",
     "tslint": "^5.16.0",
     "tslint-config-prettier": "^1.18.0",

@@ -1,7 +1,3 @@
-import XXH from "xxhashjs";
-import { StateActions, createState } from "./actions";
-import { State, StateReviver } from "./state";
-
 export enum ProjectLicense {
   CC0 = "CC0",
   BY = "BY",
@@ -37,9 +33,9 @@ export interface StoredProject {
   localId: number;
   description: string | null;
   legal: ProjectLicense;
-  initialState: string; // StateReviver JSON
-  finalState: string; // ^
-  fatState: string; // ^
+  initialState: string;
+  finalState: string;
+  state: string;
   isPublished: boolean;
   action: ProjectAction;
   svg: string;
@@ -56,9 +52,9 @@ export interface ProjectReviver {
   localId: number;
   description: string | null;
   legal: ProjectLicense;
-  initialState: StateReviver;
-  finalState: StateReviver | null;
-  fatState: string;
+  initialState: string;
+  finalState: string | null;
+  state: string;
   isPublished: boolean;
   action: ProjectAction;
   svg: string | null;
@@ -75,17 +71,28 @@ export interface IProjectExport {
   fatState: string; // FatStateReviver JSON
   svg: string | null;
   svgViewBox: number[] | null;
-  hash: number;
+  hash: string;
 }
-export class Project {
+interface ProjectState<S> {
+  createSVG: () => { svg: string; viewbox: [number, number, number, number] };
+  copy: () => S;
+  serialize: () => string;
+}
+interface ProjectActions<A> {
+  copy: () => A;
+  createSVG: () => { svg: string; viewbox: [number, number, number, number] };
+  getHash: () => Promise<string>;
+  serialize: () => string;
+}
+export class Project<S extends ProjectState<S>, A extends ProjectActions<A>> {
   public id: number | null;
   public localId: number; // used to save project in localStorage
   public title: string | null;
   public description: string | null;
   public legal: ProjectLicense;
-  public initialState: State;
-  public finalState: State | null;
-  public stateActions: StateActions;
+  public initialState: S;
+  public state: A;
+  public finalState: S | null;
   public isPublished: boolean;
   public action: ProjectAction;
   public svg: string | null;
@@ -97,24 +104,24 @@ export class Project {
   public parentPath: string | null;
   public readonly canChangeLicense: boolean;
   constructor(
-    initialState: State,
-    action?: ProjectAction,
-    license?: ProjectLicense,
-    stateActions?: StateActions
+    initialState: S,
+    stateActions: A,
+    action: ProjectAction = ProjectAction.Original,
+    license: ProjectLicense = ProjectLicense.CC0
   ) {
-    this.legal = license || ProjectLicense.CC0;
-    this.action = action || ProjectAction.Original;
+    this.legal = license;
+    this.action = action;
     // deep copy the initial state
     this.initialState = initialState;
-    this.stateActions = stateActions || createState();
+    this.state = stateActions;
     this.isPublished = false;
     this.canChangeLicense = canChangeLicense(this.legal);
     // create the localId
     let localId = 0;
     let hasItem: string | null = null;
     do {
-      localId = Math.floor(Math.random() * 16777216);
-      hasItem = localStorage.getItem(localId + "");
+      localId = Math.floor(Math.random() * Math.pow(2, 24));
+      hasItem = localStorage.getItem(`${localId}`);
     } while (hasItem !== null);
     this.localId = localId;
   }
@@ -140,7 +147,7 @@ export class Project {
       legal: this.legal,
       initialState: "",
       finalState: "",
-      fatState: "",
+      state: "",
       isPublished: this.isPublished,
       action: this.action,
       svg: this.svg,
@@ -151,12 +158,6 @@ export class Project {
       parentId: this.parentId,
       parentPath: this.parentPath
     };
-  }
-  get initialStateCopy() {
-    return this.stateActions.initialStateCopy;
-  }
-  get fatStateCopy(): StateActions {
-    return this.stateActions.deserialize(this.stateActions.serialize());
   }
   set license(s: string) {
     switch (s) {
@@ -193,16 +194,19 @@ export class Project {
     this.svgViewBox = viewbox;
     this.svg = svg;
   }
-  public toJSON() {
+  public toJSON(
+    serializeState: (state: S) => string,
+    serializeActions: (actions: A) => string
+  ) {
     return {
       id: this.id,
       title: this.title,
       localId: this.localId,
       description: this.description,
       legal: this.legal,
-      initialState: this.initialState.toJSON(),
-      finalState: this.finalState ? this.finalState.toJSON() : null,
-      fatState: this.fatState ? this.fatState.toJSON() : null,
+      initialState: serializeState(this.initialState),
+      finalState: this.finalState ? serializeState(this.finalState) : null,
+      state: serializeActions(this.state),
       isPublished: this.isPublished,
       action: this.action,
       svg: this.svg,
@@ -214,23 +218,40 @@ export class Project {
       parentPath: this.parentPath
     };
   }
-  public static netRevive(o) {
-    o.finalState = JSON.parse(o.finalState);
-    o.initialState = JSON.parse(o.initialState);
-    o.fatState = JSON.parse(o.fatState);
-    return this.revive(o);
+  public static netRevive<
+    S extends ProjectState<S>,
+    A extends ProjectActions<A>
+  >(
+    o: StoredProject,
+    actions: A,
+    parseState: (s: string) => S,
+    parseActions: (s: string) => A
+  ) {
+    const result: ProjectReviver = {
+      ...o,
+      finalState: JSON.parse(o.finalState),
+      initialState: JSON.parse(o.initialState)
+    };
+    return this.revive(result, actions, parseState, parseActions);
   }
-  public static revive(o: ProjectReviver) {
-    const result = new Project(State.revive(o.initialState), o.action, o.legal);
+  public static revive<S extends ProjectState<S>, A extends ProjectActions<A>>(
+    o: ProjectReviver,
+    actions: A,
+    parseState: (s: string) => S,
+    parseActions: (s: string) => A
+  ) {
+    const result = new Project(
+      parseState(o.initialState),
+      actions,
+      o.action,
+      o.legal
+    );
     result.id = o.id;
     result.title = o.title;
     result.localId = o.localId;
     result.description = o.description;
-    result.finalState = o.finalState ? State.revive(o.finalState) : null;
-    result.fatState = FatState.revive(
-      o.fatState,
-      result.finalState || result.initialState
-    );
+    result.finalState = o.finalState ? parseState(o.finalState) : null;
+    result.state = parseActions(o.state);
     result.isPublished = o.isPublished;
     result.svg = o.svg;
     result.svgViewBox = o.svgViewBox;
@@ -242,17 +263,20 @@ export class Project {
     return result;
   }
 }
-export class ProjectMap {
+export class ProjectMap<
+  S extends ProjectState<S>,
+  A extends ProjectActions<A>
+> {
   public projects: Map<number, StoredProject>;
-  public current: Project;
-  constructor() {
+  public current: Project<S, A>;
+  constructor(initialState: S, stateActions: A) {
     this.projects = new Map();
-    this.current = new Project(new State());
+    this.current = new Project(initialState, stateActions);
   }
   public get(id: number): StoredProject | undefined {
     return this.projects.get(id);
   }
-  public refreshProjects(projs: StoredProject[]): ProjectMap {
+  public refreshProjects(projs: StoredProject[]): ProjectMap<S, A> {
     for (let i = 0; i < projs.length; i++) {
       const p = projs[i];
       if (p.id) {
@@ -263,9 +287,10 @@ export class ProjectMap {
   }
   /**
    * Sets the current project as a variation of itself (an update with its previous self as parent)
-   * Assumes the current project is already published and present on the map (it destructively changes it)
+   * Assumes the current project is already published and present on the map of stored projects
+   * (it destructively changes it)
    */
-  public closeCurrent() {
+  public finishProject() {
     const parentId = this.current.id;
     this.current.publishedAt = null;
     this.current.action = ProjectAction.Update;
@@ -274,37 +299,34 @@ export class ProjectMap {
     this.current.isPublished = false;
   }
   public prepareToPlay(
-    state: Readonly<State>,
-    fat: FatState
-  ): Promise<Project> {
+    state: Readonly<S>,
+    stateActions: A
+  ): Promise<Project<S, A>> {
     return new Promise((resolve, reject) => {
-      if (this.current) {
-        const dup = new Project(
-          State.revive(this.current.initialState.toJSON())
-        );
-        dup.finalState = State.revive(state.toJSON());
-        dup.fatState = FatState.revive(fat.toJSON(), dup.finalState);
-        dup.createSVG();
-        resolve(dup);
-      } else {
+      if (!this.current) {
         reject("No current project");
       }
+      const dup = new Project(this.current.initialState.copy(), stateActions);
+      dup.finalState = state.copy();
+      dup.state = stateActions.copy();
+      dup.createSVG();
+      resolve(dup);
     });
   }
   public prepareToPublish(
-    state: State,
-    fat: FatState,
+    state: S,
+    actions: A,
     title: string,
     desc: string | null,
     license: string
   ) {
-    return new Promise((resolve, reject) => {
+    return new Promise(resolve => {
       // Updates current project with:
       const proj = this.current;
       // set the final state
       proj.finalState = state; // full copy
       // set the fat state
-      proj.fatState = FatState.revive(fat.toJSON(), proj.finalState);
+      proj.state = actions.copy();
       // set the title
       proj.title = title;
       // set the description
@@ -317,27 +339,15 @@ export class ProjectMap {
       resolve(proj);
     });
   }
-  public getHash(): Promise<number> {
-    return new Promise((resolve, reject) => {
-      const c = this.current;
-      const { svg } = c.fatState.current.createSVG();
-      let h;
-      const str = XXH.h32(svg, 0xbeef).toString(10);
-      h = Math.floor(parseInt(str, 10) / 2);
-      console.log("GOT H", str, h);
-      // TODO: is NaN show error
-      resolve(h);
-    });
-  }
   public exportCurrent(): Promise<IProjectExport> {
     return new Promise((resolve, reject) => {
       const c = this.current;
-      const { svg, viewbox } = c.fatState.current.createSVG();
-      this.getHash().then(hash => {
+      const { svg, viewbox } = c.state.createSVG();
+      c.state.getHash().then(hash => {
         const exported: IProjectExport = {
           id: c.id,
-          initialState: JSON.stringify(c.initialState.toJSON()),
-          fatState: JSON.stringify(c.fatState.toJSON()),
+          initialState: c.initialState.serialize(),
+          fatState: c.state.serialize(),
           svg,
           svgViewBox: viewbox,
           hash

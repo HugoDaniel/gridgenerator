@@ -1,10 +1,10 @@
-import { MeanderAbout } from "./meander/about";
-import { Collective } from "./meander/collective";
-import { MeanderLogin } from "./meander/login";
-import { MeanderProfile } from "./meander/profile";
-import { MeanderRecover } from "./meander/recover";
-import { MeanderVerify } from "./meander/verify";
-import { MeanderView } from "./meander/view";
+import { MeanderAbout } from "./sections/about";
+import { Collective } from "./sections/collective";
+import { MeanderLogin } from "./sections/login";
+import { MeanderProfile } from "./sections/profile";
+import { MeanderRecover } from "./sections/recover";
+import { MeanderVerify } from "./sections/verify";
+import { MeanderView } from "./sections/view";
 export enum MeanderCourse {
   Project = 100,
   Login,
