@@ -42,14 +42,14 @@ Sparky.task("copy-src", () =>
 Sparky.task("copy-pkg", () => Sparky.src("./package.json").dest("dist/"));
 
 Sparky.task("dev", ["clean"], () => {
-  bundleName = "fatstate.dev";
+  bundleName = `${bundleName}.dev`;
   // instructions = "> dev.ts";
 });
 
 Sparky.task("dist-min", async () => {
   //  target = "browser@es5";
   isProduction = true;
-  bundleName = "fatstate.min";
+  bundleName = `${bundleName}.min`;
   await Sparky.resolve("config");
   await fuse.run();
 });

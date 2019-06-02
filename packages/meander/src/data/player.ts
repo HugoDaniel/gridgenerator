@@ -1,8 +1,10 @@
-import { FatState } from "./fat";
-import { Project } from "./project";
+import { Project, ProjectActions, ProjectState } from "./project";
 
-export class PlayerState {
-  public state: FatState;
+export class PlayerState<
+  A extends ProjectActions<A>,
+  S extends ProjectState<S>
+> {
+  public state: A;
   public thumbnailSvg: string;
   public thumbnailSvgViewBox: number[];
   public currentViewBox: number[];
@@ -13,14 +15,13 @@ export class PlayerState {
   public canvasHeight: number;
   public finalVersion: number;
   public title: string;
-  public readonly proj: Project;
-  constructor(proj: Project) {
+  public readonly proj: Project<S, A>;
+  constructor(proj: Project<S, A>) {
     if (!proj.svg || !proj.svgViewBox) {
       console.log("NO PLAYER STATE");
       throw new Error("Cannot create player state");
     }
-    console.log("PLAYER STATE");
-    this.state = proj.fatState;
+    this.state = proj.state;
     this.thumbnailSvg = proj.svg;
     this.isPlaying = false;
     this.isAtStart = false;

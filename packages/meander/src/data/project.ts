@@ -67,22 +67,20 @@ export interface ProjectReviver {
 }
 export interface IProjectExport {
   id: number | null;
-  initialState: string; // StateReviver JSON
-  fatState: string; // FatStateReviver JSON
+  initialState: string; // typically StateReviver JSON
+  actions: string; // typically FatStateReviver JSON
   svg: string | null;
   svgViewBox: number[] | null;
   hash: string;
 }
-interface ProjectState<S> {
+export interface ProjectState<S> {
   createSVG: () => { svg: string; viewbox: [number, number, number, number] };
   copy: () => S;
   serialize: () => string;
 }
-interface ProjectActions<A> {
-  copy: () => A;
-  createSVG: () => { svg: string; viewbox: [number, number, number, number] };
+export interface ProjectActions<A> extends ProjectState<A> {
   getHash: () => Promise<string>;
-  serialize: () => string;
+  maxVersion: number;
 }
 export class Project<S extends ProjectState<S>, A extends ProjectActions<A>> {
   public id: number | null;
@@ -347,7 +345,7 @@ export class ProjectMap<
         const exported: IProjectExport = {
           id: c.id,
           initialState: c.initialState.serialize(),
-          fatState: c.state.serialize(),
+          actions: c.state.serialize(),
           svg,
           svgViewBox: viewbox,
           hash
