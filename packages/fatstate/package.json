@@ -54,21 +54,5 @@
   },
   "homepage": "https://github.com/HugoDaniel/fatstate#readme",
   "dependencies": {},
-  "devDependencies": {
-    "@types/jest": "^24.0.13",
-    "fuse-box": "^3.7.1",
-    "husky": "^2.3.0",
-    "jest": "^24.8.0",
-    "lint-staged": "^8.1.7",
-    "prettier": "^1.17.1",
-    "prettier-tslint": "^0.4.2",
-    "rimraf": "^2.6.3",
-    "terser": "^3.17.0",
-    "ts-jest": "^24.0.2",
-    "tslint": "^5.16.0",
-    "tslint-config-prettier": "^1.18.0",
-    "tslint-config-standard": "^8.0.1",
-    "typescript": "^3.4.5",
-    "uglify-js": "^3.5.13"
-  }
+  "devDependencies": {}
 }
