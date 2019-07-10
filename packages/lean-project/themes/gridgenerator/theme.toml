@@ -1,0 +1,19 @@
+[extra]
+name = "Grid Generator"
+description = "The theme used by Grid Generators"
+license = "EUPL"
+homepage = "https://github.com/HugoDaniel/gridgenerator"
+demo = "https://gridgenerator.com"
+min_version = "1.0.0"
+# CSS classes to apply throughout the code
+[extra.classes]
+section = 'overflow-auto h-100 tc'
+paragraph = 'f6 pa3 measure lh-copy tj'
+text = 'f6 fs-normal'
+title = 'mt2 mb0 baskerville i fw1 f1'
+subtitle = 'mt3 mb0 f6 fw4 ttu tracked'
+link = 'link pointer'
+
+[author]
+name = "Hugo Daniel"
+homepage = "https://hugodaniel.pt"

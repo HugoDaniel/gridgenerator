@@ -1,0 +1,21 @@
+# The URL the site will be built for
+base_url = "https://lean-project.com"
+
+# Whether to automatically compile all Sass files in the sass directory
+compile_sass = false
+
+# Whether to do syntax highlighting
+# Theme can be customised by setting the `highlight_theme` variable to a theme supported by Zola
+highlight_code = false
+
+# Whether to build a search index to be used later on by a JavaScript library
+build_search_index = false
+
+theme = "gridgenerator"
+
+
+[extra]
+title = "Grid Generator"
+description = "A painting web app. Create grid based art. Do amazing logos, patterns and shapes. You can even do pixel art. Try it!"
+keywords = "maker,logo maker, pattern maker, icon maker, pixel art, facebook cover maker, tool"
+author = "Hugo Daniel"

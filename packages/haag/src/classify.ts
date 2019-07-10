@@ -3,7 +3,6 @@ export function addClasses(
   dom: Document = document
 ) {
   for (const [query, classNames] of classified.entries()) {
-    console.log("ADDIONG", query, classNames, dom.querySelectorAll(query));
     dom
       .querySelectorAll(query)
       .forEach(elem => elem.classList.add(...classNames));

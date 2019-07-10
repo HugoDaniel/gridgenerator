@@ -1,0 +1,24 @@
+{% macro class(value='') %}
+class="{{ classes[value] }}"
+{% endmacro %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <title>{{ page_title }}</title>
+</head>
+
+<body>
+
+  {% for feature in features %}
+    <div class="module">
+      <h3 {{ class('subtitle') }}>{{ feature.name }}</h3>
+      <p>{{ feature.description }}</p>
+    </div>
+  {% endfor %}
+
+</body>
+
+</html>
+

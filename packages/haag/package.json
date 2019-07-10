@@ -1,7 +1,7 @@
 {
-  "name": "meander",
+  "name": "HaaG",
   "version": "1.0.0",
-  "description": "Manages all pages not related to the web app tool you are building. Useful for Project management and the basic app menu.",
+  "description": "",
   "main": "dist/index.js",
   "ts:main": "src/index.ts",
   "typings": "src/index.ts",

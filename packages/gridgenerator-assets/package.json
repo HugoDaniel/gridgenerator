@@ -1,7 +1,7 @@
 {
-  "name": "meander",
+  "name": "gridgenerator-assets",
   "version": "1.0.0",
-  "description": "Manages all pages not related to the web app tool you are building. Useful for Project management and the basic app menu.",
+  "description": "The static files for gridgenerator",
   "main": "dist/index.js",
   "ts:main": "src/index.ts",
   "typings": "src/index.ts",
@@ -9,7 +9,7 @@
     "dist/"
   ],
   "scripts": {
-    "start": "ts-node -T fuse",
+    "start": "node fuse.js",
     "test": "node_modules/.bin/jest",
     "dist": "node fuse.js dist",
     "clean": "node fuse.js clean",
@@ -39,21 +39,36 @@
   "license": "SEE LICENSE IN FILE LICENSE.md",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/HugoDaniel/gridgenerator.git"
+    "url": "git+https://github.com/HugoDaniel/fatstate.git"
   },
   "keywords": [
-    "project",
-    "about",
-    "pages",
-    "management"
+    "state",
+    "management",
+    "time-travel",
+    "travel",
+    "time",
+    "typescript"
   ],
   "bugs": {
-    "url": "https://github.com/HugoDaniel/gridgenerator/issues"
+    "url": "https://github.com/HugoDaniel/fatstate/issues"
   },
-  "homepage": "https://github.com/HugoDaniel/gridgenerator#readme",
-  "dependencies": {
-  },
+  "homepage": "https://github.com/HugoDaniel/fatstate#readme",
+  "dependencies": {},
   "devDependencies": {
-    "nunjucks": "^3.2.0"
+    "@types/jest": "^24.0.11",
+    "fuse-box": "^3.7.1",
+    "husky": "^2.0.0",
+    "jest": "^24.7.1",
+    "lint-staged": "^8.1.5",
+    "prettier": "^1.17.0",
+    "prettier-tslint": "^0.4.2",
+    "rimraf": "^2.6.3",
+    "terser": "^3.17.0",
+    "ts-jest": "^24.0.2",
+    "tslint": "^5.16.0",
+    "tslint-config-prettier": "^1.18.0",
+    "tslint-config-standard": "^8.0.1",
+    "typescript": "^3.4.5",
+    "uglify-js": "^3.5.7"
   }
 }
