@@ -12,24 +12,7 @@
     "packages/gridgenerator-main"
   ],
   "scripts": {
-    "precommit": "lint-staged",
     "typecheck": "node_modules/.bin/tsc -p ."
-  },
-  "husky": {
-    "hooks": {
-      "pre-commit": "lint-staged"
-    }
-  },
-  "lint-staged": {
-    "*.{js,json,css,md}": [
-      "prettier --write",
-      "git add"
-    ],
-    "*.ts": [
-      "prettier --write",
-      "tslint --fix",
-      "git add"
-    ]
   },
   "devDependencies": {
     "@types/jest": "^24.0.13",
