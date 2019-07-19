@@ -1,0 +1,31 @@
+
+{% import "close-btn.njk" as btn %}
+{% set header = "bg-white bb b--light-gray flex justify-center" %}
+{% set headertitle = "f3 f2-ns tc-ns title truncate" %}
+{% set meandercontent = "" %}
+{% set section = "overflow-auto h-100 tc" %}
+{% set text = "f6 fs-normal" %}
+{% set ttitle = "mt2 mb0 baskerville i fw1 f1" %}
+{% set subtitle = "mt3 mb0 f6 fw4 ttu tracked" %}
+{% set meanderMenu = "bg-white black-80 avenir f6 f5-l bb b--light-gray flex justify-center" %}
+{% set meanderMenuEntry = "f6 f5-l link pointer bg-animate black-80 pa3 ph4-l" %}
+
+<section>
+    <header class="{{header}}">
+			<h1 class="{{headertitle}}">
+				{% block meandertitle %}Title{% endblock %}
+			</h1>
+			{{ btn.close('w2 h2', false, true) }}
+    </header>
+		<nav class="{{meanderMenu}}">
+			<a class="{{meanderMenuEntry}}">Entry 1</a>
+			<a class="{{meanderMenuEntry}}">Entry 2</a>
+			<a class="{{meanderMenuEntry}}">Entry 3</a>
+		</nav>
+		{% block meandercontent %}
+		<div class="flex flex-column items-center justify-center w-100 h-100">
+			<p class="f5 ttu center">Nothing here yet</p>
+			<p>:'(</p>
+		</div>		
+		{% endblock %}
+</section>

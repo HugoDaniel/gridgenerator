@@ -52,6 +52,8 @@
   },
   "homepage": "https://github.com/HugoDaniel/gridgenerator#readme",
   "dependencies": {
+    "@types/nunjucks": "^3.1.1",
+    "nunjucks-watch": "^0.0.16"
   },
   "devDependencies": {
     "nunjucks": "^3.2.0"

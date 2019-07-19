@@ -3,47 +3,44 @@
 	<head>
 		<meta charset="utf-8">
 		<title>Grid Generator</title>
-		<meta name="description" content="A painting web app. Create grid based art. Do amazing logos, patterns and shapes. You can even do pixel art. Try it!">
-		<meta name="keywords" content="maker,logo maker, pattern maker, icon maker, pixel art, facebook cover maker, tool">
-		<meta name="author" content="Hugo Daniel">
-		<meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1">
+		{% block metatags %}
+			<meta name="description" content="A painting web app. Create grid based art. Do amazing logos, patterns and shapes. You can even do pixel art. Try it!">
+			<meta name="keywords" content="maker,logo maker, pattern maker, icon maker, pixel art, facebook cover maker, tool">
+			<meta name="author" content="Hugo Daniel">
+			<meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1">
+		{% endblock %}
 		<style>
-			{% include "template/styles/tachyons.njk" %}
+			{% include "styles/tachyons.css" %}
+		</style>
+		<style>
+			{% include "styles/basecss.css" %}
 		</style>
 	</head>
 	<body>
 		<div id="app" class="no-select transition-blur blur-6">
-		{% block app-html %}
+		{% block app %}
 		{% endblock %}
 		</div>
-		<div id="meander">
-		
+		<div id="meander" class="fixed h-100 w-100 sans-serif transition-transform">
+			{% include "sections/about.njk" %}
 		</div>
 		{% block loading %}
-		<div id="loading" class="tc w-100 h-100 center flex flex-column items-center justify-center bg-white sans-serif fixed ttu f5 transition-o o-90">Loading...</div>
+		<!-- <div id="loading" class="tc w-100 h-100 center flex flex-column items-center justify-center bg-white sans-serif fixed ttu f5 transition-o o-90">Loading...</div> -->
 		{% endblock %}
 		<script>
-			{% include "template/scripts/bot-protection.js" %}
+			{% include "scripts/bot-protection.js" %}
 		</script>
 		<script>
-			// feature detection
-			var loadingElem = document.getElementById('loading');
-			function webgl_support() {
-				try {
-					var canvas = document.createElement( 'canvas' ); 
-					return !! window.WebGLRenderingContext && ( 
-							canvas.getContext( 'webgl' ) || canvas.getContext( 'experimental-webgl' ) );
-				} catch (e) { 
-					return false;
-				}
-			};
-			if (!webgl_support()) {
-				loadingElem.innerHTML = '<p>Sorry, your device does not support accelerated graphics with <a class="link dim" href="https://get.webgl.org/">WebGL</a>.</p><p> Please update your OS.</p>';
+			{% include "scripts/webgl-detection.js" %}
+		</script>
+		<script>
+			function stopPropagation(e) {
+				e.stopPropagation();
+				console.log('Stopping propagation');
 			}
 		</script>
-
-		{% block app-js %}
+		{% block js %}
 		{% endblock %}
-<!-- $bundles -->
+$bundles
 
 </body></html>
