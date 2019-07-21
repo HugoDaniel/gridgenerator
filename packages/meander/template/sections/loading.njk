@@ -1,0 +1,11 @@
+{% macro loadingCx(visible=false) %}
+{% set loadingCommon = "tc w-100 h-100 center flex-column items-center justify-center bg-white sans-serif fixed ttu f5 transition-o " %}
+{% if visible %}
+	"{{ loadingCommon }} flex o-90"
+{% else %}
+	"{{ loadingCommon }} dn o-0"
+{% endif %}
+{% endmacro %}
+{% block loading %}
+	<div id="loading" class={{ loadingCx(at == "app") }}>Loading...</div>
+{% endblock %}

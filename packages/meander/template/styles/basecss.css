@@ -24,7 +24,7 @@ button:focus {
 .no-overflow {
 	overflow: hidden;
 }
-#meander > section {
+.Meander {
 	width: 100%;
 	height: 100%;
 	background: rgba(255, 255, 255, 0.2);
@@ -37,7 +37,7 @@ button:focus {
 		"lsidebar content rsidebar"
 		"footer  footer  footer";
 }
-#meander > section > header {
+.Meander > header {
 	grid-area: header;
 	display: grid;
 	grid-template-columns: 4rem auto 4rem;
@@ -45,34 +45,34 @@ button:focus {
 		"lspace  title  rspace";
 	justify-content: space-between;
 }
-#meander > section > header > h1 {
+.Meander > header > h1 {
 	grid-area: title;
 	align-self: center;
 }
-#meander > section > header > button {
+.Meander > header > button {
 	grid-area: rspace;
 	justify-self: end;
 	align-self: center;
 }
-#meander > section > nav {
+.Meander > nav {
 	grid-area: menu;
 }
-#meander > section > nav > a:nth-child(1):hover {
+.Meander > nav > a:nth-child(1):hover {
 	background-color: #cdecff;
 }
-#meander > section > nav > a:nth-child(2):hover {
+.Meander > nav > a:nth-child(2):hover {
   background-color: #9eebcf;
 }
-#meander > section > nav > a:nth-child(3):hover {
+.Meander > nav > a:nth-child(3):hover {
   background-color: #76c4e2;
 }
-#meander > section > nav > a:nth-child(4):hover {
+.Meander > nav > a:nth-child(4):hover {
 	background-color: #ffa3d7;
 }
-#meander > section > nav > a:nth-child(5):hover {
+.Meander > nav > a:nth-child(5):hover {
 	background-color: #fbf1a9;
 }
-#meander > section > div {
+.Meander > div {
 	background: yellow;
 	grid-area: content;
 }

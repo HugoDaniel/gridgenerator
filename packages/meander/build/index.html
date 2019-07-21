@@ -1,3 +1,6 @@
+
+
+
 <!doctype html>
 <html lang="en">
 	<head>
@@ -40,7 +43,7 @@ button:focus {
 .no-overflow {
 	overflow: hidden;
 }
-#meander > section {
+.Meander {
 	width: 100%;
 	height: 100%;
 	background: rgba(255, 255, 255, 0.2);
@@ -53,7 +56,7 @@ button:focus {
 		"lsidebar content rsidebar"
 		"footer  footer  footer";
 }
-#meander > section > header {
+.Meander > header {
 	grid-area: header;
 	display: grid;
 	grid-template-columns: 4rem auto 4rem;
@@ -61,34 +64,34 @@ button:focus {
 		"lspace  title  rspace";
 	justify-content: space-between;
 }
-#meander > section > header > h1 {
+.Meander > header > h1 {
 	grid-area: title;
 	align-self: center;
 }
-#meander > section > header > button {
+.Meander > header > button {
 	grid-area: rspace;
 	justify-self: end;
 	align-self: center;
 }
-#meander > section > nav {
+.Meander > nav {
 	grid-area: menu;
 }
-#meander > section > nav > a:nth-child(1):hover {
+.Meander > nav > a:nth-child(1):hover {
 	background-color: #cdecff;
 }
-#meander > section > nav > a:nth-child(2):hover {
+.Meander > nav > a:nth-child(2):hover {
   background-color: #9eebcf;
 }
-#meander > section > nav > a:nth-child(3):hover {
+.Meander > nav > a:nth-child(3):hover {
   background-color: #76c4e2;
 }
-#meander > section > nav > a:nth-child(4):hover {
+.Meander > nav > a:nth-child(4):hover {
 	background-color: #ffa3d7;
 }
-#meander > section > nav > a:nth-child(5):hover {
+.Meander > nav > a:nth-child(5):hover {
 	background-color: #fbf1a9;
 }
-#meander > section > div {
+.Meander > div {
 	background: yellow;
 	grid-area: content;
 }
@@ -344,11 +347,10 @@ a:hover [data-tooltip] {
 	</head>
 	<body>
 		<div id="app" class="no-select transition-blur blur-6">
-		
-		
-		</div>
-		<div id="meander" class="fixed h-100 w-100 sans-serif transition-transform">
 			
+			
+		</div>
+		
 
 
 
@@ -360,7 +362,7 @@ a:hover [data-tooltip] {
 
 
 
-<section>
+<section class="Meander fixed h-100 w-100 sans-serif transition-transform">
     <header class="bg-white bb b--light-gray flex justify-center">
 			<h1 class="f3 f2-ns tc-ns title truncate">
 				
@@ -388,11 +390,13 @@ About
 </button>
 
     </header>
-		<nav class="bg-white black-80 avenir f6 f5-l bb b--light-gray flex justify-center">
-			<a class="f6 f5-l link pointer bg-animate black-80 pa3 ph4-l">Entry 1</a>
-			<a class="f6 f5-l link pointer bg-animate black-80 pa3 ph4-l">Entry 2</a>
-			<a class="f6 f5-l link pointer bg-animate black-80 pa3 ph4-l">Entry 3</a>
-		</nav>
+		
+<nav class="bg-white black-80 avenir f6 f5-l bb b--light-gray flex justify-center">
+	<a class="f6 f5-l link pointer bg-animate black-80 pa3 ph4-l">Entry 1</a>
+	<a class="f6 f5-l link pointer bg-animate black-80 pa3 ph4-l">Entry 2</a>
+	<a class="f6 f5-l link pointer bg-animate black-80 pa3 ph4-l">Entry 3</a>
+</nav>
+
 		
 		<div class="flex flex-column items-center justify-center w-100 h-100">
 			<p class="f5 ttu center">Nothing here yet</p>
@@ -401,10 +405,7 @@ About
 		
 </section>
 
-		</div>
-		
-		<!-- <div id="loading" class="tc w-100 h-100 center flex flex-column items-center justify-center bg-white sans-serif fixed ttu f5 transition-o o-90">Loading...</div> -->
-		
+
 		<script>
 			// BOT PROTECTION
 var isHeadless = this.pleasestop !== undefined;
@@ -443,6 +444,5 @@ if (!webgl_support()) {
 		</script>
 		
 		
-$bundles
-
+		$bundles
 </body></html>

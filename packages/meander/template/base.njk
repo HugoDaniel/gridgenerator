@@ -1,3 +1,12 @@
+{#
+`at` sets the section to display; possible values:
+	- "app"
+		* loading is shown (full screen) => the app is responsible to remove it
+	- ... any other section name displays it
+		* subsections are set with a - as delimiter: "about-contact" 
+ #}
+{% set at = "about" %}
+
 <!doctype html>
 <html lang="en">
 	<head>
@@ -18,15 +27,11 @@
 	</head>
 	<body>
 		<div id="app" class="no-select transition-blur blur-6">
-		{% block app %}
-		{% endblock %}
+			{% block app %}
+			{% endblock %}
 		</div>
-		<div id="meander" class="fixed h-100 w-100 sans-serif transition-transform">
-			{% include "sections/about.njk" %}
-		</div>
-		{% block loading %}
-		<!-- <div id="loading" class="tc w-100 h-100 center flex flex-column items-center justify-center bg-white sans-serif fixed ttu f5 transition-o o-90">Loading...</div> -->
-		{% endblock %}
+		{% include "sections/" + at + ".njk" %}
+
 		<script>
 			{% include "scripts/bot-protection.js" %}
 		</script>
@@ -41,6 +46,5 @@
 		</script>
 		{% block js %}
 		{% endblock %}
-$bundles
-
+		$bundles
 </body></html>
