@@ -7,7 +7,7 @@
 {% set text = "f6 fs-normal" %}
 {% set ttitle = "mt2 mb0 baskerville i fw1 f1" %}
 {% set subtitle = "mt3 mb0 f6 fw4 ttu tracked" %}
-{% set meanderMenu = "bg-white black-80 avenir f6 f5-l bb b--light-gray flex justify-center" %}
+{% set meanderMenu = "SubMenu bg-white black-80 avenir f6 f5-l bb b--light-gray flex justify-center" %}
 {% set meanderMenuEntry = "f6 f5-l link pointer bg-animate black-80 pa3 ph4-l" %}
 
 <section class="Meander fixed h-100 w-100 sans-serif transition-transform">
@@ -24,6 +24,9 @@
 		<div class="flex flex-column items-center justify-center w-100 h-100">
 			<p class="f5 ttu center">Nothing here yet</p>
 			<p>:'(</p>
-		</div>		
+		</div>
 		{% endblock %}
+		<footer>
+		{% include "sections/main-menu.njk" %}
+		</footer>
 </section>

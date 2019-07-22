@@ -30,7 +30,7 @@ button:focus {
 	background: rgba(255, 255, 255, 0.2);
 	display: grid;
 	grid-template-columns: 120px auto 120px;
-	grid-template-rows: 4rem 3rem auto 4rem;
+	grid-template-rows: 4rem 3rem auto 2rem;
   grid-template-areas:
 		"header  header  header"
 		"lsidebar menu rsidebar"
@@ -54,27 +54,30 @@ button:focus {
 	justify-self: end;
 	align-self: center;
 }
-.Meander > nav {
+.Meander > .SubMenu {
 	grid-area: menu;
 }
-.Meander > nav > a:nth-child(1):hover {
+.Meander > .SubMenu > a:nth-child(1):hover {
 	background-color: #cdecff;
 }
-.Meander > nav > a:nth-child(2):hover {
+.Meander > .SubMenu > a:nth-child(2):hover {
   background-color: #9eebcf;
 }
-.Meander > nav > a:nth-child(3):hover {
+.Meander > .SubMenu > a:nth-child(3):hover {
   background-color: #76c4e2;
 }
-.Meander > nav > a:nth-child(4):hover {
+.Meander > .SubMenu > a:nth-child(4):hover {
 	background-color: #ffa3d7;
 }
-.Meander > nav > a:nth-child(5):hover {
+.Meander > .SubMenu > a:nth-child(5):hover {
 	background-color: #fbf1a9;
 }
 .Meander > div {
 	background: yellow;
 	grid-area: content;
+}
+.Meander > footer {
+	grid-area: footer;
 }
 #app {
 	background: #f4f4f4;
@@ -116,7 +119,7 @@ button:focus {
 .top-bar::before {
 	content: "";
 	position: absolute;
-	top: -4px;
+	margin-top: -6px;
 	height: 1px;
 	width: 0;
 	transition: width 100ms;
