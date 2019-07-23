@@ -1,0 +1,32 @@
+{% extends "template/meander.njk" %}
+
+
+{% block meandertitle %}
+About
+{% endblock %}
+{% block meandercontent %}
+	<div class="{{ section }}">
+		<h1 class="{{ttitle}}">Connect with Grid Generator</h1>
+		<h2 class="{{subtitle}}">Social Networks</h2>
+		<div class="contact-social mt2 flex-column items-center justify-center">
+			<a href="https://twitter.com/grid_generator" target="_blank">
+				<img class="w2 h2 ma2" src="assets/social-twitter.svg" alt="twitter" />
+			</a>
+			<a href="https://www.instagram.com/gridgenerator/" target="_blank">
+				<img class="w2 h2 ma2" src="assets/social-insta.svg" alt="instagram" />
+			</a>
+		</div>
+	</div>
+{% endblock %}
+
+
+{% block meandermenu %}
+<nav class="{{meanderMenu}}">
+	<a class="{{meanderMenuEntry}}">
+	{% block projectName %}
+		Grid Generator
+	{% endblock %}
+	</a>
+	<a class="{{meanderMenuEntrySelected}}">Contact</a>
+</nav>
+{% endblock %}

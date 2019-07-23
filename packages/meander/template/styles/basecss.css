@@ -24,61 +24,7 @@ button:focus {
 .no-overflow {
 	overflow: hidden;
 }
-.Meander {
-	width: 100%;
-	height: 100%;
-	background: rgba(255, 255, 255, 0.2);
-	display: grid;
-	grid-template-columns: 120px auto 120px;
-	grid-template-rows: 4rem 3rem auto 2rem;
-  grid-template-areas:
-		"header  header  header"
-		"lsidebar menu rsidebar"
-		"lsidebar content rsidebar"
-		"footer  footer  footer";
-}
-.Meander > header {
-	grid-area: header;
-	display: grid;
-	grid-template-columns: 4rem auto 4rem;
-	grid-template-areas:
-		"lspace  title  rspace";
-	justify-content: space-between;
-}
-.Meander > header > h1 {
-	grid-area: title;
-	align-self: center;
-}
-.Meander > header > button {
-	grid-area: rspace;
-	justify-self: end;
-	align-self: center;
-}
-.Meander > .SubMenu {
-	grid-area: menu;
-}
-.Meander > .SubMenu > a:nth-child(1):hover {
-	background-color: #cdecff;
-}
-.Meander > .SubMenu > a:nth-child(2):hover {
-  background-color: #9eebcf;
-}
-.Meander > .SubMenu > a:nth-child(3):hover {
-  background-color: #76c4e2;
-}
-.Meander > .SubMenu > a:nth-child(4):hover {
-	background-color: #ffa3d7;
-}
-.Meander > .SubMenu > a:nth-child(5):hover {
-	background-color: #fbf1a9;
-}
-.Meander > div {
-	background: yellow;
-	grid-area: content;
-}
-.Meander > footer {
-	grid-area: footer;
-}
+
 #app {
 	background: #f4f4f4;
 	width: 100%;

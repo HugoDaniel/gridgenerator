@@ -1,0 +1,30 @@
+{% extends "template/meander.njk" %}
+
+
+{% block meandertitle %}
+About
+{% endblock %}
+{% block meandercontent %}
+	<div class="{{ section }}">
+		<h1 class="{{ttitle}}">Grid Generator</h1>
+		<h2 class="{{subtitle}}">The idea</h2>
+		<div class="flex flex-column items-center justify-center pb2">
+			<p class="f6 pa3 measure lh-copy tj">
+				The idea was born in 2014 from the concept of mixing and remixing art. Initially it started with sounds but rapidly evolved to another kind of tool. A painting tool made for the internet. In 2016 I quit my job and started to work on what would become Grid Generator. Back then it was still a rough tool to remix sounds with colors and simple visual forms. After going on and off about it I decided to apply to a startup grant from the Portuguese government in 2017. The grant is named <a target="_blank" class="link" href="https://www.iapmei.pt/PRODUTOS-E-SERVICOS/Empreendedorismo-Inovacao/Empreendedorismo/Apoios-e-Incentivos/Startup-Voucher.aspx">StartUp Voucher</a>, and it consists in a small monthly fee to help new ideas mature and become new companies. I applied to it with the idea of developing a tool to draw patterns with grids and shapes. That was when Grid Generator started evolving into what it is today.
+			</p>
+			<p class="f6 pa3 measure lh-copy tj">For a more personal touch on the inspiration behind Grid Generator checkout <a target="_blank" href="https://hugodaniel.pt/posts/lisbon-as-an-inspiration-for-my-project/" class="link">this post </a> I wrote about it before WebSummit 2017.</p>
+		</div>
+	</div>
+{% endblock %}
+
+
+{% block meandermenu %}
+<nav class="{{meanderMenu}}">
+	<a class="{{meanderMenuEntrySelected}}">
+	{% block projectName %}
+		Grid Generator
+	{% endblock %}
+	</a>
+	<a class="{{meanderMenuEntry}}">Contact</a>
+</nav>
+{% endblock %}

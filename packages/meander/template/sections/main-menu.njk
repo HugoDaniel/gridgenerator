@@ -1,8 +1,8 @@
 {% set mainMenuEntry = "f7 no-underline black ttu sans-serif dib ph2 pb4 pt1 pointer top-bar" %}
-{% set mainMenuSelected = "top-bar-selected" %}
-<nav class="MainMenu h2 w100 flex justify-center">
-	<a class="{{ mainMenuEntry }}">Examples</a>
-	<a class="{{ mainMenuEntry }}">Pricing</a>
-	<a class="{{ mainMenuEntry }}">About</a>
-	<a class="{{ mainMenuEntry }}">Projects</a>
+{% set mainMenuSelected = mainMenuEntry + " top-bar-selected" %}
+<nav class="MainMenu h2 w100 flex justify-center pt2 mt1">
+	<a class="{{ mainMenuSelected if at === 'collective' else mainMenuEntry }}">Examples</a>
+	<a class="{{ mainMenuSelected if at === 'pricing' else mainMenuEntry }}">Pricing</a>
+	<a class="{{ mainMenuSelected if at | take(5) === 'about' else mainMenuEntry }}">{{ at | take(5) }}</a>
+	<a class="{{ mainMenuSelected if at === 'projects' else mainMenuEntry }}">Projects</a>
 </nav>

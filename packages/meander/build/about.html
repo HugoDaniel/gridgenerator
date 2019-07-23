@@ -4,6 +4,7 @@
 
 
 
+
 <!doctype html>
 <html lang="en">
 	<head>
@@ -356,17 +357,81 @@ a:hover [data-tooltip] {
 			
 			
 		</div>
-		<footer class="fixed bottom-0 h2 w-100">
+		
+
+
+
+
+
+
+
+
+
+
+
+
+<section class="Meander fixed h-100 w-100 sans-serif transition-transform">
+    <header class="bg-white bb b--light-gray flex justify-center">
+			<h1 class="f3 f2-ns tc-ns title truncate">
+				
+About
+
+			</h1>
+			
+<button
+	class="CloseBtn w2 h2 hover-opacity bg-transparent pointer bn ma0 pa0"
+	onmousedown="stopPropagation"
+>
+	<svg
+		
+		viewBox='0 0 64 64'
+		
+		
+		style="transform: rotate(45deg)"
+		
+	>
+		<path
+			d='M42.001,29.999h-8v-8.001c0-1.104-0.896-2-2-2s-2,0.896-2,2 v8.001h-8c-1.104,0-2,0.895-2,2c0,1.104,0.896,2,2,2h8v8c0,1.104,0.896,2,2,2s2-0.896,2-2v-8h8c1.104,0,2-0.896,2-2 C44.001,30.894,43.105,29.999,42.001,29.999z'
+			fill='#333333'
+		/>
+	</svg>
+</button>
+
+    </header>
+		
+<nav class="SubMenu bg-white black-80 avenir f6 f5-l bb b--light-gray flex justify-center">
+	<a class="f6 f5-l link pointer bg-animate black-80 pa3 ph4-l b">
 	
+		Grid Generator
+	
+	</a>
+	<a class="f6 f5-l link pointer bg-animate black-80 pa3 ph4-l">Contact</a>
+</nav>
+
+		
+	<div class="overflow-auto h-100 tc bg-white">
+		<h1 class="mt2 mb0 baskerville i fw1 f1">Grid Generator</h1>
+		<h2 class="mt3 mb0 f6 fw4 ttu tracked">The idea</h2>
+		<div class="flex flex-column items-center justify-center pb2">
+			<p class="f6 pa3 measure lh-copy tj">
+				The idea was born in 2014 from the concept of mixing and remixing art. Initially it started with sounds but rapidly evolved to another kind of tool. A painting tool made for the internet. In 2016 I quit my job and started to work on what would become Grid Generator. Back then it was still a rough tool to remix sounds with colors and simple visual forms. After going on and off about it I decided to apply to a startup grant from the Portuguese government in 2017. The grant is named <a target="_blank" class="link" href="https://www.iapmei.pt/PRODUTOS-E-SERVICOS/Empreendedorismo-Inovacao/Empreendedorismo/Apoios-e-Incentivos/Startup-Voucher.aspx">StartUp Voucher</a>, and it consists in a small monthly fee to help new ideas mature and become new companies. I applied to it with the idea of developing a tool to draw patterns with grids and shapes. That was when Grid Generator started evolving into what it is today.
+			</p>
+			<p class="f6 pa3 measure lh-copy tj">For a more personal touch on the inspiration behind Grid Generator checkout <a target="_blank" href="https://hugodaniel.pt/posts/lisbon-as-an-inspiration-for-my-project/" class="link">this post </a> I wrote about it before WebSummit 2017.</p>
+		</div>
+	</div>
+
+		<footer class="bg-white bt b--light-gray">
+		
 
 <nav class="MainMenu h2 w100 flex justify-center pt2 mt1">
 	<a class="f7 no-underline black ttu sans-serif dib ph2 pb4 pt1 pointer top-bar">Examples</a>
 	<a class="f7 no-underline black ttu sans-serif dib ph2 pb4 pt1 pointer top-bar">Pricing</a>
-	<a class="f7 no-underline black ttu sans-serif dib ph2 pb4 pt1 pointer top-bar">app</a>
+	<a class="f7 no-underline black ttu sans-serif dib ph2 pb4 pt1 pointer top-bar top-bar-selected">about</a>
 	<a class="f7 no-underline black ttu sans-serif dib ph2 pb4 pt1 pointer top-bar">Projects</a>
 </nav>
 
-</footer>
+		</footer>
+</section>
 
 
 		<script>

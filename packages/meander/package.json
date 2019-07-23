@@ -52,10 +52,11 @@
   },
   "homepage": "https://github.com/HugoDaniel/gridgenerator#readme",
   "dependencies": {
+    "@types/fs-extra": "^8.0.0",
     "@types/nunjucks": "^3.1.1",
-    "nunjucks-watch": "^0.0.16"
-  },
-  "devDependencies": {
+    "fs-extra": "^8.1.0",
+    "klaw": "^3.0.0",
     "nunjucks": "^3.2.0"
-  }
+  },
+  "devDependencies": {}
 }
