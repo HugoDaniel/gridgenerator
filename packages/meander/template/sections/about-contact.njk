@@ -9,20 +9,24 @@ About
 		<h1 class="{{ttitle}}">Connect with Grid Generator</h1>
 		<h2 class="{{subtitle}}">Social Networks</h2>
 		<div class="contact-social mt2 flex-column items-center justify-center">
-			<a href="https://twitter.com/grid_generator" target="_blank">
-				<img class="w2 h2 ma2" src="assets/social-twitter.svg" alt="twitter" />
-			</a>
-			<a href="https://www.instagram.com/gridgenerator/" target="_blank">
-				<img class="w2 h2 ma2" src="assets/social-insta.svg" alt="instagram" />
-			</a>
+			<a href="https://twitter.com/grid_generator" target="_blank"><img class="w2 h2 ma2" src="assets/icons/social-twitter.svg" alt="twitter"></a>
+			<a href="https://www.instagram.com/gridgenerator/" target="_blank"><img class="w2 h2 ma2" src="assets/icons/social-insta.svg" alt="instagram"></a>
 		</div>
+		<h2 class="{{subtitle}}">Customer Support</h2>
+		<p class="{{text}}">Contact for all support requests <a class="link pointer" href="mailto:support@gridgenerator.com">here</a></p>
+		<h2 class="{{subtitle}}">Press Inquiries</h2>
+		<p class="{{text}}">Contact for press and media questions <a class="link pointer" href="mailto:press@gridgenerator.com">here</a></p>
+		<h2 class="{{subtitle}}">General</h2>
+		<p class="{{text}}">Can’t find the right category above ? Get in touch <a class="link pointer" href="mailto:contact@gridgenerator.com">here</a></p>
+		<h2 class="{{subtitle}}">Address</h2>
+		<p class="{{text}}">Started in <a class="link pointer" href="https://pt.wikipedia.org/wiki/Alenquer_(Portugal)">Alenquer </a> I now spend most of my days in Amadora. You can visit me at:</p>
+		<p class="{{text}}">Praça da Igreja, 2700-458 Amadora. </p>
 	</div>
 {% endblock %}
 
-
 {% block meandermenu %}
 <nav class="{{meanderMenu}}">
-	<a class="{{meanderMenuEntry}}">
+	<a href="about.html" class="{{meanderMenuEntry}}">
 	{% block projectName %}
 		Grid Generator
 	{% endblock %}
